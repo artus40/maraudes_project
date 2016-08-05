@@ -1,0 +1,144 @@
+{% load bootstrap3 %}
+{% load staticfiles %}
+
+{{ form.media.js }}{{ form.media.css }}
+<script type="text/javascript" src="{% static "jquery.formset.js" %}"></script>
+<script type="text/javascript">
+  $(function() {
+    $.fn.onAddForm = function(row) {
+      /*
+      * Custom code to integrate with django-select2 and bootstrap3
+      */
+      // Load django_select2 fields
+      row.find('.django-select2').djangoSelect2();
+      var button = row.find('a.btn-delete')
+      var text = button.text()
+      button.html('<span class="glyphicon glyphicon-minus"></span> ' + text);
+    };
+
+    $.fn.onDeleteForm = function(row) {
+      /*
+      * Custom code when deleting dynamic form
+      */
+    };
+  });
+
+
+    $(function() {
+        $('.dynamic-formset').formset({
+                    prefix: '{{ inline_formset.prefix }}',
+                    addText: 'Ajouter une personne',
+                    deleteText: 'Supprimer',
+                    addCssClass: 'btn btn-link btn-add',
+                    deleteCssClass: 'btn btn-link btn-delete',
+                    added: $.fn.onAddForm,
+                    removed: $.fn.onDeleteForm
+        });
+
+        var text = $('a.btn-add').text()
+        $('a.btn-add').html('<span class="glyphicon glyphicon-plus"></span> ' + text)
+        text = $('a.btn-delete:first').text()
+        $('a.btn-delete').html('<span class="glyphicon glyphicon-minus"></span> ' + text);
+    });
+
+
+    /* Lier les boutons de création
+    *  Thanks to Derek Morgan, https://dmorgan.info/posts/django-views-bootstrap-modals/
+    */
+  $(function() {
+
+    var formAjaxSubmit = function(form, modal) {
+     $(form).submit(function (e) {
+         e.preventDefault();
+         $.ajax({
+             type: $(this).attr('method'),
+             url: $(this).attr('action'),
+             data: $(this).serialize(),
+             success: function (xhr, ajaxOptions, thrownError) {
+                 if ( $(xhr).find('.has-error').length > 0 ) {
+                     $(modal).find('.modal-body').html(xhr);
+                     formAjaxSubmit(form, modal);
+                 } else {
+                     $(modal).modal('toggle');
+                    // Reload page ?
+                 }
+             },
+             error: function (xhr, ajaxOptions, thrownError) {
+                 // handle response errors here
+             }
+         });
+      });
+    }
+  /* TODO: Use formAjaxSubmit above, but reload page on form success */
+     $('#new-sujet').click(function() {
+         $('#form-modal-body').load('{% url "sujets:create" %}?next={% url "maraudes:create" pk=maraude.id %}', function () {
+            $('.modal-title').text("Nouveau sujet");
+            $('#form-modal').modal('toggle');
+         });
+     });
+    $('#new-lieu').click(function() {
+         $('#form-modal-body').load('{% url "maraudes:lieu-create" %}?next={% url "maraudes:create" pk=maraude.id %}', function () {
+            $('.modal-title').text("Nouveau lieu");
+            $('#form-modal').modal('toggle');
+         });
+     });
+  });
+</script>
+
+<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <h4 class="modal-title">Modal title</h4>
+       </div>
+       <div id="form-modal-body" class="modal-body">
+         ...
+       </div>
+       <div class="modal-footer">
+         <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+       </div>
+     </div>
+   </div>
+</div>
+<div class="row">
+  <div class="col-md-6 col-sd-12">
+    <form method="post" action="{% url 'maraudes:create' maraude.pk %}?finalize=False">
+    {% csrf_token %}
+      <div class="panel panel-default panel-collapse">
+        <div class="panel-heading">
+          <h4 class="panel-header">Nouvelle rencontre
+          {% bootstrap_button "Enregistrer" icon="save" button_type="submit" button_class="btn btn-success btn-sm pull-right" %}
+          </h4>
+        </div>
+        <div class="panel-body">
+          {% include "compte_rendu/compterendu_form.html" %}
+        </div>
+        <div class="panel-footer text-right">
+          <div class="btn-group">
+            <a class= "btn btn-primary" id="new-sujet">
+            {% bootstrap_icon "user" %} Nouveau sujet</a>
+            <a class="btn btn-primary" id="new-lieu">
+            {% bootstrap_icon "globe" %} Nouveau lieu</a>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+  <div class="col-md-6 col-sd-12">
+    <div class="panel panel-primary">
+      <div class="panel-heading"><h4 class="panel-header">Enregistrées
+            <a class="btn btn-danger btn-sm pull-right" href="{% url 'maraudes:create' maraude.pk %}?finalize=True">
+            {% bootstrap_icon "ok-circle" %} Finaliser</a></h4>
+      </div>
+      <table class="table">
+        {% for rencontre in rencontres %}<tr><th colspan="2" class="active">{{ rencontre }}</th></tr>
+        {% for observation in rencontre.observations.all %}<tr>
+            <td>{{observation.sujet}}</td>
+            <td>{{observation.text}}</td>
+        </tr>{% endfor %}{% endfor %}
+      </table>
+    </div>
+  </div>
+</div>

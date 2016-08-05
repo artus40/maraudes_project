@@ -1,0 +1,45 @@
+<div class="row">
+  <div class="col-md-6" id="prochaine-maraudes">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Votre prochaine maraude</div>
+      <div class="panel-body">
+      {% if prochaine_maraude %}<p>
+        <span class="glyphicon glyphicon-calendar"></span>
+        <strong>{{ prochaine_maraude.date }} à {{ prochaine_maraude.heure_debut }}
+          avec {% if user.is_superuser %}{{prochaine_maraude.binome}}{%else%}{{prochaine_maraude.referent}}{%endif%}.
+        </strong></p>
+        <hr />
+        <p><mark>Informations, notes, rendez-vous ?</mark></p>
+      {% else %}<p>Aucune maraude prévue.</p>{% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if dernieres_maraudes %}<div class="col-md-6" id="dernieres-maraudes">
+    <div class="panel panel-default">
+    <div class="panel-heading">
+      <p>Dernières maraudes
+      <span class="pull-right"><a href="{% url 'maraudes:liste' %}" class="btn btn-primary btn-sm">Aller à la liste</a></span></p>
+    </div>
+    <div class="list-group">
+      {% for maraude in dernieres_maraudes %}
+      <a href="{% url 'maraudes:details' maraude.pk %}" class="list-group-item">
+        <strong>{{ maraude }}</strong> <small>{{maraude.binome}} & {{maraude.referent}}</small>
+      </a>
+      {% endfor %}
+    </div>
+    </div>
+  </div>{% endif %}
+
+  {% if user.is_superuser %}<div class="col-md-6" id="administration">
+    <div class="panel panel-danger">
+      <div class="panel-heading">Administration</div>
+        <div class="list-group">
+          <a href="{% url 'maraudes:planning' %}" class="list-group-item">Planning</a>
+          <a href="{% url 'admin:maraudes_maraude_changelist' %}" class="list-group-item">Gérer les maraudes</a>
+        </div>
+      </div>
+  </div>{% endif %}
+
+</div>
+

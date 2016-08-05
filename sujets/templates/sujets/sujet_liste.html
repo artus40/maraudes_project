@@ -1,0 +1,19 @@
+<div class="panel panel-default">
+  <!-- Default panel contents -->
+  <div class="panel-heading">Sujets connus</div>
+  <div class="panel-body">
+    <p>Voici la liste des sujets rencontrés dans le cadre des maraudes</p>
+  </div>
+  <table class="table table-striped">
+    <tr>
+      <th>Nom</th>
+      <th>Vu le</th>
+    </tr>
+  {% for sujet in object_list %}
+    <tr>
+      <td><a href="{% url 'suivi:details' sujet.pk %}">{{sujet}}</a></td>
+      <td>ToDo</td>
+    </tr>
+  {% endfor %}
+  </table>
+</div>

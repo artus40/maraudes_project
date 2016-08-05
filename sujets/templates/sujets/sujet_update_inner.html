@@ -1,0 +1,60 @@
+{% load bootstrap3 %}
+<form action="" method="post">{% csrf_token %}
+<div class="row">
+  <div class="col-md-6 col-sd-6">
+    <div class="well text-center">
+      <div class="form-inline">
+      {% bootstrap_field form.nom layout="inline" %}
+      {% bootstrap_field form.surnom layout="inline" %}
+      {% bootstrap_field form.prenom layout="inline" %}
+    </div><div class="form-inline"><hr />
+      {% bootstrap_field form.genre layout="inline" %}
+      {% bootstrap_field form.age layout="inline" %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6 col-sd-6">
+    <div class="well well-sm">
+      {% bootstrap_field form.premiere_rencontre %}
+    </div>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4 col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">Situation sociale</div>
+      <div class="panel-body">
+        <div class="form-horizontal">
+      {% bootstrap_field form.habitation layout="horizontal" label_class="col-md-6" field_class="col-md-6" %}
+      {% bootstrap_field form.connu_siao layout="horizontal" label_class="col-md-6" field_class="col-md-6" %}
+      {% bootstrap_field form.ressources layout="horizontal" label_class="col-md-6" field_class="col-md-6" %}
+
+          </div>
+        </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">Problématiques</div>
+      <div class="panel-body">
+        <div class="form-horizontal">
+      {% bootstrap_field form.prob_addiction layout="horizontal" label_class="col-md-4" field_class="col-md-6" %}
+      {% bootstrap_field form.prob_psychiatrie layout="horizontal" label_class="col-md-4" field_class="col-md-6" %}
+      {% bootstrap_field form.prob_administratif layout="horizontal" label_class="col-md-4" field_class="col-md-6" %}
+      {% bootstrap_field form.prob_somatique layout="horizontal" label_class="col-md-4" field_class="col-md-6" %}
+          </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4 col-sm-6">
+    <div class="panel panel-default">
+      <div class="panel-heading">Parcours de vie</div>
+      <div class="panel-body">
+      {% bootstrap_field form.parcours_de_vie %}
+      {% bootstrap_field form.lien_familial %}
+      </div>
+    </div>
+  </div>
+</div>
+    {% bootstrap_button "Enregistrer" button_type="submit" %}
+</form>

@@ -1,0 +1,43 @@
+
+body {
+  padding: 0px;
+  background-color: #f1f1f1;
+}
+
+
+/* Éléments de l'interface
+
+  - Menu des applications, id='app-menu'
+  - Info utilisateur, id='maraudeur'
+  - Contenu, id='contenu'
+
+ */
+
+
+
+#app-menu {
+  position: fixed;
+  left: 10%;
+  top: 50px;
+  width: 15%;
+  padding: 0px;
+  /*border: 2px solid grey;*/
+  background-color: #efefef;
+}
+
+#maraudeur {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+}
+
+
+#contenu {
+  position:relative;
+  left: 25%;
+  width: 60%;
+  top: 50px;
+  padding: 10px;
+  background-color: white;
+}
+

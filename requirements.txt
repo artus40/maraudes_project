@@ -1,0 +1,4 @@
+# Requirements
+
+* django-bootstrap3
+* django_select2

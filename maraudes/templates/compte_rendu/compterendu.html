@@ -1,0 +1,29 @@
+<div class="panel panel-primary">
+  <!-- Default panel contents -->
+  <div class="panel-heading"><h3 class="panel-title">Compte-Rendu</h3>
+  </div>
+  <div class="panel-body">
+    <p class="bg-info">Maraudeurs: {{ maraude.binome.first_name }}, {{ maraude.referent.first_name }}</p>
+    {% if maraude.est_terminee %}<p>Terminée à {{ maraude.heure_fin}} </p>
+    <p>{{maraude.rencontre_count}} rencontres</p>
+    {% else %}
+
+    {% endif %}
+  </div>
+  <table class="table table-bordered table-striped">
+{% for rencontre, observations in maraude %}
+    <tr>
+      <th>{{ rencontre.lieu }}</th>
+      <th>{{ rencontre.heure_debut }}</th>
+      <th style="text-align:right" width="150">Durée: {{ rencontre.duree }}min</th>
+    </tr>
+    {% for observation in observations %}
+      <tr><td>{{ observation.sujet }}</td><td colspan="2"> {{ observation.note }}</td>
+    </tr>
+  {% endfor %}
+{% endfor %}
+    </table>
+    {% if user.is_superuser and maraude.est_terminee %}<div class="panel-footer">
+      <a class="btn btn-primary" href="{% url 'maraudes:update' maraude.pk %}">Modifier</a>
+    </div>{%endif%}
+</div>

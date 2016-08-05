@@ -1,0 +1,8 @@
+{% load bootstrap3 %}
+<div class="row"><div class="col-md-12">
+<form class="form-horizontal" action="{% url "sujets:create" %}" method="post">{% csrf_token %}
+{% bootstrap_form form layout="horizontal"%}
+{% bootstrap_button "Ajouter un sujet" button_type="submit" button_class="btn btn-primary" %}
+{% if next %}<input type="text" hidden=True name="next" value="{{ next }}" />{%endif%}
+</form>
+</div></div>

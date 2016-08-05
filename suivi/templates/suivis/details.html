@@ -1,0 +1,9 @@
+  <ul class="nav nav-pills nav-justified" role="tablist" style="padding-bottom:20px;float:bottom;">
+    <li role="presentation" class="active"><a href="#suivi" aria-controls="suivi" role="tab" data-toggle="tab">Suivi</a></li>
+    <li role="presentation"><a href="#fiche" aria-controls="fiche" role="tab" data-toggle="tab">Fiche</a></li>
+  </ul>
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div role="tabpanel" class="tab-pane active" id="suivi">{% include "suivis/sujet_suivi.html" %}</div>
+    <div role="tabpanel" class="tab-pane" id="fiche">{% include "sujets/sujet_details_inner.html" %}</div>
+  </div>

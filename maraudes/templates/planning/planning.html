@@ -1,0 +1,30 @@
+{% load bootstrap3 %}
+<div class="well col-md-12">
+  <form action="" method="get" class="form-inline text-center">
+    <label>Période : </label>
+    {% bootstrap_form select_form layout='inline' %}
+    {% bootstrap_button "Choisir" button_type="submit" %}
+  </form>
+</div>
+
+<form method="post" action="{% url 'maraudes:planning' %}?month={{month}}&year={{year}}">
+  {% csrf_token %}
+  {{ formset.management_form }}
+  {% for form in formset %}<div class="col-md-4">
+    <div class="panel {% if form.instance.pk %}panel-info{%else%}panel-warning{%endif%}">
+      <div class="panel-heading text-center">
+        <div class="form-inline">{% if form.id %}{{ form.id }}{% endif %}
+          {% bootstrap_field form.date size="small" show_label=False %}
+          {% bootstrap_field form.heure_debut layout="inline" size="small" %}
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="form-horizontal">
+          {% bootstrap_field form.binome layout="horizontal" %}
+          {% bootstrap_field form.referent layout="horizontal" size="small" %}
+        </div>
+      </div>
+    </div>
+  </div>{% endfor %}
+{% bootstrap_button "Enregistrer" button_type="submit" button_class="btn-primary" %}
+</form>

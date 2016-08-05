@@ -1,0 +1,16 @@
+{% if dernieres_maraudes %}<div class="panel panel-default">
+<div class="panel-heading">Maraudes</div>
+  <div class="list-group">
+    {% for maraude in dernieres_maraudes %}
+    <a href="{% url 'maraudes:details' maraude.pk %}" class="list-group-item">{{ maraude }}</a>
+    {% endfor %}
+    <a href="{% url 'maraudes:liste' %}" class="list-group-item"><b>Autres...</b></a>
+  </div>
+</div>{% endif %}
+
+{% if user.is_superuser %}<div class="panel panel-default">
+<div class="panel-heading">Administration</div>
+  <div class="list-group">
+    <a href="{% url 'maraudes:planning' %}" class="list-group-item">Planning</a>
+  </div>
+</div>{% endif %}

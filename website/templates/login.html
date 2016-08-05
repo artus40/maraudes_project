@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% load bootstrap3 %}
+
+{# Tweak columns layout for login box %}
+{% block panels %}<div class="col-md-8 col-md-offset-2">{% endblock %}
+
+{% block page_header %}
+        <div class="jumbotron bg-warning">
+          <h2>ALSA - Projet Maraude</h2>
+          <p>Description de la maraude...</p>
+        </div>
+{% endblock %}
+
+{% block content %}
+      <div class="panel panel-primary">
+        <div class="panel-heading"><h3 class="panel-title">Connexion</h3></div>
+      <div class="panel-body text-center">
+      {% if user.is_authenticated %}
+        <p>Bienvenue {{ user.first_name|default:user.username }} !</p>
+        {% if next %}
+          <div class="alert alert-warning"><p>Votre compte ne donne pas accès à cette page. Veuillez vous
+          connecter avec un autre compte.</p></div>
+          <a href="{% url 'logout' %}" class="btn btn-danger">Déconnexion</a>
+        {% else %}
+        <div class="btn-group">
+        <a href="{% url 'maraudes:index' %}" class="btn btn-primary">Entrer</a>
+        {% if user.is_superuser %}
+          <a href="admin/" class="btn btn-warning">Administration</a>
+        {% endif %}
+        <a href="{% url 'logout' %}" class="btn btn-danger">Déconnexion</a>
+        </div>
+        {% endif %}
+      {% else %}
+        {% if next %}
+              <div class="alert alert-danger"><p>Veuillez vous connecter pour accéder à cette page.</p></div>
+        {% endif %}
+        <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% bootstrap_button "Connexion" button_type="submit" button_class="btn-lg btn-primary" %}
+        <input type="hidden" name="next" value="{{ next|default:'/maraudes/' }}" />
+        </form>
+      {% endif %}
+      </div>
+            <div class="panel-footer"><p>version: 0.01</p></div>
+      </div>
+{% endblock %}

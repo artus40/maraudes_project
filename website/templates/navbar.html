@@ -1,0 +1,41 @@
+{% load bootstrap3 %}{% load staticfiles %}
+<nav class="navbar navbar-default navbar-static-top">
+  <div class="container">
+    <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <img alt="Logo Alsa" src="{% static 'alsa_logo.png' %}" class="img-rounded">
+    </div>
+    <ul class="nav navbar-nav navbar-left">{% for app in apps %}
+      <li {% if app == active_app %} class="active" {%endif%}>
+        <a href="/{{app.label}}/">{{ app.name|title }}</a>
+      </li>{%endfor%}
+    </ul>
+{% if prochaine_maraude_abs %}<p class="navbar-text">{% bootstrap_icon "calendar" %} <b>Prochaine maraude :</b>
+{% if prochaine_maraude_abs.date == now.date %} Aujourd'hui {% else %} {{ prochaine_maraude_abs.date }} {% endif %}
+- {{ prochaine_maraude_abs.heure_debut.hour }}h</p>{%endif%}
+<!-- Navbar Right Aligned elements -->
+    <ul class="nav navbar-nav navbar-right">
+      <li class="dropdown">
+        <a id="UserMenu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+        {% bootstrap_icon "user" %} {{user}} <span class="caret"></span></a>
+        <ul class="dropdown-menu" aria-labelledby="UserMenu">
+          {% if user.is_authenticated %}{% if user.is_superuser %}<li><a href="/admin/">Administration</a></li>
+          <li role="separator" class="divider"></li>{% endif %}
+          <li><a href="{% url 'logout' %}">Déconnecter</a></li>{% endif %}
+        </ul>
+      </li>
+    </ul>
+<!-- Search form -->
+    <form class="navbar-form navbar-right" role="search">
+      <div class="input-group">
+        <input type="text" class="form-control" placeholder="NotYetImplemented" />
+        <span class="input-group-btn"><button class="btn btn-default" type="button"><i class="glyphicon glyphicon-search"></i></button></span>
+      </div>
+    </form>
+  </div>
+</nav>

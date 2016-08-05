@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page_title }}{% endblock %}
+{% block page_header %}{{ page_header }} <small>{{ page_header_small }}</small>{% endblock %}
+
+{% block globalnav %}
+  <div class="row">
+    <div class="col-md-12">
+      {% include "navbar.html" %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block panels %}
+{% if panels %}<div class="col-md-2">{{ panels }}</div><div class="col-md-10">
+{% else %}{{ block.super }}{% endif %}
+{% endblock %}
+
+{% block content %}{% include content_template %}{% endblock %}

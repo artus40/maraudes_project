@@ -1,0 +1,21 @@
+
+{% load bootstrap3 %}
+<form method="post" action="{% url 'maraudes:update' maraude.pk %}?continue=True">
+  {% csrf_token %}
+  {{ base_formset.management_form }}
+  {% for form, inline_formset in forms %}
+  <div class="col-md-6 col-sd-12">
+    <div class="panel panel-default">
+      <div class="panel-heading text-right">
+        {% bootstrap_field form.DELETE field_class="col-md-1"%}
+        <button type="submit" class="btn btn-sm btn-success" formaction="{% url 'maraudes:update' maraude.pk %}?continue=False">
+          {% bootstrap_icon "refresh" %} Mettre à jour</button>
+        {% bootstrap_button "Enregistrer et quitter" button_type="submit" button_class="btn-primary btn-sm" icon="ok-circle" %}
+      </div>
+      <div class="panel-body">
+        {% include "compte_rendu/compterendu_form.html" %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</form>

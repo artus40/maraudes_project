@@ -1,0 +1,76 @@
+  <div class="row">
+    <div class="col-md-4 text-center">
+      <div class="alert alert-info">
+        <p>Première rencontre le {{sujet.premiere_rencontre}}</p>
+      </div>
+    </div>
+    <div class="col-md-4 col-md-offset-4">
+      <a href="{% url "sujets:update" pk=sujet.id %}" class="btn btn-primary">Mettre à jour</a>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          État-civil
+        </div>
+        <div class="panel-body">
+          <p>Nom : {{ sujet.nom|default:'?' }}</p>
+          <p>Prénom : {{ sujet.prenom|default:'?' }}</p>
+          <p>Sexe : {{ sujet.genre }}</p>
+          <p>Âge : {{ sujet.age|default:'?' }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Problématiques
+        </div>
+        <div class="panel-body">
+          <p>Psychiatrique : {{ sujet.prob_psychiatrie }}</p>
+          <p>Administratif : {{ sujet.prob_administratif }}</p>
+          <p>Addiction : {{ sujet.prob_addiction }}</p>
+          <p>Somatique : {{ sujet.prob_somatique }}</p>
+        </div>
+      </div>
+    </div>
+<!- Hébergement ->
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Habitation
+        </div>
+        <div class="panel-body">
+          <h4></h4>
+          <p>Type : {{ sujet.habitation }}</p>
+          <p>Connu du SIAO : {{ sujet.connu_siao }}</p>
+        </div>
+      </div>
+    </div>
+<!- Ressources ->
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Ressources
+        </div>
+        <div class="panel-body">
+          <p>{{ sujet.ressources }}</p>
+        </div>
+      </div>
+    </div>
+<!- Parcours de vie ->
+    <div class="col-md-4">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          Parcours de vie
+        </div>
+        <div class="panel-body">
+          <p>Parcours : {{ sujet.parcours_de_vie }}</p>
+          <p>Lien familial : {{ sujet.lien_familial }}</p>
+        </div>
+      </div>
+    </div>
+  </div><!- row ->
+
+
