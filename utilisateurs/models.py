@@ -75,10 +75,7 @@ class Maraudeur(Professionnel):
             return None
 
     def save(self, *args, **kwargs):
-        create = False
         if not self.pk or not self.username or not self.email:
-            create = True
-        if create:
             self._fill_fields()
             self.is_staff = True
 
