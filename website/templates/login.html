@@ -35,7 +35,7 @@
         {% if next %}
               <div class="alert alert-danger"><p>Veuillez vous connecter pour accéder à cette page.</p></div>
         {% endif %}
-        <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
+        <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         {% bootstrap_form form %}
         {% bootstrap_button "Connexion" button_type="submit" button_class="btn-lg btn-primary" %}
