@@ -20,6 +20,7 @@ class Observation(Note):
     def __str__(self):
         return "%s" % self.sujet
 
+
     def note_date(self):
         """ Enforce value of created_date """
         return self.rencontre.date

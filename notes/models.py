@@ -32,14 +32,17 @@ class Note(models.Model):
     created_time = models.TimeField('Heure', blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        child_instance = self.cast()
-        self.created_date = child_instance.note_date()
-        self.created_time = child_instance.note_time()
+        if not self.created_date or not self.created_time:
+            child_instance = self.cast()
+            self.created_date = child_instance.note_date()
+            self.created_time = child_instance.note_time()
         return super().save(*args, **kwargs)
 
     def _get_child_class_and_instance(self):
         self._child_instance = self
         self._child_class = self.__class__
+        if self._meta.get_parent_list(): # If self is actually child instance
+            return
         for f in self._meta.get_fields():
             if f.is_relation and f.one_to_one:
                 self._child_instance = getattr(self, f.name)

@@ -93,7 +93,10 @@ class MaraudeListView(MaraudesView, generic.ListView):
 class CompteRenduCreateView(MaraudesView, generic.DetailView):
     model = Maraude
     template_name = "compte_rendu/compterendu_create.html"
+    context_object_name = "maraude"
 
+    header = "Compte-rendu"
+    header_small = "maraude"
     form = None
     inline_formset = None
 

@@ -6,9 +6,9 @@
     <span class="pull-right"><a href="{% url 'maraudes:liste' %}" class="btn btn-primary btn-sm">Aller à la liste</a></span></p>
   </div>
   <div class="list-group">
-    {% for maraude in dernieres_maraudes %}
-    <a href="{% url 'maraudes:details' maraude.pk %}" class="list-group-item">
-      <strong>{{ maraude }}</strong> <small>{{maraude.binome}} & {{maraude.referent}}</small>
+    {% for m in dernieres_maraudes %}
+    <a href="{% url 'maraudes:details' m.pk %}" class="list-group-item {% if maraude == m %} active{% endif %}">
+      <strong>{{ m }}</strong> <small>{{m.binome}} & {{m.referent}}</small>
     </a>
     {% endfor %}
   </div>
