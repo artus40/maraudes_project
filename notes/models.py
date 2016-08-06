@@ -42,7 +42,7 @@ class Note(models.Model):
                 return
 
     @property
-    def subclass(self):
+    def child_class(self):
         if not hasattr(self, '_child_class'):
             self._get_child_class_and_instance()
         return self._child_class
