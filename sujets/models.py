@@ -121,4 +121,4 @@ class Sujet(Personne):
         )
 
     def get_absolute_url(self):
-        return reverse('suivis:details', kwargs={'pk': self.id})
+        return reverse('suivi:details', kwargs={'pk': self.id})

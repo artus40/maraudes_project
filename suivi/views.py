@@ -28,5 +28,5 @@ class SuiviSujetView(SuivisView, generic.DetailView):
 
     def get_context_data(self, *args,  **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['notes'] = self.object.notes.all()
+        context['notes'] = self.object.notes.all().order_by('created_date')
         return context

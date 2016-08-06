@@ -1,76 +1,24 @@
-  <div class="row">
-    <div class="col-md-4 text-center">
-      <div class="alert alert-info">
-        <p>Première rencontre le {{sujet.premiere_rencontre}}</p>
-      </div>
-    </div>
-    <div class="col-md-4 col-md-offset-4">
-      <a href="{% url "sujets:update" pk=sujet.id %}" class="btn btn-primary">Mettre à jour</a>
-    </div>
+<div class="panel panel-primary">
+  <div class="panel-heading"><h3 class="panel-title">Fiche informations</h3></div>
+  <div class="panel-body"><p class="label label-info">Première rencontre : {{ sujet.premiere_rencontre }}</p></div>
+  <table class="table">
+    <tr><th colspan="4" class="bg-info">État-civil</th></tr>
+    <tr><th>Nom</th><td>{{ sujet.nom|default:'?' }}</td><th>Prénom</th><td>{{ sujet.prenom|default:'?' }}</td></tr>
+    <tr><th>Sexe</th><td>{{ sujet.genre }}</td><th>Âge</th><td>{{ sujet.age|default:'?' }}</td></tr>
+    <tr><th colspan="4" class="bg-info">Problématiques</th></tr>
+    <tr><th>Psychiatrique</th><td>{{ sujet.prob_psychiatrie }}</td><th>Addiction</th><td>{{ sujet.prob_addiction }}</td></tr>
+    <tr><th>Administratif</th><td>{{ sujet.prob_administratif }}</td><th>Somatique</th><td>{{ sujet.prob_somatique }}</td></tr>
+    <tr><th colspan="4" class="bg-info">Habitation</th></tr></td></tr>
+    <tr><th>Type</th><td>{{ sujet.habitation }}</td><th>Connu du SIAO</th><td>{{ sujet.connu_siao }}</td></tr>
+    <tr><th colspan="4" class="bg-info">Ressources</th></tr></td></tr>
+    <tr><td colspan="4">{{ sujet.ressources }}</td></tr>
+    <tr><th colspan="4" class="bg-info">Parcours de vie</th></tr></td></tr>
+    <tr><td colspan="2">{{ sujet.parcours_de_vie }}</td><th>Lien familial</th><td>{{ sujet.lien_familial }}</td></tr>
+  </table>
+  <div class="panel-footer text-right">
+    <a href="{% url "sujets:update" pk=sujet.id %}" class="btn btn-primary">Mettre à jour</a>
   </div>
-  <div class="row">
-    <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          État-civil
-        </div>
-        <div class="panel-body">
-          <p>Nom : {{ sujet.nom|default:'?' }}</p>
-          <p>Prénom : {{ sujet.prenom|default:'?' }}</p>
-          <p>Sexe : {{ sujet.genre }}</p>
-          <p>Âge : {{ sujet.age|default:'?' }}</p>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Problématiques
-        </div>
-        <div class="panel-body">
-          <p>Psychiatrique : {{ sujet.prob_psychiatrie }}</p>
-          <p>Administratif : {{ sujet.prob_administratif }}</p>
-          <p>Addiction : {{ sujet.prob_addiction }}</p>
-          <p>Somatique : {{ sujet.prob_somatique }}</p>
-        </div>
-      </div>
-    </div>
-<!- Hébergement ->
-    <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Habitation
-        </div>
-        <div class="panel-body">
-          <h4></h4>
-          <p>Type : {{ sujet.habitation }}</p>
-          <p>Connu du SIAO : {{ sujet.connu_siao }}</p>
-        </div>
-      </div>
-    </div>
-<!- Ressources ->
-    <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Ressources
-        </div>
-        <div class="panel-body">
-          <p>{{ sujet.ressources }}</p>
-        </div>
-      </div>
-    </div>
-<!- Parcours de vie ->
-    <div class="col-md-4">
-      <div class="panel panel-default">
-        <div class="panel-heading">
-          Parcours de vie
-        </div>
-        <div class="panel-body">
-          <p>Parcours : {{ sujet.parcours_de_vie }}</p>
-          <p>Lien familial : {{ sujet.lien_familial }}</p>
-        </div>
-      </div>
-    </div>
-  </div><!- row ->
+</div>
+
 
 
