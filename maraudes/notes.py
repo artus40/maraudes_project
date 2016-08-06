@@ -20,20 +20,11 @@ class Observation(Note):
     def __str__(self):
         return "%s" % self.sujet
 
-
-    def note_date(self):
-        """ Enforce value of created_date """
-        return self.rencontre.date
-
-    def note_time(self):
-        """ Enforce value of created_time """
-        return self.rencontre.heure_debut
-
-    def note_labels(self):
-        return [self.rencontre.lieu, self.rencontre.heure_debut]
-
-    def note_bg_colors(self):
-        return ("info", "info")
+    # Note attributes proxies
+    def note_date(self):        return self.rencontre.date
+    def note_time(self):        return self.rencontre.heure_debut
+    def note_labels(self):      return [self.rencontre.lieu, self.rencontre.heure_debut]
+    def note_bg_colors(self):   return ("info", "info")
 
 
 

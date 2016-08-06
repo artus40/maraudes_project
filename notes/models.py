@@ -1,17 +1,18 @@
-from django.db import models
+from django.utils import timezone
 from django.utils.html import format_html
 
+from django.db import models
 from . import managers
 
 class Note(models.Model):
     """ Note relative à un sujet.
 
         Peut être utilisée comme classe parente.
-        Il faut alors définir les méthodes :
-        - get_date
-        - get_labels
-        - get_bg_color
-        Les valeurs retournée sont utilisée par les templatetages 'notes'
+        class ChildNote(Note):
+            def note_date(self): value for 'create_date'
+            def note_time(self): value for 'created_time'
+            def note_bg_colors(self): ('header bkgd', 'labels bkgd')
+            def note_labels(self): list of objects printed as bootstrap labels
 
     """
 
@@ -28,8 +29,8 @@ class Note(models.Model):
                         blank=True,
                         null=True
                         )
-    created_date = models.DateField('Crée le', blank=True, null=True)
-    created_time = models.TimeField('Heure', blank=True, null=True)
+    created_date = models.DateField('Date')
+    created_time = models.TimeField('Heure')
 
     def save(self, *args, **kwargs):
         if not self.created_date or not self.created_time:
@@ -38,7 +39,33 @@ class Note(models.Model):
             self.created_time = child_instance.note_time()
         return super().save(*args, **kwargs)
 
+    def __str__(self):
+        return "%s of %s" % (self.child_class.__qualname__, self.created_by)
+
+    def note_date(self):
+        """ Default 'created_date' value. Child may override this method. """
+        return timezone.now().date()
+
+    def note_time(self):
+        """ Default 'created_time' value. Child may override this method. """
+        return timezone.now().time()
+
+    def note_bg_colors(self):
+        """ Returns (header background color, labels color).
+            Values must be valid bootstrap color name
+        """
+        return ("default", "info")
+
+    def note_labels(self):
+        """ Returns list of objects that are printed as bootstrap labels """
+        return [self.created_by]
+
     def _get_child_class_and_instance(self):
+        """ Get child class and instance of Note, stored in _child_instance
+            and _child_class.
+            Store self and self.__class__ if self is either a child of Note,
+            or a Note instance with no child.
+        """
         self._child_instance = self
         self._child_class = self.__class__
         if self._meta.get_parent_list(): # If self is actually child instance
@@ -60,28 +87,21 @@ class Note(models.Model):
             self._get_child_class_and_instance()
         return self._child_instance
 
-    def __str__(self):
-        return "%s of %s" % (self.child_class.__qualname__, self.created_by)
-
     ## Attributes used by 'notes' template tags
     # bg_color : background color of header
     # labels : list of strings to put in labels
     def cached_attr(name):
-        """ Cached property set on return value of 'get_ATTR' method on
+        """ Cached property set on return value of 'note_ATTR' method on
             child instance.
         """
         private_name = '_%s' % name
         def getter(self):
             if not hasattr(self, private_name):
                 setattr(self,
-                        private_name,
-                        # Call *child instance* method
+                        private_name,# Call *child instance* method
                         getattr(self.cast(), 'note_%s' % name)()
                         )
             return getattr(self, private_name)
         return getter
-
-    bg_colors = property(    cached_attr('bg_colors'),
-                            doc="background color of header")
-    labels = property(      cached_attr('labels'),
-                            doc="list of string to display as labels")
+    bg_colors = property(cached_attr('bg_colors'), doc="background color of header")
+    labels = property(cached_attr('labels'), doc="list of string to display as labels")
