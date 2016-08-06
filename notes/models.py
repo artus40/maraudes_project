@@ -6,7 +6,6 @@ class Note(models.Model):
 
         Peut être utilisée comme classe parente.
         Il faut alors définir les méthodes :
-        - get_header, get_small
         - get_date
         - get_labels
         - get_bg_color
