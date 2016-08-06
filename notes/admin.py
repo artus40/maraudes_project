@@ -6,5 +6,5 @@ from .models import *
 @admin.register(Note)
 class NoteAdmin(admin.ModelAdmin):
 
-    list_display = ['id', 'sujet']
-    list_filter = ('sujet',)
+    list_display = ['created_date', 'sujet']
+    list_filter = ('sujet', 'created_date', 'created_by')

@@ -18,10 +18,9 @@ class Observation(Note):
         verbose_name = "Observation"
 
     def __str__(self):
-        return "<Observation: %s>" % self.sujet
+        return "%s" % self.sujet
 
-    def get_date(self):
-        return self.rencontre.date
-
-    def get_header(self):
-        return ('Rencontre', [self.rencontre.lieu, "%smin" % self.rencontre.duree])
+    def save(self, *args, **kwargs):
+        if not self.created_date:
+            self.created_date = self.rencontre.date
+        return super().save(*args, **kwargs)

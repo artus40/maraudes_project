@@ -17,16 +17,16 @@ class SuivisView(views.WebsiteProtectedMixin):
 
 
 class IndexView(SuivisView, generic.TemplateView):
-    template_name = "suivis/index.html"
+    template_name = "suivi/index.html"
     header_small = "Tableau de bord"
 
 
 class SuiviSujetView(SuivisView, generic.DetailView):
     model = Sujet
-    template_name = "suivis/details.html"
+    template_name = "suivi/details.html"
     context_object_name = "sujet"
 
-    def get_context_date(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_context_data(self, *args,  **kwargs):
+        context = super().get_context_data(*args, **kwargs)
         context['notes'] = self.object.notes.all()
         return context
