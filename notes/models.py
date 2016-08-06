@@ -33,28 +33,28 @@ class Note(models.Model):
             self.created_date = self.cast().get_date()
         return super().save(*args, **kwargs)
 
-    def _get_child_and_subclass(self):
+    def _get_child_class_and_instance(self):
         self._child_instance = self
-        self._subclass = self.__class__
+        self._child_class = self.__class__
         for f in self._meta.get_fields():
             if f.is_relation and f.one_to_one:
                 self._child_instance = getattr(self, f.name)
-                self._subclass = self._child_instance.__class__
+                self._child_class = self._child_instance.__class__
                 return
 
     @property
     def subclass(self):
-        if not hasattr(self, '_subclass'):
-            self._get_child_and_subclass()
-        return self._subclass
+        if not hasattr(self, '_child_class'):
+            self._get_child_class_and_instance()
+        return self._child_class
 
     def cast(self):
         if not hasattr(self, '_child_instance'):
-            self._get_child_and_subclass()
+            self._get_child_class_and_instance()
         return self._child_instance
 
     def __str__(self):
-        return "%s of %s" % (self.subclass.__qualname__, self.created_by)
+        return "%s of %s" % (self.child_class.__qualname__, self.created_by)
 
     ## Attributes used by 'notes' template tags
     # bg_color : background color of header
