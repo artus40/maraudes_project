@@ -24,18 +24,6 @@ class PermissionRequiredMixin(object):
         return permission_required(cls.permissions)(view)
 
 
-class AjaxTemplateMixin(object):
-    """ Mixin that enables the use of 'ajax_template_name' custom template
-        when request is Ajax.
-    """
-    def dispatch(self, request, *args, **kwargs):
-        if not hasattr(self, 'ajax_template_name'):
-            raise NotImplementedError
-        if request.is_ajax():
-            self.template_name = self.ajax_template_name
-        return super(AjaxTemplateMixin, self).dispatch(request, *args, **kwargs)
-
-
 
 class TemplateFieldsMetaclass(type):
     """ Loads Template objects with given string for
@@ -129,8 +117,26 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
 class WebsiteProtectedMixin(WebsiteTemplateMixin, PermissionRequiredMixin):
     pass
 
-class WebsiteProtectedWithAjaxMixin(WebsiteProtectedMixin, AjaxTemplateMixin):
-    pass
+class WebsiteProtectedWithAjaxMixin(WebsiteProtectedMixin):
+    """ Mixin that enables the use of 'ajax_template_name' custom template
+        when request is Ajax.
+    """
+    is_ajax = False
+
+    def dispatch(self, request, *args, **kwargs):
+        if not hasattr(self, 'ajax_template_name'):
+            self.ajax_template_name = "%s_inner.html" % self.template_name.split(".")[0]
+            print('%s :' % self, self.ajax_template_name)
+        if request.is_ajax():
+            self.is_ajax = True
+            self.template_name = self.ajax_template_name
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_template_names(self):
+        if self.is_ajax:
+            return [self.template_name]
+        else:
+            return super().get_template_names()
 
 ## Views : Index ##
 

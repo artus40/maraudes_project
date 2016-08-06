@@ -294,12 +294,13 @@ class PlanningView(MaraudesView, generic.TemplateView):
 
 ## LIEU
 
-class LieuCreateView(MaraudesView, views.AjaxTemplateMixin, generic.edit.CreateView):
+class LieuCreateView(views.WebsiteProtectedWithAjaxMixin, generic.edit.CreateView):
     model = Lieu
-    ajax_template_name = "maraudes/lieu_create_inner.html"
     template_name = "maraudes/lieu_create.html"
     fields = "__all__"
     success_url = "/maraudes/"
+
+    permissions = ['maraudes.add_lieu']
 
     def post(self, request, *args, **kwargs):
         if 'next' in self.request.POST:

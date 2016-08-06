@@ -43,13 +43,14 @@ class SujetCreateForm(ModelForm):
 
 
 
-class SujetCreateView(SujetsView, generic.edit.CreateView, views.AjaxTemplateMixin):
+class SujetCreateView(views.WebsiteProtectedWithAjaxMixin, generic.edit.CreateView):
     template_name = "sujets/sujet_create.html"
     form_class = SujetCreateForm
 
     title = "Création : Sujet"
     header = "Ajouter un sujet"
 
+    permissions = ['sujets.view_sujets', 'sujets.add_sujet']
 
     def post(self, request, *args, **kwargs):
         if 'next' in self.request.POST:
