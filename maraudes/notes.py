@@ -20,7 +20,15 @@ class Observation(Note):
     def __str__(self):
         return "%s" % self.sujet
 
-    def save(self, *args, **kwargs):
-        if not self.created_date:
-            self.created_date = self.rencontre.date
-        return super().save(*args, **kwargs)
+    def get_date(self):
+        """ Enforce value of created_date """
+        return self.rencontre.date
+
+    def get_labels(self):
+        return [self.rencontre.lieu, self.rencontre.heure_debut]
+
+    def get_bg_colors(self):
+        return ("success", "info")
+
+
+

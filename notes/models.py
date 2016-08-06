@@ -3,6 +3,15 @@ from django.utils.html import format_html
 
 class Note(models.Model):
     """ Note relative à un sujet.
+
+        Peut être utilisée comme classe parente.
+        Il faut alors définir les méthodes :
+        - get_header, get_small
+        - get_date
+        - get_labels
+        - get_bg_color
+        Les valeurs retournée sont utilisée par les templatetages 'notes'
+
     """
 
     sujet = models.ForeignKey(
@@ -18,33 +27,15 @@ class Note(models.Model):
                         )
     created_date = models.DateField('Crée le', blank=True, null=True)
 
-    def as_table(self):
-        html = format_html(
-"<tr><th>{} <span class='label label-info'>{}</span>\
-<span class='label label-info'>{}</span></th>\
-\n<tr><td>{}</td></tr>",
-                            self.sujet,
-                            self.created_date,
-                            self.created_by,
-                            self.text
-                           )
-        return html
 
-    def as_inline_table(self):
-        html = format_html(
-"<tr><th class='bg-success'><strong>{}</strong> <small>{}</small> \n\
-<span class='label label-info pull-right'>{}</span></th>\n\
-<tr><td>{}</td></tr>",
-                self.subclass.__qualname__,
-                self.created_date,
-                self.created_by,
-                self.text
-                )
-        return html
+    def save(self, *args, **kwargs):
+        if not self.created_date: # Retrieve from child class instance
+            self.created_date = self.cast().get_date()
+        return super().save(*args, **kwargs)
 
     def _get_child_and_subclass(self):
-        self._child_instance = None
-        self._subclass = None
+        self._child_instance = self
+        self._subclass = self.__class__
         for f in self._meta.get_fields():
             if f.is_relation and f.one_to_one:
                 self._child_instance = getattr(self, f.name)
@@ -64,3 +55,26 @@ class Note(models.Model):
 
     def __str__(self):
         return "%s of %s" % (self.subclass.__qualname__, self.created_by)
+
+    ## Attributes used by 'notes' template tags
+    # bg_color : background color of header
+    # labels : list of strings to put in labels
+    def cached_attr(name):
+        """ Cached property set on return value of 'get_ATTR' method on
+            child instance.
+        """
+        private_name = '_%s' % name
+        def getter(self):
+            if not hasattr(self, private_name):
+                setattr(self,
+                        private_name,
+                        # Call *child instance* method
+                        getattr(self.cast(), 'get_%s' % name)()
+                        )
+            return getattr(self, private_name)
+        return getter
+
+    bg_colors = property(    cached_attr('bg_colors'),
+                            doc="background color of header")
+    labels = property(      cached_attr('labels'),
+                            doc="list of string to display as labels")
