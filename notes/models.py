@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.html import format_html
 
+from . import managers
+
 class Note(models.Model):
     """ Note relative à un sujet.
 
@@ -12,6 +14,8 @@ class Note(models.Model):
         Les valeurs retournée sont utilisée par les templatetages 'notes'
 
     """
+
+    objects = managers.NoteManager()
 
     sujet = models.ForeignKey(
                         'sujets.Sujet',
@@ -25,11 +29,12 @@ class Note(models.Model):
                         null=True
                         )
     created_date = models.DateField('Crée le', blank=True, null=True)
-
+    created_time = models.TimeField('Heure', blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        if not self.created_date: # Retrieve from child class instance
-            self.created_date = self.cast().get_date()
+        child_instance = self.cast()
+        self.created_date = child_instance.note_date()
+        self.created_time = child_instance.note_time()
         return super().save(*args, **kwargs)
 
     def _get_child_class_and_instance(self):
@@ -68,7 +73,7 @@ class Note(models.Model):
                 setattr(self,
                         private_name,
                         # Call *child instance* method
-                        getattr(self.cast(), 'get_%s' % name)()
+                        getattr(self.cast(), 'note_%s' % name)()
                         )
             return getattr(self, private_name)
         return getter

@@ -12,6 +12,7 @@ from .models import (   Maraude, Maraudeur,
                         Rencontre, Lieu,
                         Planning,   )
 from .compte_rendu import CompteRendu
+from notes.models import Note
 # Forms
 from django import forms
 from django.forms import inlineformset_factory, modelformset_factory, modelform_factory
@@ -29,11 +30,7 @@ class MaraudesView(views.WebsiteProtectedMixin):
     permissions = ['maraudes.view_maraudes']
 
 
-class IndexView(MaraudesView, generic.TemplateView):
-    header = "La Maraude"
-    header_small = "Tableau de bord"
-
-    template_name = "maraudes/index.html"
+class DerniereMaraudeMixin(object):
     count = 5
     @cached_property
     def dernieres_maraudes(self):
@@ -49,9 +46,16 @@ class IndexView(MaraudesView, generic.TemplateView):
         context['dernieres_maraudes'] = self.dernieres_maraudes
         return context
 
+class IndexView(MaraudesView, DerniereMaraudeMixin, generic.TemplateView):
+    header = "La Maraude"
+    header_small = "Tableau de bord"
+
+    template_name = "maraudes/index.html"
+
+
 ## MARAUDES
 
-class MaraudeDetailsView(MaraudesView, generic.DetailView):
+class MaraudeDetailsView(MaraudesView, DerniereMaraudeMixin, generic.DetailView):
     model = Maraude
     context_object_name = "maraude"
     template_name = "maraudes/details.html"
@@ -62,6 +66,11 @@ class MaraudeDetailsView(MaraudesView, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        context['notes'] = Note.objects.get_queryset().filter(
+                                        created_date=self.object.date
+                                    ).order_by(
+                                        'created_time'
+                                    )
         context['compte_rendu'] = CompteRendu.objects.get(pk=self.object.pk)
         return context
 

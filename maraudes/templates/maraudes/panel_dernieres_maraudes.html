@@ -1,0 +1,16 @@
+{% if dernieres_maraudes %}
+<div class="col-md-6" id="dernieres-maraudes">
+  <div class="panel panel-default">
+  <div class="panel-heading">
+    <p>Dernières maraudes
+    <span class="pull-right"><a href="{% url 'maraudes:liste' %}" class="btn btn-primary btn-sm">Aller à la liste</a></span></p>
+  </div>
+  <div class="list-group">
+    {% for maraude in dernieres_maraudes %}
+    <a href="{% url 'maraudes:details' maraude.pk %}" class="list-group-item">
+      <strong>{{ maraude }}</strong> <small>{{maraude.binome}} & {{maraude.referent}}</small>
+    </a>
+    {% endfor %}
+  </div>
+  </div>
+</div>{% endif %}
