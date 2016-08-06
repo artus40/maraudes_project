@@ -1,0 +1,8 @@
+{% load notes %}
+<div class="col-md-6">
+    <table class="table table-striped table-bordered">
+        {% for note in notes %}
+          {% inline_table note %}
+        {% endfor %}
+    </table>
+</div>
