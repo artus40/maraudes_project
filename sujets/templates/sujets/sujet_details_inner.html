@@ -2,17 +2,17 @@
   <div class="panel-heading"><h3 class="panel-title">Fiche informations</h3></div>
   <div class="panel-body"><p class="label label-info">Première rencontre : {{ sujet.premiere_rencontre }}</p></div>
   <table class="table">
-    <tr><th colspan="4" class="bg-info">État-civil</th></tr>
+    <tr><th colspan="4" class="active">État-civil</th></tr>
     <tr><th>Nom</th><td>{{ sujet.nom|default:'?' }}</td><th>Prénom</th><td>{{ sujet.prenom|default:'?' }}</td></tr>
     <tr><th>Sexe</th><td>{{ sujet.genre }}</td><th>Âge</th><td>{{ sujet.age|default:'?' }}</td></tr>
-    <tr><th colspan="4" class="bg-info">Problématiques</th></tr>
+    <tr><th colspan="4" class="active">Problématiques</th></tr>
     <tr><th>Psychiatrique</th><td>{{ sujet.prob_psychiatrie }}</td><th>Addiction</th><td>{{ sujet.prob_addiction }}</td></tr>
     <tr><th>Administratif</th><td>{{ sujet.prob_administratif }}</td><th>Somatique</th><td>{{ sujet.prob_somatique }}</td></tr>
-    <tr><th colspan="4" class="bg-info">Habitation</th></tr></td></tr>
+    <tr><th colspan="4" class="active">Habitation</th></tr></td></tr>
     <tr><th>Type</th><td>{{ sujet.habitation }}</td><th>Connu du SIAO</th><td>{{ sujet.connu_siao }}</td></tr>
-    <tr><th colspan="4" class="bg-info">Ressources</th></tr></td></tr>
+    <tr><th colspan="4" class="active">Ressources</th></tr></td></tr>
     <tr><td colspan="4">{{ sujet.ressources }}</td></tr>
-    <tr><th colspan="4" class="bg-info">Parcours de vie</th></tr></td></tr>
+    <tr><th colspan="4" class="active">Parcours de vie</th></tr></td></tr>
     <tr><td colspan="2">{{ sujet.parcours_de_vie }}</td><th>Lien familial</th><td>{{ sujet.lien_familial }}</td></tr>
   </table>
   <div class="panel-footer text-right">

@@ -66,12 +66,10 @@ class MaraudeDetailsView(MaraudesView, DerniereMaraudeMixin, generic.DetailView)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['notes'] = Note.objects.get_queryset().filter(
-                                        created_date=self.object.date
-                                    ).order_by(
-                                        'created_time'
-                                    )
-        context['compte_rendu'] = CompteRendu.objects.get(pk=self.object.pk)
+        context['notes'] = Note.objects.filter( #TODO: use better selection,
+                                                # using time range.
+                                            created_date=self.object.date
+                                        ).by_time()
         return context
 
 

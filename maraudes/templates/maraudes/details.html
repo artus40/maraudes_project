@@ -1,6 +1,6 @@
 <div class="col-md-6">
 {% if maraude.est_terminee %}
-  {% include "compte_rendu/compterendu.html" with maraude=compte_rendu %}
+  {% include "compte_rendu/compterendu.html" %}
 {% else %}
   {% if user.is_superuser %}<a class="btn btn-primary" href="{% url 'maraudes:create' maraude.pk %}">Écrire le compte-rendu</a>
   {% else %} <p class="alert alert-info">Le compte-rendu n'a pas encore été écrit</p>{% endif %}
