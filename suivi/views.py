@@ -1,23 +1,18 @@
 from django.shortcuts import render
 
 from django.views import generic
-from website import views
+from website import decorators as website
 
 from sujets.models import Sujet
 
 # Create your views here.
 
+webpage = website.webpage(ajax=False, permissions=['sujets.view_sujets'])
 
 
-class SuivisView(views.WebsiteProtectedMixin):
 
-    class PageInfo:
-        title = "Suivi des bénéficiaires"
-
-    permissions = ['sujets.view_sujets']
-
-
-class IndexView(SuivisView, generic.TemplateView):
+@webpage
+class IndexView(generic.TemplateView):
     template_name = "suivi/index.html"
 
     class PageInfo:
@@ -25,8 +20,8 @@ class IndexView(SuivisView, generic.TemplateView):
         header = "Suivi"
         header_small = "Tableau de bord"
 
-
-class SuiviSujetView(SuivisView, generic.DetailView):
+@webpage
+class SuiviSujetView(generic.DetailView):
     model = Sujet
     template_name = "suivi/details.html"
     context_object_name = "sujet"

@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 # Views
 from django.views import generic
-from website import views
+
 # Models
 from .models import (   Maraude, Maraudeur,
                         Rencontre, Lieu,
@@ -22,13 +22,9 @@ from .forms import (    RencontreForm, RencontreInlineFormSet,
                         ObservationInlineFormSet, ObservationInlineFormSetNoExtra,
                         MaraudeAutoDateForm, MonthSelectForm,   )
 
+from website import decorators as website
+webpage = website.webpage(ajax=False, permissions=['maraudes.view_maraudes'])
 
-class MaraudesView(views.WebsiteProtectedMixin):
-
-    class PageInfo:
-        title = "Maraudes ALSA"
-
-    permissions = ['maraudes.view_maraudes']
 
 
 class DerniereMaraudeMixin(object):
@@ -47,7 +43,10 @@ class DerniereMaraudeMixin(object):
         context['dernieres_maraudes'] = self.dernieres_maraudes
         return context
 
-class IndexView(MaraudesView, DerniereMaraudeMixin, generic.TemplateView):
+
+
+@webpage
+class IndexView(DerniereMaraudeMixin, generic.TemplateView):
 
     class PageInfo:
         title = "Maraude - Tableau de bord"
@@ -58,8 +57,8 @@ class IndexView(MaraudesView, DerniereMaraudeMixin, generic.TemplateView):
 
 
 ## MARAUDES
-
-class MaraudeDetailsView(MaraudesView, DerniereMaraudeMixin, generic.DetailView):
+@webpage
+class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
     model = Maraude
     context_object_name = "maraude"
     template_name = "maraudes/details.html"
@@ -80,7 +79,8 @@ class MaraudeDetailsView(MaraudesView, DerniereMaraudeMixin, generic.DetailView)
 
 
 
-class MaraudeListView(MaraudesView, generic.ListView):
+@webpage
+class MaraudeListView(generic.ListView):
     model = Maraude
     template_name = "maraudes/list.html"
     paginate_by = 10
@@ -97,8 +97,8 @@ class MaraudeListView(MaraudesView, generic.ListView):
 
 
 ## COMPTE-RENDU DE MARAUDE
-
-class CompteRenduCreateView(MaraudesView, generic.DetailView):
+@webpage
+class CompteRenduCreateView(generic.DetailView):
     model = Maraude
     template_name = "compte_rendu/compterendu_create.html"
     context_object_name = "maraude"
@@ -186,7 +186,8 @@ class CompteRenduCreateView(MaraudesView, generic.DetailView):
 
 
 
-class CompteRenduUpdateView(MaraudesView, generic.DetailView):
+@webpage
+class CompteRenduUpdateView(generic.DetailView):
     """ Mettre à jour le compte-rendu de la maraude """
     model = Maraude
     context_object_name = "maraude"
@@ -253,8 +254,8 @@ class CompteRenduUpdateView(MaraudesView, generic.DetailView):
 
 
 ## PLANNING
-
-class PlanningView(MaraudesView, generic.TemplateView):
+@webpage
+class PlanningView(generic.TemplateView):
     """ Display and edit the planning of next Maraudes """
 
     template_name = "planning/planning.html"
@@ -323,7 +324,8 @@ class PlanningView(MaraudesView, generic.TemplateView):
 
 ## LIEU
 
-class LieuCreateView(views.WebsiteProtectedWithAjaxMixin, generic.edit.CreateView):
+@website.webpage(ajax=True, permissions=['maraudes.add_lieu'])
+class LieuCreateView(generic.edit.CreateView):
     model = Lieu
     template_name = "maraudes/lieu_create.html"
     fields = "__all__"
