@@ -40,7 +40,9 @@ class Note(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return "%s of %s" % (self.child_class.__qualname__, self.created_by)
+        return "%s [%s %s]" % ( self.child_class.__qualname__,
+                                self.created_date,
+                                self.created_time)
 
     def note_date(self):
         """ Default 'created_date' value. Child may override this method. """
