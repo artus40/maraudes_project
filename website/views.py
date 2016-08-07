@@ -2,8 +2,11 @@ import datetime
 from django.utils import timezone
 from django.views.generic.base import ContextMixin, TemplateResponseMixin
 
+from django.core.exceptions import ImproperlyConfigured
+
 from django.apps import apps
 from django.contrib.auth.decorators import login_required, permission_required
+from django.template import Template, Context
 
 ## Utils ##
 def get_apps(app_names):
@@ -47,11 +50,6 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         If 'content_template' is not defined, value will fallback to template_name
         in child view.
     """
-
-    #TODO: class Template:
-    title = "Maraudes ALSA"
-    header = "Page Header"
-    header_small = None
     content_template = None
 
     class Configuration:
@@ -59,6 +57,19 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         navbar_apps = ['maraudes', 'suivi']
 
         apps = get_apps(navbar_apps)
+
+        page_blocks = ['header', 'header_small', 'title']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self._page_blocks = []
+        if not hasattr(self, "PageInfo"):
+            raise ImproperlyConfigured("You must define a PageInfo on ", self)
+        for attr, val in self.PageInfo.__dict__.items():
+            if attr[0] is not "_" and type(val) is str:
+                setattr(self, attr, Template(val))
+                self._page_blocks.append(attr)
 
     def get_template_names(self):
         """ Ensure same template for all children views. """
@@ -95,6 +106,15 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     def get_prochaine_maraude(self):
         return apps.get_model('maraudes', model_name="Maraude").objects.next
 
+    def _update_context_with_rendered_blocks(self, context):
+        """ Render text for existing PageInfo attributes.
+            See Configuration.page_blocks for valid attribute names """
+        render_context = Context(context)
+        for attr in self._page_blocks:
+            name = "page_%s" % attr
+            context[name] = getattr(self, attr).render(render_context)
+        return context
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -102,15 +122,13 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         context['apps'] = self.Configuration.apps
         context['active_app'] = self.get_active_app()
 
-        context['page_title'] = self.title
-        context['page_header'] = self.header
-        context['page_header_small'] = self.header_small
-
         context['content_template'] = self.get_content_template()
         context['panels'] = self.get_panels()
 
         context['prochaine_maraude_abs'] = self.get_prochaine_maraude()
         context['prochaine_maraude'] = self.get_prochaine_maraude_for_user()
+
+        self._update_context_with_rendered_blocks(context)
         return context
 
 

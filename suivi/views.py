@@ -10,21 +10,31 @@ from sujets.models import Sujet
 
 
 class SuivisView(views.WebsiteProtectedMixin):
-    title = "Suivi des bénéficiaires"
-    header = "Suivi"
+
+    class PageInfo:
+        title = "Suivi des bénéficiaires"
 
     permissions = ['sujets.view_sujets']
 
 
 class IndexView(SuivisView, generic.TemplateView):
     template_name = "suivi/index.html"
-    header_small = "Tableau de bord"
+
+    class PageInfo:
+        title = "Suivi des bénéficiaires"
+        header = "Suivi"
+        header_small = "Tableau de bord"
 
 
 class SuiviSujetView(SuivisView, generic.DetailView):
     model = Sujet
     template_name = "suivi/details.html"
     context_object_name = "sujet"
+
+    class PageInfo:
+        title = "Sujet - {{sujet}}"
+        header = "{{sujet}}"
+        header_small = "suivi"
 
     def get_context_data(self, *args,  **kwargs):
         context = super().get_context_data(*args, **kwargs)

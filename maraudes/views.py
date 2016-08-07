@@ -24,8 +24,9 @@ from .forms import (    RencontreForm, RencontreInlineFormSet,
 
 
 class MaraudesView(views.WebsiteProtectedMixin):
-    title = "Maraudes"
-    header = "Maraudes"
+
+    class PageInfo:
+        title = "Maraudes ALSA"
 
     permissions = ['maraudes.view_maraudes']
 
@@ -47,8 +48,11 @@ class DerniereMaraudeMixin(object):
         return context
 
 class IndexView(MaraudesView, DerniereMaraudeMixin, generic.TemplateView):
-    header = "La Maraude"
-    header_small = "Tableau de bord"
+
+    class PageInfo:
+        title = "Maraude - Tableau de bord"
+        header = "La Maraude"
+        header_small = "Tableau de bord"
 
     template_name = "maraudes/index.html"
 
@@ -61,8 +65,10 @@ class MaraudeDetailsView(MaraudesView, DerniereMaraudeMixin, generic.DetailView)
     template_name = "maraudes/details.html"
 
     # Template
-    header = "Maraude"
-    header_small = "Celle-ci"
+    class PageInfo:
+        title = "Maraude - {{maraude.date}}"
+        header = "{{maraude.date}}"
+        header_small = "détails"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -79,6 +85,10 @@ class MaraudeListView(MaraudesView, generic.ListView):
     template_name = "maraudes/list.html"
     paginate_by = 10
 
+    class PageInfo:
+        title = "Maraude - Liste des maraudes"
+        header = "Liste des maraudes"
+
     def get_queryset(self):
         today = datetime.date.today()
         return super().get_queryset().filter(
@@ -93,10 +103,13 @@ class CompteRenduCreateView(MaraudesView, generic.DetailView):
     template_name = "compte_rendu/compterendu_create.html"
     context_object_name = "maraude"
 
-    header = "Compte-rendu"
-    header_small = "maraude"
     form = None
     inline_formset = None
+
+    class PageInfo:
+        title = "{{maraude}} - Compte-rendu"
+        header = "{{maraude.date}}"
+        header_small = "écriture du compte-rendu"
 
     def get_forms(self, *args, initial=None):
         self.form = RencontreForm(*args,
@@ -179,6 +192,11 @@ class CompteRenduUpdateView(MaraudesView, generic.DetailView):
     context_object_name = "maraude"
     template_name = "compte_rendu/compterendu_update.html"
 
+    class PageInfo:
+        title = "{{maraude}} - Compte-rendu"
+        header = "{{maraude.date}}"
+        header_small = "compte-rendu"
+
     base_formset = None
     inline_formsets = []
     rencontres_queryset = None
@@ -241,9 +259,10 @@ class PlanningView(MaraudesView, generic.TemplateView):
 
     template_name = "planning/planning.html"
 
-    title = "Planning"
-    header = "Plannification des maraudes"
-    header_small = "Mois Année"
+    class PageInfo:
+        title = "Planning"
+        header = "Planning"
+        header_small = "{{month}} {{year}}" #TODO: does not parse extra context
 
     def _parse_request(self):
         self.current_date = datetime.date.today()
@@ -309,6 +328,9 @@ class LieuCreateView(views.WebsiteProtectedWithAjaxMixin, generic.edit.CreateVie
     template_name = "maraudes/lieu_create.html"
     fields = "__all__"
     success_url = "/maraudes/"
+
+    class PageInfo:
+        pass
 
     permissions = ['maraudes.add_lieu']
 
