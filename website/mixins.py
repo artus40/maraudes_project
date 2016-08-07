@@ -134,7 +134,7 @@ class WebsiteAjaxTemplateMixin(WebsiteTemplateMixin):
     is_ajax = False
 
     def dispatch(self, request, *args, **kwargs):
-        if not hasattr(self, 'content_template'):
+        if not hasattr(self, 'content_template') or not self.content_template:
             self.content_template = self.get_content_template()
         if request.is_ajax():
             self.is_ajax = True
