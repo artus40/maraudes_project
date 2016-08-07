@@ -37,12 +37,17 @@ class Note(models.Model):
             child_instance = self.cast()
             self.created_date = child_instance.note_date()
             self.created_time = child_instance.note_time()
+        if not self.created_by:
+            self.created_by = self.cast().note_author()
         return super().save(*args, **kwargs)
 
     def __str__(self):
         return "%s [%s %s]" % ( self.child_class.__qualname__,
                                 self.created_date,
                                 self.created_time)
+
+    def note_author(self):
+        return None
 
     def note_date(self):
         """ Default 'created_date' value. Child may override this method. """

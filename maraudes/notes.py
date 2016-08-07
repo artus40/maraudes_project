@@ -21,6 +21,7 @@ class Observation(Note):
         return "%s" % self.sujet
 
     # Note attributes proxies
+    def note_author(self):      return self.rencontre.maraude.referent
     def note_date(self):        return self.rencontre.date
     def note_time(self):        return self.rencontre.heure_debut
     def note_labels(self):      return [self.rencontre.lieu, self.rencontre.heure_debut]
