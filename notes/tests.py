@@ -6,7 +6,6 @@ from .models import Note
 class NoteManagerTestCase(TestCase):
     """ managers.NoteManager Test Case """
 
-
     def setUp(self):
         from notes.managers import NoteManager
         self.note_manager = NoteManager
