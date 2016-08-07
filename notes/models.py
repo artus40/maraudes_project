@@ -74,9 +74,10 @@ class Note(models.Model):
             return
         for f in self._meta.get_fields():
             if f.is_relation and f.one_to_one:
-                self._child_instance = getattr(self, f.name)
-                self._child_class = self._child_instance.__class__
-                return
+                if hasattr(self, f.name):
+                    self._child_instance = getattr(self, f.name)
+                    self._child_class = self._child_instance.__class__
+                    return
 
     @property
     def child_class(self):
