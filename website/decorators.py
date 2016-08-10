@@ -3,10 +3,13 @@ from .mixins import *
 def _insert_bases(cls, bases):
     old_bases = cls.__bases__
     new_bases = tuple(bases) + old_bases
-    print(new_bases)
     cls.__bases__ = new_bases
 
 def webpage(**options):
+    """ Class decorators that insert needed bases according to options :
+        -- ajax : view will return content_template for Ajax requests
+        -- permissions : list of permissions needed to access view
+    """
     try: ajax = options.pop('ajax')
     except KeyError: ajax = False
     try: permissions = options.pop('permissions')

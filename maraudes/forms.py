@@ -3,7 +3,7 @@ from django.forms import inlineformset_factory
 from notes.forms import NoteForm
 # Models
 from .models import Maraude, Rencontre
-from .notes import Observation
+from .notes import Observation, Signalement
 
 
 class MaraudeAutoDateForm(forms.ModelForm):
@@ -23,6 +23,12 @@ class RencontreForm(forms.ModelForm):
         model = Rencontre
         fields = ['lieu', 'heure_debut', 'duree']
 
+
+class SignalementForm(NoteForm):
+
+    class Meta:
+        model = Signalement
+        fields = ['source', 'created_date', 'created_time', 'sujet', 'text']
 
 
 ObservationInlineFormSet = inlineformset_factory(   Rencontre, Observation,

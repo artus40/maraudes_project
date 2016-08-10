@@ -18,7 +18,7 @@ from django import forms
 from django.forms import inlineformset_factory, modelformset_factory, modelform_factory
 from django.forms.extras import widgets
 from django_select2.forms import Select2Widget
-from .forms import (    RencontreForm, RencontreInlineFormSet,
+from .forms import (    RencontreForm, RencontreInlineFormSet, SignalementForm,
                         ObservationInlineFormSet, ObservationInlineFormSetNoExtra,
                         MaraudeAutoDateForm, MonthSelectForm,   )
 
@@ -46,7 +46,7 @@ class DerniereMaraudeMixin(object):
 
 
 @webpage
-class IndexView(DerniereMaraudeMixin, generic.TemplateView):
+class IndexView(DerniereMaraudeMixin, generic.FormView):
 
     class PageInfo:
         title = "Maraude - Tableau de bord"
@@ -54,6 +54,7 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
         header_small = "Tableau de bord"
 
     template_name = "maraudes/index.html"
+    form_class = SignalementForm
 
 
 ## MARAUDES
