@@ -1,16 +1,15 @@
 {% if dernieres_maraudes %}
-<div class="col-md-6" id="dernieres-maraudes">
-  <div class="panel panel-default">
-  <div class="panel-heading">
-    <p>Dernières maraudes
-    <span class="pull-right"><a href="{% url 'maraudes:liste' %}" class="btn btn-primary btn-sm">Aller à la liste</a></span></p>
-  </div>
-  <div class="list-group">
-    {% for m in dernieres_maraudes %}
-    <a href="{% url 'maraudes:details' m.pk %}" class="list-group-item {% if maraude == m %} active{% endif %}">
-      <strong>{{ m }}</strong> <small>{{m.binome}} & {{m.referent}}</small>
-    </a>
-    {% endfor %}
-  </div>
-  </div>
-</div>{% endif %}
+    <div class="panel panel-default" id="dernieres-maraudes">
+    <div class="panel-heading">
+      <p>Dernières maraudes
+      <span class="pull-right"><a href="{% url 'maraudes:liste' %}" class="btn btn-primary btn-sm">Aller à la liste</a></span></p>
+    </div>
+    <div class="list-group">
+      {% for m in dernieres_maraudes %}
+      <a href="{% url 'maraudes:details' m.pk %}" class="list-group-item {% if maraude == m %} active{% endif %}">
+        <strong>{{ m }}</strong> <small>{{m.binome}} & {{m.referent}}</small>
+      </a>
+      {% endfor %}
+    </div>
+    </div>
+{% endif %}

@@ -11,9 +11,11 @@
   </div>
 {% endblock %}
 
+{% block content %}{% include content_template %}{% endblock %}
+
 {% block panels %}
-{% if panels %}<div class="col-md-2">{{ panels }}</div><div class="col-md-10">
+{% if panels %}<div class="panel-group">{% for panel in panels %}{% include panel %}{% endfor %}</div>
 {% else %}{{ block.super }}{% endif %}
 {% endblock %}
 
-{% block content %}{% include content_template %}{% endblock %}
+

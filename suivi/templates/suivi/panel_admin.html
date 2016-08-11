@@ -1,0 +1,8 @@
+{% if user.is_superuser %}
+<div class="panel panel-danger">
+  <div class="panel-heading">Administration</div>
+  <div class="list-group">
+    <a href="{% url 'sujets:create' %}" class="list-group-item">Nouveau sujet</a>
+  </div>
+</div>
+{% endif %}

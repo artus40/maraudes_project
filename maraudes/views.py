@@ -56,6 +56,9 @@ class IndexView(DerniereMaraudeMixin, generic.FormView):
     template_name = "maraudes/index.html"
     form_class = SignalementForm
 
+    def get_panels(self):
+        return ["maraudes/panel_dernieres_maraudes.html", "maraudes/panel_admin.html"]
+
 
 ## MARAUDES
 @webpage
@@ -68,7 +71,7 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
     class PageInfo:
         title = "Maraude - {{maraude.date}}"
         header = "{{maraude.date}}"
-        header_small = "détails"
+        header_small = "compte-rendu"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -77,6 +80,9 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
                                             created_date=self.object.date
                                         ).by_time()
         return context
+
+    def get_panels(self):
+        return ["maraudes/panel_dernieres_maraudes.html"]
 
 
 
@@ -121,8 +127,6 @@ class CompteRenduCreateView(generic.DetailView):
                                 )
 
     def finalize(self):
-        # TODO: check for errors to avoid last entry to be lost
-        # Save 'heure_fin' on related Maraude object
         maraude = self.get_object()
         maraude.heure_fin = timezone.now()
         maraude.save()

@@ -1,5 +1,4 @@
-<div class="row">
-  <div class="col-md-6" id="prochaine-maraudes">
+<div class="col-md-12">
     <div class="panel panel-primary">
       <div class="panel-heading">Votre prochaine maraude</div>
       <div class="panel-body">
@@ -13,21 +12,4 @@
       {% else %}<p>Aucune maraude prévue.</p>{% endif %}
       </div>
     </div>
-  </div>
-
-{% include 'maraudes/panel_dernieres_maraudes.html' %}
-
-{% include 'maraudes/panel_signalement.html' %}
-
-  {% if user.is_superuser %}<div class="col-md-6" id="administration">
-    <div class="panel panel-danger">
-      <div class="panel-heading">Administration</div>
-        <div class="list-group">
-          <a href="{% url 'maraudes:planning' %}" class="list-group-item">Planning</a>
-          <a href="{% url 'admin:maraudes_maraude_changelist' %}" class="list-group-item">Gérer les maraudes</a>
-        </div>
-      </div>
-  </div>{% endif %}
-
 </div>
-

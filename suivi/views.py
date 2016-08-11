@@ -20,6 +20,9 @@ class IndexView(generic.TemplateView):
         header = "Suivi"
         header_small = "Tableau de bord"
 
+    def get_panels(self):
+        return ["suivi/panel_sujets.html", "suivi/panel_admin.html"]
+
 @webpage
 class SuiviSujetView(generic.DetailView):
     model = Sujet

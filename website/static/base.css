@@ -1,43 +1,32 @@
 
-body {
-  padding: 0px;
-  background-color: #f1f1f1;
+
+#menu {
+  border-bottom: 4px solid #f47f02;
+  /*;#980300*/
+  padding-bottom: 0px;
+  margin-bottom: 0px;
 }
 
+.navbar-inverse {
+  padding:0px;
+}
 
-/* Éléments de l'interface
-
-  - Menu des applications, id='app-menu'
-  - Info utilisateur, id='maraudeur'
-  - Contenu, id='contenu'
-
- */
-
-
+#menu a {
+  border-bottom: 1px solid transparent;
+  font-size: 120%;
+  font-weight: bold;
+  font-variant: small-caps;
+}
 
 #app-menu {
-  position: fixed;
-  left: 10%;
-  top: 50px;
-  width: 15%;
-  padding: 0px;
-  /*border: 2px solid grey;*/
-  background-color: #efefef;
+  max-height: 40px;
+  margin:0px;
+  padding-top:0;
+  background: #f47f02;
 }
 
-#maraudeur {
-  position: fixed;
-  right: 20px;
-  bottom: 20px;
+#sidebar {
+  padding-top:10px;
+  border-bottom: 4px solid #f47f02;
+  border-top: 4px solid #f47f02;
 }
-
-
-#contenu {
-  position:relative;
-  left: 25%;
-  width: 60%;
-  top: 50px;
-  padding: 10px;
-  background-color: white;
-}
-

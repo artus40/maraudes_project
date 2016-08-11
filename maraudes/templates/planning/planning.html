@@ -10,7 +10,7 @@
 <form method="post" action="{% url 'maraudes:planning' %}?month={{month}}&year={{year}}">
   {% csrf_token %}
   {{ formset.management_form }}
-  {% for form in formset %}<div class="col-md-4">
+  {% for form in formset %}<div class="col-md-4 col-xs-6">
     <div class="panel {% if form.instance.pk %}panel-info{%else%}panel-warning{%endif%}">
       <div class="panel-heading text-center">
         <div class="form-inline">{% if form.id %}{{ form.id }}{% endif %}

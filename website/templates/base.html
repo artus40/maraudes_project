@@ -10,11 +10,14 @@
     {% block globalnav %}{% endblock %}
     <div class="container">
       <div class="row">
-        {% block panels %}<div class="col-md-12">{% endblock %}
+        {% if panels %}<div class="col-md-8">{% else %}<div class="col-md-12">{% endif %}
           {% bootstrap_messages %}
           <div class="page-header"><h1>{% block page_header %}Header{% endblock %}</h1></div>
           {% block content %}{% endblock %}
         </div>
+        {% if panels %}<div class="col-md-4" id="sidebar">
+          {% block panels %}{% endblock %}
+        </div>{% endif %}
       </div>
     </div>
   </body>
