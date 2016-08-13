@@ -14,13 +14,16 @@
 
 .navbar-fixed-side .navbar-nav>li>a {
   border-bottom: none;
+  font-variant: small-caps;
   color: #fff;
 }
+
 
 .app-menu {
   background-color: #121212;
   border: none;
 }
+
 
 @media (max-width:768px){
   #menu { border: none; }

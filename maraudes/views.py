@@ -101,7 +101,7 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
 
 
 @webpage
-class MaraudeListView(generic.ListView):
+class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
     model = Maraude
     template_name = "maraudes/list.html"
     paginate_by = 10

@@ -114,6 +114,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         context['stylesheets'] = self.Configuration.stylesheets
         context['apps'] = self.Configuration.apps
         context['active_app'] = self.active_app
+        context['user_group'] = self.request.user.groups.first()
         #Webpage
         context['content_template'] = self.get_content_template()
         context['app_menu'] = self.get_menu()

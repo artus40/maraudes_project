@@ -1,14 +1,10 @@
 {% extends "base.html" %}
 
 {% block title %}{{ page_title }}{% endblock %}
-{% block page_header %}{{ page_header }} <small>{{ page_header_small }}</small>{% endblock %}
+{% block page_header %}<span style="color:#980300;">{{ page_header }}</span> <small>{{ page_header_small }}</small>{% endblock %}
 
 
 {% block content %}{% include content_template %}{% endblock %}
 
-{% block panels %}
-{% if panels %}<div class="panel-group">{% for panel in panels %}{% include panel %}{% endfor %}</div>
-{% else %}{{ block.super }}{% endif %}
-{% endblock %}
 
 

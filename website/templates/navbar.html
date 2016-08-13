@@ -9,7 +9,7 @@
         <span class="icon-bar"></span>
       </button>
       <a class="navbar-brand" href="{% url 'index' %}">La Maraude ALSA</a>
-    </div>{% if user.is_authenticated %}
+    </div>
     <div class="collapse navbar-collapse">
       <ul class="nav navbar-nav">{% for app in apps %}
         <li {% if app == active_app %} class="active" {%endif%}>
@@ -21,25 +21,28 @@
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
           <a id="UserMenu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-          {% bootstrap_icon "user" %} {{user}} <span class="caret"></span></a>
+          <strong style="color:#fff;">{% bootstrap_icon "user" %} {{user}} </strong>&middot; {{ user_group }}<span class="caret"></span></a>
           <ul class="dropdown-menu" aria-labelledby="UserMenu">
-            {%  if user.is_superuser %}<li><a href="/admin/">Administration {% bootstrap_icon "new-window" %} </a></li>{% endif %}
+            {% if user.is_authenticated %}
+            {% if user.is_superuser %}<li><a href="/admin/">Administration {% bootstrap_icon "new-window" %} </a></li>{% endif %}
             <li><a href="{% url 'logout' %}">Déconnecter {% bootstrap_icon "log-out" %}</a></li>
+            {% else %}
+            <li>
+              <form class="navbar-form navbar-left" method="post" action="">{% csrf_token %}
+                {% if next %}
+                <p class="well-sm text-center"><strong style="color:#980300;">Vous devez vous connecter<br/> pour accéder à cette page.</strong></p>
+                <input name="next" value="{{next}}" hidden />
+                {% endif %}
+                <div class="form-group form-horizontal">
+                  {% bootstrap_form form layout="horizontal" show_label=False %}
+                </div>
+                <div class="text-center"><button class="btn btn-primary navbar-button" type="submit">Connexion</button></div>
+              </form>
+            </li>
+            {% endif %}
           </ul>
         </li>
       </ul>
     </div>
-    {% else %}
-        <div class="collapse navbar-collapse">
-          <div class="text-center navbar-text"><h4 style="color:#fff;">Connexion</h4></div>
-        <form class="navbar-form navbar-left" method="post" action="{% url 'login' %}">
-          <div class="form-group text-center">{% csrf_token %}
-            <input autofocus="" class="form-control" id="id_username" maxlength="254" name="username" placeholder="Nom d&#39;utilisateur" title="" type="text" required />
-            <input class="form-control" id="id_password" name="password" placeholder="Mot de passe" title="" type="password" required />
-            <input type="hidden" name="next" value="{{ next|default:'/maraudes/' }}" /><br />
-            <button class="btn btn-default" type="submit">Se connecter</button>
-          </div>
-        </form>
-    </div>{% endif %}
   </div>
 </nav>
