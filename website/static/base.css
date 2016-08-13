@@ -1,17 +1,27 @@
 
 #menu {
   border: none;
-  border-right: 4px solid #f47f02;
+  border-right: 4px solid #980300;
 }
 
+.dropdown-toggle{
+  border-right: 4px solid #980300 !important;
+}
 
+.dropdown-menu {
+  border-bottom: none !important;
+  }
+
+.navbar-fixed-side .navbar-nav>li>a {
+  border-bottom: none;
+  color: #fff;
+}
 
 .app-menu {
   background-color: #121212;
+  border: none;
 }
 
-#sidebar {
-  padding-top:10px;
-  border-bottom: 4px solid #f47f02;
-  border-top: 4px solid #f47f02;
+@media (max-width:768px){
+  #menu { border: none; }
 }

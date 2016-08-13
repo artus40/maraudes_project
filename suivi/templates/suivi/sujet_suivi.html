@@ -1,12 +1,16 @@
 {% load notes %}
 <div class="panel panel-primary">
-  <div class="panel-heading"><h3 class="panel-title">Notes
-    <span class="pull-right"><span class="label">Total : {{ notes.count }}</span></span></h3>
+  <div class="panel-heading" role="tab" id="notesSujetHeading">
+    <h3 class="panel-title">
+      <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNotesSujet" aria-expanded="true" aria-controls="collapseOne">
+      Notes</a><span class="pull-right label">Total : {{ notes.count }}</span></h3>
   </div>
-  <table class="table table-striped table-bordered">
-      {% for note in notes %}
-        {% inline_table note header="date" %}
-      {% endfor %}
-  </table>
+  <div id="collapseNotesSujet" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="ficheInfoHeading">
+    <table class="table table-striped table-bordered">
+        {% for note in notes %}
+          {% inline_table note header="date" %}
+        {% endfor %}
+    </table>
+  </div>
 </div>
 

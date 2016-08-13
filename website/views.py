@@ -10,7 +10,7 @@ class Index(WebsiteTemplateMixin, views.generic.TemplateView):
     class PageInfo:
         title = "La maraude ALSA"
         header = "La Maraude ALSA"
-        header_small = "informations"
+        header_small = "accueil"
 
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated():

@@ -15,6 +15,7 @@ admin.site.register(Lieu)
 # Inlines
 class ObservationInline(admin.StackedInline):
     model = Observation
+    extra = 0
 
 
 @admin.register(Rencontre)

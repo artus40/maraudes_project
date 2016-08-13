@@ -5,8 +5,8 @@
  */
 
 /*!
- * Generated using the Bootstrap Customizer (http://getbootstrap.com/customize/?id=3e0cac7da17e620f3ce026228727422b)
- * Config saved to config.json and https://gist.github.com/3e0cac7da17e620f3ce026228727422b
+ * Generated using the Bootstrap Customizer (https://getbootstrap.com/customize/?id=4e370b35f1630f31fde8e0de59c1c6f5)
+ * Config saved to config.json and https://gist.github.com/4e370b35f1630f31fde8e0de59c1c6f5
  */
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)
@@ -1153,7 +1153,7 @@ hr {
   margin-top: 20px;
   margin-bottom: 20px;
   border: 0;
-  border-top: 1px solid #777777;
+  border-top: 1px solid #d5d5d5;
 }
 .sr-only {
   position: absolute;
@@ -1416,7 +1416,7 @@ a.bg-danger:focus {
 .page-header {
   padding-bottom: 9px;
   margin: 40px 0 20px;
-  border-bottom: 1px solid #777777;
+  border-bottom: 1px solid #d5d5d5;
 }
 ul,
 ol {
@@ -4596,7 +4596,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
 }
 .navbar-inverse {
   background-color: #222222;
-  border-color: #f47f02;
+  border-color: #333333;
 }
 .navbar-inverse .navbar-brand {
   color: #9d9d9d;
@@ -4621,7 +4621,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
 .navbar-inverse .navbar-nav > .active > a:hover,
 .navbar-inverse .navbar-nav > .active > a:focus {
   color: #ffffff;
-  background-color: #f47f02;
+  background-color: #980300;
 }
 .navbar-inverse .navbar-nav > .disabled > a,
 .navbar-inverse .navbar-nav > .disabled > a:hover,
@@ -4646,15 +4646,15 @@ fieldset[disabled] .navbar-default .btn-link:focus {
 .navbar-inverse .navbar-nav > .open > a,
 .navbar-inverse .navbar-nav > .open > a:hover,
 .navbar-inverse .navbar-nav > .open > a:focus {
-  background-color: #f47f02;
+  background-color: #980300;
   color: #ffffff;
 }
 @media (max-width: 767px) {
   .navbar-inverse .navbar-nav .open .dropdown-menu > .dropdown-header {
-    border-color: #f47f02;
+    border-color: #333333;
   }
   .navbar-inverse .navbar-nav .open .dropdown-menu .divider {
-    background-color: #f47f02;
+    background-color: #333333;
   }
   .navbar-inverse .navbar-nav .open .dropdown-menu > li > a {
     color: #9d9d9d;
@@ -4668,7 +4668,7 @@ fieldset[disabled] .navbar-default .btn-link:focus {
   .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:hover,
   .navbar-inverse .navbar-nav .open .dropdown-menu > .active > a:focus {
     color: #ffffff;
-    background-color: #f47f02;
+    background-color: #980300;
   }
   .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a,
   .navbar-inverse .navbar-nav .open .dropdown-menu > .disabled > a:hover,

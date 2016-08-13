@@ -3,7 +3,7 @@
   <div class="panel panel-primary">
     <!-- Default panel contents -->
     <div class="panel-heading text-center">
-      <h3 class="panel-title">Maraudes</h3>
+      <h3 class="panel-title">Maraudes passées</h3>
     </div>
 
     <!-- Table -->
@@ -24,8 +24,8 @@
           </a><a class="btn btn-danger" href="/admin/maraudes/maraude/{{maraude.id}}/change/">{% bootstrap_icon "edit" %}
         {% endif %}</a></div>
         <div class="pull-right">
-        <span class="label label-info">{{ maraude.binome }} & {{ maraude.referent }}</span>
         <span class="label label-success">{{maraude.rencontres.count}} rencontres</span>
+        <span class="label label-info">{{ maraude.binome }} & {{ maraude.referent }}</span>
         </div>
       </td>
     </tr>

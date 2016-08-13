@@ -1,4 +1,4 @@
-{% load bootstrap3 %}
+{% load bootstrap3 %}{% load staticfiles %}
 <div class="form-inline well well-sm text-center">
   {% if form.id %}{% bootstrap_field form.id %}{% endif %}
     {% bootstrap_field form.lieu layout="inline" size="small" %}
@@ -27,36 +27,4 @@
   {% endfor %}
 </div>
 
-<script type="text/javascript">
-  $(function() {
-
-    var input = $('#id_heure_debut')
-    var min_value = input.attr('value').split(":")
-
-    $.fn.editHeureValue = function(mod) {
-      var input = $('#id_heure_debut');
-      var value = input.attr('value').split(":");
-      value[1] = parseInt(value[1]) + mod;
-
-      do_change = true
-      for (i=0; i < 3; i++){
-            if (value[i] < min_value[i]){
-              do_change = false
-              };
-          };
-      new_value = value.join(":");
-      if (do_change){
-        input.attr('value', new_value);
-      };
-    };
-
-    $('#minus-5').click(function() {
-      $.fn.editHeureValue(-5)
-      console.log('minus 5')
-    });
-    $('#plus-5').click(function() {
-      $.fn.editHeureValue(5)
-      console.log('plus 5')
-    });
-  });
-</script>
+<script type="text/javascript" src="{% static "scripts/update_time.js" %}"></script>

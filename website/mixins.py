@@ -82,28 +82,22 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
             self.app_name = self.__class__.__module__.split(".")[0]
         return apps.get_app_config(self.app_name)
 
+    @property
+    def active_app(self):
+        if not hasattr(self, '_active_app'):
+            self._active_app = self.get_active_app()
+        return self._active_app
+
     def get_menu(self):
         """ Renvoie la liste des templates utilisés comme menu pour l'application
             active
         """
         return self.app_menu
 
-    def get_prochaine_maraude_for_user(self):
-        """ Retourne le prochain objet Maraude auquel
-            l'utilisateur participe, ou None """
-        maraudeur_cls = apps.get_model('utilisateurs', model_name="Maraudeur")
-        maraude_cls = apps.get_model('maraudes', model_name="Maraude")
-        try: #TODO: Clean up this ugly thing
-            self.maraudeur = maraudeur_cls.objects.get(username=self.request.user.username)
-        except:
-            self.maraudeur = None
-
-        if self.maraudeur:
-            return maraude_cls.objects.get_next_of(self.maraudeur)
-        return None
-
-    def get_prochaine_maraude(self):
-        return apps.get_model('maraudes', model_name="Maraude").objects.next
+    def insert_menu(self, template_name):
+        """ Insert menu at beginning of self.app_menu """
+        if not template_name in self.app_menu:
+            self.app_menu.insert(0, template_name)
 
     def _update_context_with_rendered_blocks(self, context):
         """ Render text for existing PageInfo attributes.
@@ -116,18 +110,13 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
+        self._update_context_with_rendered_blocks(context)
         context['stylesheets'] = self.Configuration.stylesheets
         context['apps'] = self.Configuration.apps
-        context['active_app'] = self.get_active_app()
-
+        context['active_app'] = self.active_app
+        #Webpage
         context['content_template'] = self.get_content_template()
         context['app_menu'] = self.get_menu()
-
-        context['prochaine_maraude_abs'] = self.get_prochaine_maraude()
-        context['prochaine_maraude'] = self.get_prochaine_maraude_for_user()
-
-        self._update_context_with_rendered_blocks(context)
         return context
 
 class WebsiteAjaxTemplateMixin(WebsiteTemplateMixin):

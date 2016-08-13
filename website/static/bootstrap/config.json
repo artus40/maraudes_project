@@ -164,12 +164,12 @@
     "@navbar-default-toggle-border-color": "#ddd",
     "@navbar-inverse-color": "lighten(@gray-light, 15%)",
     "@navbar-inverse-bg": "#222",
-    "@navbar-inverse-border": "#f47f02",
+    "@navbar-inverse-border": "#333",
     "@navbar-inverse-link-color": "lighten(@gray-light, 15%)",
     "@navbar-inverse-link-hover-color": "#fff",
     "@navbar-inverse-link-hover-bg": "transparent",
     "@navbar-inverse-link-active-color": "@navbar-inverse-link-hover-color",
-    "@navbar-inverse-link-active-bg": "#f47f02",
+    "@navbar-inverse-link-active-bg": "@brand-primary",
     "@navbar-inverse-link-disabled-color": "#444",
     "@navbar-inverse-link-disabled-bg": "transparent",
     "@navbar-inverse-brand-color": "@navbar-inverse-link-color",
@@ -379,7 +379,7 @@
     "@page-header-border-color": "@hr-border",
     "@dl-horizontal-offset": "@component-offset-horizontal",
     "@dl-horizontal-breakpoint": "@grid-float-breakpoint",
-    "@hr-border": "@gray-light"
+    "@hr-border": "lighten(@gray-base, 83.5%)"
   },
   "css": [
     "print.less",
@@ -431,5 +431,5 @@
     "scrollspy.js",
     "transition.js"
   ],
-  "customizerUrl": "http://getbootstrap.com/customize/?id=3e0cac7da17e620f3ce026228727422b"
+  "customizerUrl": "https://getbootstrap.com/customize/?id=4e370b35f1630f31fde8e0de59c1c6f5"
 }

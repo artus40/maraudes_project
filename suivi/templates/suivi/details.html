@@ -1,2 +1,21 @@
-<div class="col-md-6">{% include "suivi/sujet_suivi.html" %}</div>
-<div class="col-md-6">{% include "sujets/sujet_details_inner.html" %}</div>
+{% load bootstrap3 %}
+<div class="col-md-6">
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+  {% include "suivi/sujet_suivi.html" %}
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="notesAjoutHeading">
+      <h4 class="panel-title">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNotesAjout" aria-expanded="false" aria-controls="collapseTwo">
+          {% bootstrap_icon "plus" %} Ajouter une note
+        </a>
+      </h4>
+    </div>
+    <div id="collapseNotesAjout" class="panel-collapse collapse" role="tabpanel" aria-labelledby="notesAjoutHeading">
+      <div class="panel-body">
+        Formulaire d'ajout d'une note
+      </div>
+    </div>
+  </div>
+  </div>
+</div>
+<div class="col-md-6"> {% include "sujets/sujet_details_inner.html" %}</div>

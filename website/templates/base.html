@@ -3,9 +3,9 @@
 <html lang="fr">
   <head>
     <title>{% block title %}La maraude{% endblock %}</title>
+    {# Load Bootstrap CSS and JavaScript #}{% bootstrap_css %}{% bootstrap_javascript %}
+    {# Side Navbar from http://www.samrayner.com/bootstrap-side-navbar/inverse.html #}<link href="/static/bootstrap/navbar-fixed-side.css" rel="stylesheet" />
     {% if stylesheets %}{% for stylesheet in stylesheets %}<link rel="stylesheet" type="text/css" href="{% static stylesheet %}" />{% endfor %}{% endif %}
-    {# Load CSS and JavaScript #}{% bootstrap_css %}{% bootstrap_javascript %}
-    <link href="/static/bootstrap/navbar-fixed-side.css" rel="stylesheet" />
   </head>
   <body>
     <div class="container-fluid">

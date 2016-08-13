@@ -59,6 +59,26 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
 
     template_name = "maraudes/index.html"
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['prochaine_maraude_abs'] = self.get_prochaine_maraude()
+        context['prochaine_maraude'] = self.get_prochaine_maraude_for_user()
+        return context
+
+    def get_prochaine_maraude_for_user(self):
+        """ Retourne le prochain objet Maraude auquel
+            l'utilisateur participe, ou None """
+        try: #TODO: Clean up this ugly thing
+            self.maraudeur = Maraudeur.objects.get(username=self.request.user.username)
+        except:
+            self.maraudeur = None
+
+        if self.maraudeur:
+            return Maraude.objects.get_next_of(self.maraudeur)
+        return None
+
+    def get_prochaine_maraude(self):
+        return Maraude.objects.next
 
 ## MARAUDES
 @webpage
@@ -112,6 +132,10 @@ class CompteRenduCreateView(generic.DetailView):
         header = "{{maraude.date}}"
         header_small = "écriture du compte-rendu"
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app_menu = ["compte_rendu/menu_creation.html"]
+
     def get_forms(self, *args, initial=None):
         self.form = RencontreForm(*args,
                                   initial=initial)
@@ -151,11 +175,13 @@ class CompteRenduCreateView(generic.DetailView):
         def calculate_end_time(debut, duree):
             end_minute = debut.minute + duree
             hour = debut.hour + end_minute // 60
+            if hour >= 24: hour -= 24
+            elif hour < 0: hour += 24
             minute = end_minute % 60
             return datetime.time(
                                 hour,
                                 minute,
-                                debut.second
+                                0
                         )
         if new_form:
             last_rencontre = self.get_object().rencontres.last()
