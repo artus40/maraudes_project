@@ -8,7 +8,12 @@ from .models import Sujet
 from django.forms import ModelForm
 
 
-webpage = website.webpage(ajax=True, permissions=['sujets.view_sujets'])
+webpage = website.webpage(
+                    ajax=True,
+                    permissions=['sujets.view_sujets'],
+                    app_name="suivi",
+                    app_menu=["suivi/menu_sujets.html", "suivi/menu_administration.html"]
+                )
 # Create your views here.
 
 # TODO: deal with setting an active_app name other than module name
@@ -51,7 +56,7 @@ class SujetCreateForm(ModelForm):
         fields = ['nom', 'surnom', 'prenom', 'genre', 'premiere_rencontre']
 
 
-@website.webpage(ajax=True, permissions=['sujets.add_sujet'])
+@website.webpage(ajax=True, permissions=['sujets.add_sujet'], app_name="suivi")
 class SujetCreateView(generic.edit.CreateView):
     template_name = "sujets/sujet_create.html"
     form_class = SujetCreateForm

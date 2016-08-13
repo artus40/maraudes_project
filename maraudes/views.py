@@ -23,7 +23,11 @@ from .forms import (    RencontreForm, RencontreInlineFormSet, SignalementForm,
                         MaraudeAutoDateForm, MonthSelectForm,   )
 
 from website import decorators as website
-webpage = website.webpage(ajax=False, permissions=['maraudes.view_maraudes'])
+webpage = website.webpage(
+                    ajax=False,
+                    permissions=['maraudes.view_maraudes'],
+                    app_menu=["maraudes/menu_dernieres_maraudes.html", "maraudes/menu_administration.html"]
+                )
 
 
 
@@ -46,7 +50,7 @@ class DerniereMaraudeMixin(object):
 
 
 @webpage
-class IndexView(DerniereMaraudeMixin, generic.FormView):
+class IndexView(DerniereMaraudeMixin, generic.TemplateView):
 
     class PageInfo:
         title = "Maraude - Tableau de bord"
@@ -54,10 +58,6 @@ class IndexView(DerniereMaraudeMixin, generic.FormView):
         header_small = "Tableau de bord"
 
     template_name = "maraudes/index.html"
-    form_class = SignalementForm
-
-    def get_panels(self):
-        return ["maraudes/panel_dernieres_maraudes.html", "maraudes/panel_admin.html"]
 
 
 ## MARAUDES
@@ -75,14 +75,8 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['notes'] = Note.objects.filter( #TODO: use better selection,
-                                                # using time range.
-                                            created_date=self.object.date
-                                        ).by_time()
+        context['notes'] = self.object.get_observations()
         return context
-
-    def get_panels(self):
-        return ["maraudes/panel_dernieres_maraudes.html"]
 
 
 
@@ -138,12 +132,6 @@ class CompteRenduCreateView(generic.DetailView):
     def post(self, request, *args, **kwargs):
         self.get_forms(request.POST, request.FILES)
         if self.form.has_changed():
-            if not self.inline_formset.has_changed():
-                if request.GET['finalize'] == "True":
-                    return self.finalize()
-                messages.warning(request, "Vous devez ajouter une observation !")
-                return self.get(request, new_form=False)
-
             if not self.form.is_valid() or not self.inline_formset.is_valid():
                 return self.get(request, new_form=False)
             rencontre = self.form.save(commit=False)

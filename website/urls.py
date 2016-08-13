@@ -2,13 +2,13 @@ from django.conf.urls import include, url
 
 from django.contrib.auth import views as auth_views
 
-from .views import index_view
+from .views import Index
 from maraudes import urls as maraudes_urls
 from suivi import urls as suivi_urls
 from sujets import urls as sujets_urls
 
 urlpatterns = [
-    url('^$', index_view, name="index"),
+    url('^$', Index.as_view(), name="index"),
     # Applications
     url(r'^maraudes/', include(maraudes_urls, namespace="maraudes")),
     url(r'^suivi/', include(suivi_urls, namespace="suivi")),

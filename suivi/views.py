@@ -7,7 +7,11 @@ from sujets.models import Sujet
 
 # Create your views here.
 
-webpage = website.webpage(ajax=False, permissions=['sujets.view_sujets'])
+webpage = website.webpage(
+                    ajax=False,
+                    permissions=['sujets.view_sujets'],
+                    app_menu=["suivi/menu_sujets.html", "suivi/menu_administration.html"]
+                )
 
 
 

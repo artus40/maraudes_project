@@ -1,0 +1,11 @@
+{% if dernieres_maraudes %}
+                <li class="dropdown app-menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Dernières maraudes <b class="caret"></b></a>
+                  <ul class="dropdown-menu">{% for m in dernieres_maraudes %}
+                    <li><a href="{% url 'maraudes:details' m.pk %}" {% if maraude == m %}style="color:#fff;"{% endif %}>
+                        <strong>{{ m }}</strong> <small>{{m.binome}} & {{m.referent}}</small></a>
+                    </li>{% endfor %}
+                  <li class="divider"></li>
+                  <li><a href="{% url 'maraudes:liste' %}">Liste des maraudes</a></li>
+                  </ul>
+                </li>
+{% endif %}

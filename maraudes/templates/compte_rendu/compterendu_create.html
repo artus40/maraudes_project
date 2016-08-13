@@ -105,9 +105,9 @@
   <div class="col-md-6 col-sd-12">
     <form method="post" action="{% url 'maraudes:create' maraude.pk %}?finalize=False">
     {% csrf_token %}
-      <div class="panel panel-default panel-collapse">
+      <div class="panel panel-primary panel-collapse">
         <div class="panel-heading">
-          <h4 class="panel-header">Nouvelle rencontre
+          <h4>Nouvelle rencontre
           {% bootstrap_button "Enregistrer" icon="save" button_type="submit" button_class="btn btn-success btn-sm pull-right" %}
           </h4>
         </div>
@@ -127,8 +127,8 @@
   </div>
 
   <div class="col-md-6 col-sd-12">
-    <div class="panel panel-primary">
-      <div class="panel-heading"><h4 class="panel-header">Enregistrées
+    <div class="panel panel-default">
+      <div class="panel-heading"><h4>Enregistrées
             <a class="btn btn-danger btn-sm pull-right" href="{% url 'maraudes:create' maraude.pk %}?finalize=True">
             {% bootstrap_icon "ok-circle" %} Finaliser</a></h4>
       </div>

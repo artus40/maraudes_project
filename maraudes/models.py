@@ -123,6 +123,12 @@ class Maraude(models.Model):
     def rencontre_count(self):
         return self.rencontres.count()
 
+    def get_observations(self):
+        observations = []
+        for r in self.rencontres.all():
+            observations += r.observations.all()
+        return observations
+
     def get_absolute_url(self):
         return reverse('maraudes:details', kwargs={'pk': self.id})
 

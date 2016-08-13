@@ -33,8 +33,7 @@ class SignalementForm(NoteForm):
 
 ObservationInlineFormSet = inlineformset_factory(   Rencontre, Observation,
                                                     form=NoteForm,
-                                                    extra = 0,
-                                                    min_num = 1,
+                                                    extra = 1,
                                                     )
 
 RencontreInlineFormSet = inlineformset_factory(

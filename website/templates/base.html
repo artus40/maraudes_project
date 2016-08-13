@@ -5,19 +5,18 @@
     <title>{% block title %}La maraude{% endblock %}</title>
     {% if stylesheets %}{% for stylesheet in stylesheets %}<link rel="stylesheet" type="text/css" href="{% static stylesheet %}" />{% endfor %}{% endif %}
     {# Load CSS and JavaScript #}{% bootstrap_css %}{% bootstrap_javascript %}
+    <link href="/static/bootstrap/navbar-fixed-side.css" rel="stylesheet" />
   </head>
   <body>
-    {% block globalnav %}{% endblock %}
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
-        {% if panels %}<div class="col-md-8">{% else %}<div class="col-md-12">{% endif %}
-          {% bootstrap_messages %}
-          <div class="page-header"><h1>{% block page_header %}Header{% endblock %}</h1></div>
+        <div class="col-sm-4 col-md-4 col-lg-2">
+          {% include "navbar.html" %}
+        </div>
+        <div class="col-sm-8 col-md-8 col-lg-10">
+          <h1 class="page-header">{% block page_header %}{% endblock %}</h1>
           {% block content %}{% endblock %}
         </div>
-        {% if panels %}<div class="col-md-4" id="sidebar">
-          {% block panels %}{% endblock %}
-        </div>{% endif %}
       </div>
     </div>
   </body>

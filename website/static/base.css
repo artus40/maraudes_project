@@ -1,28 +1,13 @@
 
-
 #menu {
-  border-bottom: 4px solid #f47f02;
-  /*;#980300*/
-  padding-bottom: 0px;
-  margin-bottom: 0px;
+  border: none;
+  border-right: 4px solid #f47f02;
 }
 
-.navbar-inverse {
-  padding:0px;
-}
 
-#menu a {
-  border-bottom: 1px solid transparent;
-  font-size: 120%;
-  font-weight: bold;
-  font-variant: small-caps;
-}
 
-#app-menu {
-  max-height: 40px;
-  margin:0px;
-  padding-top:0;
-  background: #f47f02;
+.app-menu {
+  background-color: #121212;
 }
 
 #sidebar {

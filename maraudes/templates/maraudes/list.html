@@ -1,49 +1,56 @@
 {% load bootstrap3 %}
-<div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading text-center">
-    <form action="" method="GET">
-      <label>TODO : Filtrer par date, terminée/non, et autres ?</label>
-      <button class="btn btn-warning" type="submit">Filtrer</button>
-    </form>
+<div class="col-md-12 col-lg-6">
+  <div class="panel panel-primary">
+    <!-- Default panel contents -->
+    <div class="panel-heading text-center">
+      <h3 class="panel-title">Maraudes</h3>
+    </div>
+
+    <!-- Table -->
+    <table class="table table-striped">
+    {% for maraude in object_list %}
+    <tr>
+      <td>
+        <div class="btn-group" role="group">
+        {% if maraude.est_terminee %}
+          <a href="{% url 'maraudes:details' maraude.id %}" class="btn btn-primary">
+        {% elif user.is_superuser %}
+          <a href="{% url 'maraudes:create' maraude.id %}" class="btn btn-warning">
+        {% else %}
+          <a href="#" class="btn btn-default disabled">
+        {% endif %}
+        {{maraude.date}}
+        {% if user.is_superuser %}
+          </a><a class="btn btn-danger" href="/admin/maraudes/maraude/{{maraude.id}}/change/">{% bootstrap_icon "edit" %}
+        {% endif %}</a></div>
+        <div class="pull-right">
+        <span class="label label-info">{{ maraude.binome }} & {{ maraude.referent }}</span>
+        <span class="label label-success">{{maraude.rencontres.count}} rencontres</span>
+        </div>
+      </td>
+    </tr>
+  {% endfor %}
+    </table>
+  {% if is_paginated %}
+  <div class="panel-footer text-center">
+      <ul class="pagination">
+      {% for num in page_obj.paginator.page_range %}
+        <li {% if page_obj.number == num %} class="active" {%endif%}><a href="?page={{num}}">{{num}}</a></li>
+      {%endfor%}
+      </ul>
   </div>
-
-  <!-- Table -->
-  <table class="table table-striped">
-  <tr>
-    <th>Maraudes</th>
-  </tr>
-  {% for maraude in object_list %}
-  <tr>
-    <td>
-      <div class="btn-group" role="group">
-      {% if maraude.est_terminee %}
-        <a href="{% url 'maraudes:details' maraude.id %}" class="btn btn-primary">
-      {% elif user.is_superuser %}
-        <a href="{% url 'maraudes:create' maraude.id %}" class="btn btn-warning">
-      {% else %}
-        <a href="#" class="btn btn-default disabled">
-      {% endif %}
-      {{maraude.date}}
-      {% if user.is_superuser %}
-        </a><a class="btn btn-danger" href="/admin/maraudes/maraude/{{maraude.id}}/change/">{% bootstrap_icon "edit" %}
-      {% endif %}</a></div>
-      <div class="pull-right">
-      <span class="label label-info">{{ maraude.binome }} & {{ maraude.referent }}</span>
-      <span class="label label-success">{{maraude.rencontres.count}} rencontres</span>
-      </div>
-    </td>
-  </tr>
-{% endfor %}
-  </table>
-
+  {% endif %}
+  </div>
 </div>
-{% if is_paginated %}
-<div class="col-md-12 text-center">
-    <ul class="pagination">
-    {% for num in page_obj.paginator.page_range %}
-      <li {% if page_obj.number == num %} class="active" {%endif%}><a href="?page={{num}}">{{num}}</a></li>
-    {%endfor%}
-    </ul>
+<div class="col-lg-3 col-md-3">
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading text-center">
+      <h3 class="panel-title">Filtres</h3>
+    </div>
+    <div class="list-group">
+      <a href="#" class="list-group-item disabled">Vos maraudes seulement</a></li>
+      <a href="#" class="list-group-item disabled">Ce mois-ci</a></li>
+    </div>
+  </div>
 </div>
-{% endif %}

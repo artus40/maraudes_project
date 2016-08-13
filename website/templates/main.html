@@ -1,38 +1,12 @@
-{% load bootstrap3 %}
+<div class="col-md-12 col-lg-6">
+<div class="jumbotron">
+          <h2>Objectifs</h2>
+          <p>Description de la maraude à destination des visiteurs, partenaires, etc...</p>
+          <h2>Nous rencontrer</h2>
 
-{% block content %}
-{% bootstrap_messages %}
-      <div class="panel panel-default">
-        <div class="panel-heading"><h3 class="panel-title">Maraude ALSA</h3></div>
-      <div class="panel-body text-center">
-      {% if user.is_authenticated %}
-        <p>Bienvenue {{ user }} !</p>
-        <div class="btn-group">
-        <a href="{% url 'maraudes:index' %}" class="btn btn-primary">Entrer</a>
-        {% if user.is_superuser %}
-          <a href="admin/" class="btn btn-warning">Administration</a>
-        {% endif %}
+          <p>Les maraudeurs arpentent les rues de Mulhouse les <b>lundis</b>, <b>mardis</b> et <b>jeudis</b> en soirée,
+            et les <b>vendredis</b> en fin d'après-midi.
+          </p>
+          <p>Ils sont reconnaissables à leur vestes oranges, n'hésitez pas à les interpeller.</p>
         </div>
-      {% else %}
-        {% if form.errors %}
-          <p>Your username and password didn't match. Please try again.</p>
-        {% endif %}
-        {% if next %}
-            {% if user.is_authenticated %}
-              <div class="alert alert-warning"><p>Your account doesn't have access to this page. To proceed,
-              please login with an account that has access.</p></div>
-            {% else %}
-              <div class="alert alert-danger"><p>Veuillez vous connecter pour accéder à cette page.</p></div>
-            {% endif %}
-        {% endif %}
-        <form method="post" action="{% url 'django.contrib.auth.views.login' %}">
-        {% csrf_token %}
-        {% bootstrap_form form %}
-        {% bootstrap_button "Connexion" button_type="submit" button_class="btn-lg btn-primary" %}
-        <input type="hidden" name="next" value="{{ next|default:'maraudes/' }}" />
-        </form>
-      {% endif %}
-      </div>
-            <div class="panel-footer"><p>version: 0.01</p></div>
-      </div>
-{% endblock %}
+</div>

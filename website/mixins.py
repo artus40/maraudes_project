@@ -50,6 +50,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     """
     base_template = "base_site.html"
     content_template = None
+    app_name = None
 
     class Configuration:
         stylesheets = ['base.css']
@@ -76,14 +77,16 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
             self.content_template = self.template_name
         return self.content_template
 
-    def get_active_app(self, app_name=None):
-        if not app_name:
-            app_name = self.__class__.__module__.split(".")[0]
-        return apps.get_app_config(app_name)
+    def get_active_app(self):
+        if not self.app_name:
+            self.app_name = self.__class__.__module__.split(".")[0]
+        return apps.get_app_config(self.app_name)
 
-    def get_panels(self):
-        """ Panneaux """
-        return None
+    def get_menu(self):
+        """ Renvoie la liste des templates utilisés comme menu pour l'application
+            active
+        """
+        return self.app_menu
 
     def get_prochaine_maraude_for_user(self):
         """ Retourne le prochain objet Maraude auquel
@@ -119,7 +122,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         context['active_app'] = self.get_active_app()
 
         context['content_template'] = self.get_content_template()
-        context['panels'] = self.get_panels()
+        context['app_menu'] = self.get_menu()
 
         context['prochaine_maraude_abs'] = self.get_prochaine_maraude()
         context['prochaine_maraude'] = self.get_prochaine_maraude_for_user()

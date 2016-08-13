@@ -14,6 +14,10 @@ def webpage(**options):
     except KeyError: ajax = False
     try: permissions = options.pop('permissions')
     except KeyError: permissions = []
+    try: app_menu = options.pop('app_menu')
+    except KeyError: app_menu = []
+    try: app_name = options.pop('app_name')
+    except KeyError: app_name = None
 
     new_bases = []
     if ajax:
@@ -27,6 +31,8 @@ def webpage(**options):
         _insert_bases(cls, new_bases)
         if permissions:
             cls.permissions = permissions
+        cls.app_menu = app_menu
+        cls.app_name = app_name
         return cls
 
     return update_class
