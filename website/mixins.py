@@ -36,6 +36,9 @@ class TemplateFieldsMetaclass(type):
         pass
 
 
+def user_processor(request, context):
+    context['user_group'] = request.user.groups.first()
+    return context
 
 class WebsiteTemplateMixin(TemplateResponseMixin):
     """ Mixin for easy integration of 'website' templates
@@ -111,10 +114,12 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         self._update_context_with_rendered_blocks(context)
+        #Website processor
         context['stylesheets'] = self.Configuration.stylesheets
         context['apps'] = self.Configuration.apps
         context['active_app'] = self.active_app
-        context['user_group'] = self.request.user.groups.first()
+        # User processor
+        context = user_processor(self.request, context)
         #Webpage
         context['content_template'] = self.get_content_template()
         context['app_menu'] = self.get_menu()

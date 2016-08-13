@@ -28,3 +28,7 @@
 @media (max-width:768px){
   #menu { border: none; }
 }
+
+.jumbotron {
+  background-color: #fefefe;
+}
