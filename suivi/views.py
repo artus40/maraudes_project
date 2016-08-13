@@ -27,8 +27,10 @@ class IndexView(generic.TemplateView):
     def get_panels(self):
         return ["suivi/panel_sujets.html", "suivi/panel_admin.html"]
 
+from notes.mixins import NoteFormMixin
+
 @webpage
-class SuiviSujetView(generic.DetailView):
+class SuiviSujetView(NoteFormMixin, generic.DetailView):
     model = Sujet
     template_name = "suivi/details.html"
     context_object_name = "sujet"

@@ -12,7 +12,12 @@
     </div>
     <div id="collapseNotesAjout" class="panel-collapse collapse" role="tabpanel" aria-labelledby="notesAjoutHeading">
       <div class="panel-body">
-        Formulaire d'ajout d'une note
+        <form method="POST" action="">{% csrf_token %}
+        {% bootstrap_form note_form show_label=False %}
+      </div>
+      <div class="panel-footer text-right">
+        {% bootstrap_button "Enregistrer" button_type="submit" %}
+        </form>
       </div>
     </div>
   </div>
