@@ -7,12 +7,17 @@ from django.template import Template, Context
 from django.views.generic.base import ContextMixin, TemplateResponseMixin
 
 ## Utils ##
-def get_apps(app_names):
+APP_ICONS = {
+    'maraudes': 'road',
+    'suivi': 'eye-open',
+}
+
+def get_apps_config(app_names):
     _apps = []
     for name in app_names:
-        _apps.append(
-            apps.get_app_config(name)
-        )
+        app_config = apps.get_app_config(name)
+        app_config.menu_icon = APP_ICONS[name]
+        _apps.append(app_config)
     return _apps
 
 ## Mixins ##
@@ -58,8 +63,9 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     class Configuration:
         stylesheets = ['base.css']
         navbar_apps = ['maraudes', 'suivi']
-        apps = get_apps(navbar_apps)
+        apps = get_apps_config(navbar_apps)
         page_blocks = ['header', 'header_small', 'title']
+
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
