@@ -19,7 +19,7 @@
 <script type="text/javascript">
   $(function() {
     var formAjaxSubmit = function(form, panel) {
-     $(form).submit(function (e) {
+         $(form).submit(function (e) {
          e.preventDefault();
          $.ajax({
              type: $(this).attr('method'),
@@ -30,7 +30,7 @@
                      $(panel).html(xhr);
                      formAjaxSubmit(form, panel);
                  } else {
-                    $(panel).load("{% url "sujets:details" pk=sujet.id %}")
+                    showUpdateDetails($('#updateButton'), panel);
                  }
              },
              error: function (xhr, ajaxOptions, thrownError) {
@@ -40,13 +40,31 @@
       });
     };
   /* TODO: Use formAjaxSubmit above, but reload page on form success */
-     $('#updateButton').click(function() {
-          var panel = $('#collapseFicheInfo')
-          panel.load('{% url "sujets:update" pk=sujet.pk %}?next={% url "suivi:details" pk=sujet.id %}', function () {
-            formAjaxSubmit(panel.find("form"), panel);
-            panel.collapse('show');
-         });
-     });
+
+    var showUpdateForm = function(button, panel) {
+          $(panel).load('{% url "sujets:update" pk=sujet.pk %}', function () {
+                  formAjaxSubmit($(panel).find("form"), $(panel));
+                  $(panel).collapse('show');
+                  $(button).text("Annuler");
+                  });
+          };
+
+    var showUpdateDetails = function(button, panel) {
+            $(panel).load("{% url "sujets:details" pk=sujet.pk %}", function() {
+                  $(button).text("Mise à jour");
+                  });
+            };
+
+    $('#updateButton').click(function(){
+        var panel = $('#collapseFicheInfo');
+        var button = $(this);
+        if (panel.find('form').length > 0) {
+              showUpdateDetails(button, panel);
+              } else {
+              showUpdateForm(button, panel);
+              };
+
+        });
 
   });
 </script>
