@@ -1,44 +1,11 @@
 from django.utils import timezone
 from django.core.urlresolvers import reverse
-
 from django.core.exceptions import ValidationError
 from django.utils.translation import ugettext_lazy as _
 
 from django.db import models
 
-# Create your models here.
-
-class Personne(models.Model):
-    """ Modèle de base d'une personne
-        - genre
-        - nom
-        - prénom
-    """
-
-    HOMME = 'M'
-    FEMME = 'Mme'
-    GENRE_CHOICES = (
-        (HOMME, 'Homme'),
-        (FEMME, 'Femme'),
-    )
-    genre = models.CharField(max_length=3,
-                             choices=GENRE_CHOICES,
-                             default=HOMME)
-    nom = models.CharField(max_length=32, blank=True)
-    prenom = models.CharField(max_length=32, blank=True)
-    surnom = models.CharField(max_length=64, blank=True)
-
-    def __str__(self):
-        string = '%s ' % self.genre
-        if self.nom:    string += '%s ' % self.nom
-        if self.surnom: string += '"%s" ' % self.surnom
-        if self.prenom: string += '%s' % self.prenom
-        return string
-
-    def clean(self):
-        if not any([self.nom, self.prenom, self.surnom]):
-            raise ValidationError(_("Vous devez remplir au moins un nom, prénom ou surnom"))
-        return super().clean()
+### Item choices
 
 # Item: Parcours institutionnel
 PARCOURS_INSTITUTIONNEL = "Institutionnel"
@@ -81,15 +48,49 @@ RESSOURCES_CHOICES = (
     )
 
 
-from django.db import models
+
+### Models
+# - Personne
+# - Sujet
+
+class Personne(models.Model):
+    """ Modèle de base d'une personne
+        - genre
+        - nom
+        - prénom
+    """
+
+    HOMME = 'M'
+    FEMME = 'Mme'
+    GENRE_CHOICES = (
+        (HOMME, 'Homme'),
+        (FEMME, 'Femme'),
+    )
+    genre = models.CharField(max_length=3,
+                             choices=GENRE_CHOICES,
+                             default=HOMME)
+    nom = models.CharField(max_length=32, blank=True)
+    prenom = models.CharField(max_length=32, blank=True)
+    surnom = models.CharField(max_length=64, blank=True)
+
+    def __str__(self):
+        string = '%s ' % self.genre
+        if self.nom:    string += '%s ' % self.nom
+        if self.surnom: string += '"%s" ' % self.surnom
+        if self.prenom: string += '%s' % self.prenom
+        return string
+
+    def clean(self):
+        if not any([self.nom, self.prenom, self.surnom]):
+            raise ValidationError(_("Vous devez remplir au moins un nom, prénom ou surnom"))
+        return super().clean()
+
 
 
 class Sujet(Personne):
     """ Personne faisant l'objet d'un suivi par la maraude
-
     """
     # referent = models.ForeignKey("utilisateurs.Professionnel", related_name="suivis")
-
     premiere_rencontre = models.DateField(default=timezone.now)
     age = models.SmallIntegerField(blank=True, null=True)
 
@@ -112,7 +113,6 @@ class Sujet(Personne):
                                   choices=RESSOURCES_CHOICES,
                                   default=RESSOURCES_NR)
     connu_siao = models.NullBooleanField("Connu du SIAO ?")
-
 
     class Meta:
         verbose_name = "Sujet"

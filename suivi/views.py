@@ -10,36 +10,36 @@ from sujets.models import Sujet
 webpage = website.webpage(
                     ajax=False,
                     permissions=['sujets.view_sujets'],
-                    app_menu=["suivi/menu_sujets.html", "suivi/menu_administration.html"]
+                    app_menu=["suivi/menu_sujets.html"]
                 )
 
 
 
 @webpage
 class IndexView(generic.TemplateView):
-    template_name = "suivi/index.html"
-
     class PageInfo:
         title = "Suivi des bénéficiaires"
         header = "Suivi"
         header_small = "Tableau de bord"
+    #TemplateView
+    template_name = "suivi/index.html"
 
-    def get_panels(self):
-        return ["suivi/panel_sujets.html", "suivi/panel_admin.html"]
 
 from notes.mixins import NoteFormMixin
 
 @webpage
 class SuiviSujetView(NoteFormMixin, generic.DetailView):
-    model = Sujet
-    template_name = "suivi/details.html"
-    context_object_name = "sujet"
-
     class PageInfo:
         title = "Sujet - {{sujet}}"
         header = "{{sujet}}"
         header_small = "suivi"
-
+    #DetailView
+    model = Sujet
+    template_name = "suivi/details.html"
+    context_object_name = "sujet"
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.app_menu.insert(0, "sujets/menu_sujet.html")
     def get_context_data(self, *args,  **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['notes'] = self.object.notes.by_date(reverse=True)

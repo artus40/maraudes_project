@@ -2,4 +2,10 @@
                   <li class="dropdown app-menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sujets<b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'sujets:liste' %}">{% bootstrap_icon "list" %} Liste complète</a></li>
+                  {% if user.is_superuser %}{% load bootstrap3 %}
+                    <li class="dropdown-header">Administration</li>
+                    <li><a href="{% url 'sujets:create' %}">{% bootstrap_icon "plus" %} Nouveau sujet</a></li>
+                    <li><a href="{% url 'admin:app_list' app_label='sujets' %}">
+                    {% bootstrap_icon "wrench" %} Gérer les sujets</a></li>
+                  {% endif %}
                   </ul>

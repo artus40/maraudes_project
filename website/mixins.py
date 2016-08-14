@@ -6,19 +6,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.template import Template, Context
 from django.views.generic.base import ContextMixin, TemplateResponseMixin
 
-## Utils ##
-APP_ICONS = {
-    'maraudes': 'road',
-    'suivi': 'eye-open',
-}
 
-def get_apps_config(app_names):
-    _apps = []
-    for name in app_names:
-        app_config = apps.get_app_config(name)
-        app_config.menu_icon = APP_ICONS[name]
-        _apps.append(app_config)
-    return _apps
 
 ## Mixins ##
 
@@ -63,12 +51,12 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     class Configuration:
         stylesheets = ['base.css']
         navbar_apps = ['maraudes', 'suivi']
-        apps = get_apps_config(navbar_apps)
         page_blocks = ['header', 'header_small', 'title']
 
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.user = None
         self._page_blocks = []
         if not hasattr(self, "PageInfo"):
             raise ImproperlyConfigured("You must define a PageInfo on ", self)
@@ -86,10 +74,38 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
             self.content_template = self.template_name
         return self.content_template
 
+    def get_apps_config(self):
+        """ Load additionnal config data on each app registered in navbar"""
+        ## Utils ##
+        APP_ICONS = {
+            'maraudes': 'road',
+            'suivi': 'eye-open',
+        }
+        app_names = self.Configuration.navbar_apps
+        self._apps = []
+        for name in app_names:
+            app_config = apps.get_app_config(name)
+            app_config.menu_icon = APP_ICONS[name]
+            #Known Issue: there is actually no 'suivi.view_suivi' permission yet !
+            app_config.disabled = not self.request.user.has_perm('%s.view_%s' % (name, name))
+            print(self.request.user, app_config, '-> has perm:', not app_config.disabled)
+            self._apps.append(app_config)
+        return self._apps
+
+    @property
+    def apps(self):
+        if not hasattr(self, '_apps'):
+            self._apps = self.get_apps_config()
+        return self._apps
+
     def get_active_app(self):
         if not self.app_name:
             self.app_name = self.__class__.__module__.split(".")[0]
-        return apps.get_app_config(self.app_name)
+        active_app = apps.get_app_config(self.app_name)
+        if not active_app in self.apps: #TODO: how do we deal with this ?
+            print("%s must be registered in Configuration.navbar_apps" % active_app)
+            return None
+        return active_app
 
     @property
     def active_app(self):
@@ -122,7 +138,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         self._update_context_with_rendered_blocks(context)
         #Website processor
         context['stylesheets'] = self.Configuration.stylesheets
-        context['apps'] = self.Configuration.apps
+        context['apps'] = self.apps
         context['active_app'] = self.active_app
         # User processor
         context = user_processor(self.request, context)
