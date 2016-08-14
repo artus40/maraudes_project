@@ -1,8 +1,7 @@
-{% load bootstrap3 %}
-{% if user.is_superuser %}
+{% if user.is_superuser %}{% load bootstrap3 %}
                   <li class="dropdown app-menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Administration<b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li><a href="{% url 'maraudes:planning' %}">{% bootstrap_icon "calendar" %} Planning</a></li>
-                    <li><a href="/admin/maraudes/">{% bootstrap_icon "wrench" %} Gérer les maraudes</a></li>
+                    <li><a href="{% url 'admin:app_list' app_label=active_app.label %}">{% bootstrap_icon "wrench" %} Gérer les maraudes</a></li>
                   </ul>
 {% endif %}

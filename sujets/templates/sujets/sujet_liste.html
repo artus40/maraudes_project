@@ -1,19 +1,43 @@
-<div class="panel panel-default">
-  <!-- Default panel contents -->
-  <div class="panel-heading">Sujets connus</div>
-  <div class="panel-body">
-    <p>Voici la liste des sujets rencontrés dans le cadre des maraudes</p>
+{% load bootstrap3 %}
+<div class="col-md-12 col-lg-6">
+  <div class="panel panel-primary">
+    <!-- Default panel contents -->
+    <div class="panel-heading text-center">
+      <h3 class="panel-title">Sujets rencontrés</h3>
+    </div>
+
+    <!-- Table -->
+    <table class="table table-striped table-hover">
+    {% for sujet in object_list %}
+    <tr>
+      <td><a href="{% url 'suivi:details' sujet.pk %}" class="btn btn-link">{{sujet}}</a></td>
+      <td><span class="label label-info">{{ sujet.notes.count }} notes</span></td>
+    </tr>
+    {% endfor %}
+    </table>
+  {% if is_paginated %}
+  <div class="panel-footer text-center">
+      <ul class="pagination">
+      {% for num in page_obj.paginator.page_range %}
+        <li {% if page_obj.number == num %} class="active" {%endif%}><a href="?page={{num}}">{{num}}</a></li>
+      {%endfor%}
+      </ul>
   </div>
-  <table class="table table-striped">
-    <tr>
-      <th>Nom</th>
-      <th>Vu le</th>
-    </tr>
-  {% for sujet in object_list %}
-    <tr>
-      <td><a href="{% url 'suivi:details' sujet.pk %}">{{sujet}}</a></td>
-      <td>ToDo</td>
-    </tr>
-  {% endfor %}
-  </table>
+  {% endif %}
+  </div>
+</div>
+<div class="col-lg-3 col-md-3">
+  <div class="panel panel-default">
+    <!-- Default panel contents -->
+    <div class="panel-heading text-center">
+      <h3 class="panel-title">Filtres</h3>
+    </div>
+    <div class="list-group">
+      <a href="#" class="list-group-item disabled">Rencontrés ce mois-ci</a></li>
+      <a href="#" class="list-group-item disabled"><strong>Mes accompagnements</strong></a></li>
+      <a href="#" class="list-group-item disabled">Hébérgé en urgence</a></li>
+      <a href="#" class="list-group-item disabled">Sans logement</a></li>
+
+    </div>
+  </div>
 </div>

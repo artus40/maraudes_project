@@ -116,6 +116,7 @@ class Sujet(Personne):
 
     class Meta:
         verbose_name = "Sujet"
+        ordering = ('surnom', 'nom', 'prenom')
         permissions = (
             ('view_sujets', "Accès à l'application 'sujets'"),
         )

@@ -33,7 +33,7 @@
              }
          });
       });
-    }
+    };
   /* TODO: Use formAjaxSubmit above, but reload page on form success */
      $('#new-sujet').click(function() {
          $('#form-modal-body').load('{% url "sujets:create" %}?next={% url "maraudes:create" pk=maraude.id %}', function () {

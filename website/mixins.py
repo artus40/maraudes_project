@@ -140,13 +140,15 @@ class WebsiteAjaxTemplateMixin(WebsiteTemplateMixin):
     def dispatch(self, request, *args, **kwargs):
         if not hasattr(self, 'content_template') or not self.content_template:
             self.content_template = self.get_content_template()
+        if not hasattr(self, 'ajax_template'):
+            self.ajax_template = '%s_inner.html' % self.content_template.split(".")[0]
         if request.is_ajax():
             self.is_ajax = True
         return super().dispatch(request, *args, **kwargs)
 
     def get_template_names(self):
         if self.is_ajax:
-            return [self.content_template]
+            return [self.ajax_template]
         return super().get_template_names()
 
 class WebsiteProtectedMixin(WebsiteTemplateMixin, PermissionRequiredMixin):

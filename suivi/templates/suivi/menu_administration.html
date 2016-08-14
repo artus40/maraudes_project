@@ -1,6 +1,7 @@
-{% if user.is_superuser %}
+{% if user.is_superuser %}{% load bootstrap3 %}
                   <li class="dropdown app-menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Administration<b class="caret"></b></a>
                   <ul class="dropdown-menu">
-                    <li><a href="{% url 'sujets:create' %}">Nouveau sujet</a></li>
+                    <li><a href="{% url 'sujets:create' %}">{% bootstrap_icon "plus" %} Nouveau sujet</a></li>
+                    <li><a href="{% url 'admin:app_list' app_label='sujets' %}">{% bootstrap_icon "wrench" %} Gérer les sujets</a></li>
                   </ul>
 {% endif %}

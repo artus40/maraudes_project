@@ -1,16 +1,3 @@
-<div class="panel panel-primary">
-      <div class="panel-heading" role="tab" id="ficheInfoHeading">
-        <div class="row">
-          <div class="col-md-9">
-            <h4 class="panel-title">
-              <a role="button" data-toggle="collapse" href="#collapseFicheInfo" aria-expanded="true" aria-controls="collapseOne">
-              Fiche informations</a></h4></div>
-          <div class="col-md-3 text-right">
-              <a href="{% url "sujets:update" pk=sujet.id %}" class="btn btn-sm btn-primary">Mettre à jour</a>
-          </div>
-        </div>
-    </div>
-    <div id="collapseFicheInfo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="ficheInfoHeading">
       <div class="panel-body"><p class="label label-info">Première rencontre : {{ sujet.premiere_rencontre }}</p></div>
       <table class="table">
       <tr><th colspan="4" class="active">État-civil</th></tr>
@@ -26,8 +13,3 @@
       <tr><th colspan="4" class="active">Parcours de vie</th></tr></td></tr>
       <tr><td colspan="2">{{ sujet.parcours_de_vie }}</td><th>Lien familial</th><td>{{ sujet.lien_familial }}</td></tr>
       </table>
-  </div>
-</div>
-
-
-

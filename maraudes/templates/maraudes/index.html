@@ -13,3 +13,13 @@
       </div>
     </div>
 </div>
+{% if user.is_superuser %}
+<div class="col-md-6">
+    <div class="panel panel-warning">
+      <div class="panel-heading">Compte-rendus en retard</div>
+      <table class="table">
+        <tr><td>Lister les comptes-rendu passés qui ne sont pas finalisés</td></tr>
+      </table>
+    </div>
+</div>
+{% endif %}

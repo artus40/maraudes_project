@@ -33,6 +33,8 @@ class Lieu(models.Model):
 
 
 
+
+
 class Maraude(models.Model):
     """ Modèle pour une maraude
         - date : jour de la maraude
@@ -197,12 +199,7 @@ class Rencontre(models.Model):
         return [o.sujet for o in self.observations.all()]
 
 
-
-class Planning(models.Model):
-    """ Plannification des maraudes. Chaque instance représente un jour de la
-        semaine et un horaire par défaut.
-    """
-    WEEKDAYS = [
+WEEKDAYS = [
         (0, "Lundi"),
         (1, "Mardi"),
         (2, "Mercredi"),
@@ -210,6 +207,21 @@ class Planning(models.Model):
         (4, "Vendredi"),
         (5, "Samedi"),
     ]
+
+class FoyerAccueil(Lieu):
+    """ Foyer d'hébergement partenaire """
+
+    organisme = models.ForeignKey("utilisateurs.Organisme", models.CASCADE)
+    jour_de_passage = models.IntegerField(
+                        choices=WEEKDAYS,
+                        )
+
+
+
+class Planning(models.Model):
+    """ Plannification des maraudes. Chaque instance représente un jour de la
+        semaine et un horaire par défaut.
+    """
 
     week_day = models.IntegerField(
                         choices=WEEKDAYS,

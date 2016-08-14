@@ -48,7 +48,9 @@ class SujetUpdateView(generic.edit.UpdateView):
         header = "{{sujet}}"
         header_small = "mise à jour"
 
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        print('SujetUpdateView init:', self.__class__.__bases__)
 
 class SujetCreateForm(ModelForm):
     class Meta:
@@ -56,7 +58,7 @@ class SujetCreateForm(ModelForm):
         fields = ['nom', 'surnom', 'prenom', 'genre', 'premiere_rencontre']
 
 
-@website.webpage(ajax=True, permissions=['sujets.add_sujet'], app_name="suivi")
+@webpage
 class SujetCreateView(generic.edit.CreateView):
     template_name = "sujets/sujet_create.html"
     form_class = SujetCreateForm
@@ -64,6 +66,10 @@ class SujetCreateView(generic.edit.CreateView):
     class PageInfo:
         title = "Nouveau sujet"
         header = "Nouveau sujet"
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.permissions += ['sujets.add_sujet']
 
     def post(self, request, *args, **kwargs):
         if 'next' in self.request.POST:
