@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, reverse
 
 from django.views import generic
 from website import decorators as website
@@ -25,10 +25,10 @@ class IndexView(generic.TemplateView):
     template_name = "suivi/index.html"
 
 
-from notes.mixins import NoteFormMixin
+from notes.mixins import SujetNoteFormMixin
 
 @webpage
-class SuiviSujetView(NoteFormMixin, generic.DetailView):
+class SuiviSujetView(SujetNoteFormMixin, generic.DetailView):
     class PageInfo:
         title = "Sujet - {{sujet}}"
         header = "{{sujet}}"
@@ -39,7 +39,9 @@ class SuiviSujetView(NoteFormMixin, generic.DetailView):
     context_object_name = "sujet"
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.app_menu.insert(0, "sujets/menu_sujet.html")
+        self.insert_menu("sujets/menu_sujet.html")
+    def get_success_url(self):
+        return reverse('suivi:details', kwargs={'pk': self.get_object().pk})
     def get_context_data(self, *args,  **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['notes'] = self.object.notes.by_date(reverse=True)

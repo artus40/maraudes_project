@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import inlineformset_factory
-from notes.forms import NoteForm
+from notes.forms import SimpleNoteForm
 # Models
 from .models import Maraude, Rencontre
 from .notes import Observation, Signalement
@@ -24,15 +24,9 @@ class RencontreForm(forms.ModelForm):
         fields = ['lieu', 'heure_debut', 'duree']
 
 
-class SignalementForm(NoteForm):
-
-    class Meta:
-        model = Signalement
-        fields = ['source', 'created_date', 'created_time', 'sujet', 'text']
-
 
 ObservationInlineFormSet = inlineformset_factory(   Rencontre, Observation,
-                                                    form=NoteForm,
+                                                    form=SimpleNoteForm,
                                                     extra = 1,
                                                     )
 
@@ -44,7 +38,7 @@ RencontreInlineFormSet = inlineformset_factory(
 
 ObservationInlineFormSetNoExtra = inlineformset_factory(
                                 Rencontre, Observation,
-                                form = NoteForm,
+                                form = SimpleNoteForm,
                                 extra = 0
                                 )
 

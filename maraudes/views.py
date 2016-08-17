@@ -18,7 +18,7 @@ from django import forms
 from django.forms import inlineformset_factory, modelformset_factory, modelform_factory
 from django.forms.extras import widgets
 from django_select2.forms import Select2Widget
-from .forms import (    RencontreForm, RencontreInlineFormSet, SignalementForm,
+from .forms import (    RencontreForm, RencontreInlineFormSet,
                         ObservationInlineFormSet, ObservationInlineFormSetNoExtra,
                         MaraudeAutoDateForm, MonthSelectForm,   )
 
