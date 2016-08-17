@@ -31,7 +31,7 @@ def webpage(**options):
         _insert_bases(cls, new_bases)
         if permissions:
             cls.permissions = permissions
-        cls.app_menu = app_menu
+        cls.app_menu = app_menu.copy() #avoid conflict between Views
         cls.app_name = app_name
         return cls
 
