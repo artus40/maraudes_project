@@ -1,9 +1,9 @@
 from django import forms
 from django.forms import inlineformset_factory
-from notes.forms import SimpleNoteForm
+from notes.forms import *
 # Models
-from .models import Maraude, Rencontre
-from .notes import Observation, Signalement
+from .models import *
+from .notes import *
 
 
 class MaraudeAutoDateForm(forms.ModelForm):

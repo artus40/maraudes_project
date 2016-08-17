@@ -10,8 +10,8 @@ class Observation(Note):
 
     objects = managers.ObservationManager()
     rencontre = models.ForeignKey(  'maraudes.Rencontre',
-                                    related_name="observations",
-                                    on_delete=models.CASCADE
+                                    models.CASCADE,
+                                    related_name="observations"
                                 )
 
     # Note attributes proxies
@@ -28,3 +28,6 @@ class Signalement(Note):
 
     def note_labels(self): return [self.source]
     def note_bg_colors(self): return ('warning', 'alert')
+
+
+

@@ -23,7 +23,7 @@ class Note(models.Model):
                         related_name="notes",
                         on_delete=models.CASCADE
                         )
-    text = models.TextField()
+    text = models.TextField("Texte")
     created_by = models.ForeignKey(
                         'utilisateurs.Professionnel',
                         blank=True,

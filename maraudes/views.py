@@ -56,7 +56,7 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
         title = "Maraude - Tableau de bord"
         header = "La Maraude"
         header_small = "Tableau de bord"
-
+    # TemplateView
     template_name = "maraudes/index.html"
 
     def get_context_data(self, *args, **kwargs):

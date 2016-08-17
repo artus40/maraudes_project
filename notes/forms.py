@@ -39,10 +39,7 @@ class UserNoteForm(NoteForm):
         fields = ['sujet', 'text', 'created_date', 'created_time']
 
     def __init__(self, request, **kwargs):
-        args = []
-        if request.POST:
-            args += (request.POST, request.FILES)
-        super().__init__(*args, **kwargs)
+        super().__init__(**kwargs)
         try:
             self.author = Professionnel.objects.get(pk=request.user.pk)
         except Professionnel.DoesNotExist:
@@ -50,28 +47,15 @@ class UserNoteForm(NoteForm):
             raise RuntimeError(msg)
 
     def save(self, commit=True):
+        print('save UserNote', self)
         instance = super().save(commit=False)
         instance.created_by = self.author
         if commit:
             instance.save()
         return instance
 
-class UserAutoDateNoteForm(UserNoteForm):
-    """ Form that automatically sets 'date' and 'time' to save time """
-
+class AutoNoteForm(UserNoteForm):
     class Meta(UserNoteForm.Meta):
-        fields = ['sujet', 'text']
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.created_date = timezone.now().date()
-        instance.created_time = timezone.now().time()
-        if commit:
-            instance.save()
-        return instance
-
-class AutoNoteForm(UserAutoDateNoteForm):
-    class Meta(UserAutoDateNoteForm.Meta):
         fields = ['text']
 
     def __init__(self, request, **kwargs):
