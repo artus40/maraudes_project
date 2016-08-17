@@ -10,7 +10,7 @@ webpage = website.webpage(
                     ajax=True,
                     permissions=['sujets.view_sujets'],
                     app_name="suivi",
-                    app_menu=["sujets/menu_sujet.html"]
+                    app_menu=[]
                 )
 ### Views
 
@@ -37,7 +37,7 @@ class SujetListView(generic.ListView):
     paginate_by = 10
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.app_menu = ["suivi/menu_sujets.html"]
+        self.insert_menu("suivi/menu_sujets.html")
 
 
 

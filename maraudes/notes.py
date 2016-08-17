@@ -14,12 +14,6 @@ class Observation(Note):
                                     on_delete=models.CASCADE
                                 )
 
-    class Meta:
-        verbose_name = "Observation"
-
-    def __str__(self):
-        return "%s" % self.sujet
-
     # Note attributes proxies
     def note_author(self):      return self.rencontre.maraude.referent
     def note_date(self):        return self.rencontre.date

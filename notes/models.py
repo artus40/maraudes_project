@@ -42,9 +42,7 @@ class Note(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return "%s [%s %s]" % ( self.child_class.__qualname__,
-                                self.created_date,
-                                self.created_time)
+        return "%s" % (self.child_class.__qualname__)
 
     def note_author(self):
         return None
@@ -106,7 +104,8 @@ class Note(models.Model):
         def getter(self):
             if not hasattr(self, private_name):
                 setattr(self,
-                        private_name,# Call *child instance* method
+                        private_name,
+                        # Call *child instance* method
                         getattr(self.cast(), 'note_%s' % name)()
                         )
             return getattr(self, private_name)
