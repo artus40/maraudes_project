@@ -185,13 +185,16 @@ class CompteRenduCreateView(generic.DetailView):
                         )
         if new_form:
             last_rencontre = self.get_object().rencontres.last()
-            initial = None
             if last_rencontre:
                 initial = {
                     'lieu': last_rencontre.lieu,
                     'heure_debut': calculate_end_time(
                                         last_rencontre.heure_debut,
                                         last_rencontre.duree),
+                }
+            else:
+                initial = {
+                    'heure_debut': self.get_object().heure_debut
                 }
             self.get_forms(initial=initial)
         return super().get(request, *args, **kwargs)
