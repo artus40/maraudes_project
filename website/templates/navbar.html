@@ -11,12 +11,12 @@
       <a class="navbar-brand" href="{% url 'index' %}">La Maraude ALSA</a>
     </div>
     <div class="collapse navbar-collapse">
-      <ul class="nav navbar-nav">{% for app in apps %}
-        <li class="{% if app == active_app %}active{%endif%} {% if app.disabled %}disabled{% endif%}">
+      <ul class="nav navbar-nav">{% for app in apps %}{% if not app.disabled %}
+        <li class="{% if app == active_app %}active{%endif%}">
           <a href="/{{app.label}}/">{% bootstrap_icon app.menu_icon %} &middot; <strong>{{ app.name|title }}</strong></a>
         </li>
         {% if app == active_app %}{% for t in app_menu %}{% include t %}{% endfor %}{% endif %}
-        {%endfor%}
+        {% endif %}{%endfor%}
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">

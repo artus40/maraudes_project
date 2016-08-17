@@ -14,7 +14,7 @@
         <div class="btn-group" role="group">
         {% if maraude.est_terminee %}
           <a href="{% url 'maraudes:details' maraude.id %}" class="btn btn-primary">
-        {% elif user.is_superuser %}
+        {% elif perms.maraudes.can_add_compterendu %}
           <a href="{% url 'maraudes:create' maraude.id %}" class="btn btn-warning">
         {% else %}
           <a href="#" class="btn btn-default disabled">

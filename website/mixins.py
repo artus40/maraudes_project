@@ -75,7 +75,11 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         return self.content_template
 
     def get_apps_config(self):
-        """ Load additionnal config data on each app registered in navbar"""
+        """ Load additionnal config data on each app registered in navbar
+            Add :
+            - menu_icon : glyphicon in sidebar
+            - disabled : show/hide in sidebar
+        """
         ## Utils ##
         APP_ICONS = {
             'maraudes': 'road',
@@ -86,8 +90,8 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         for name in app_names:
             app_config = apps.get_app_config(name)
             app_config.menu_icon = APP_ICONS[name]
-            #Known Issue: there is actually no 'suivi.view_suivi' permission yet !
-            app_config.disabled = not self.request.user.has_perm('%s.view_%s' % (name, name))
+            #TODO: Seems unsafe (only need module perm)
+            app_config.disabled = not self.request.user.has_module_perms(name)
             print(self.request.user, app_config, '-> has perm:', not app_config.disabled)
             self._apps.append(app_config)
         return self._apps

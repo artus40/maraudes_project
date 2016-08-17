@@ -22,12 +22,4 @@ class Observation(Note):
     def note_bg_colors(self):   return ("info", "info")
 
 
-class Signalement(Note):
-
-    source = models.CharField('Source', max_length=128)
-
-    def note_labels(self): return [self.source]
-    def note_bg_colors(self): return ('warning', 'alert')
-
-
 

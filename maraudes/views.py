@@ -29,7 +29,7 @@ webpage = website.webpage(
                     app_menu=["maraudes/menu_dernieres_maraudes.html", "maraudes/menu_administration.html"]
                 )
 
-
+from django.core.mail import send_mail
 
 class DerniereMaraudeMixin(object):
     count = 5
@@ -83,7 +83,7 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
 ## MARAUDES
 @webpage
 class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
-    model = Maraude
+    model = CompteRendu
     context_object_name = "maraude"
     template_name = "maraudes/details.html"
 
@@ -102,8 +102,8 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
 
 @webpage
 class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
-    model = Maraude
-    template_name = "maraudes/list.html"
+    model = CompteRendu
+    template_name = "maraudes/liste.html"
     paginate_by = 10
 
     class PageInfo:
@@ -120,7 +120,7 @@ class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
 ## COMPTE-RENDU DE MARAUDE
 @webpage
 class CompteRenduCreateView(generic.DetailView):
-    model = Maraude
+    model = CompteRendu
     template_name = "compte_rendu/compterendu_create.html"
     context_object_name = "maraude"
 
@@ -145,12 +145,25 @@ class CompteRenduCreateView(generic.DetailView):
                                 )
 
     def finalize(self):
+        print('finalize !')
         maraude = self.get_object()
         maraude.heure_fin = timezone.now()
         maraude.save()
-        #TODO: send email to all Maraudeurs
+        # Redirect to a new view to edit mail ??
+        # Add text to some mails ? Transmission, message à un référent, etc...
+        # Send mail to Maraudeurs
+        _from = maraude.referent.email
+        exclude = (maraude.referent, maraude.binome)
+        recipients = []
+        for m in Maraudeur.objects.all():
+            if not m in exclude:
+                recipients.append(m.email)
+        objet = "Compte-rendu de maraude : %s" % maraude.date
+        message = "Sujets rencontrés : ..." #TODO: Mail content
+        send_mail(objet, message, _from, recipients)
+
         return redirect("maraudes:details",
-                        pk=self.get_object().pk
+                        pk=maraude.pk
                         )
 
     def post(self, request, *args, **kwargs):
