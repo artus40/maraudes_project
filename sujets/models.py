@@ -92,7 +92,7 @@ class Sujet(Personne):
     """ Personne faisant l'objet d'un suivi par la maraude
     """
     # referent = models.ForeignKey("utilisateurs.Professionnel", related_name="suivis")
-    premiere_rencontre = models.DateField(default=timezone.now)
+    premiere_rencontre = models.DateField(blank=True, null=True)
     age = models.SmallIntegerField(blank=True, null=True)
 
     lien_familial = models.NullBooleanField("Lien Familial")
