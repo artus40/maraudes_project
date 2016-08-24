@@ -1,0 +1,27 @@
+{% load bootstrap3 %}
+<form action="" method="POST">{% csrf_token %}
+  {% bootstrap_form_errors form %}
+  {% with "inline" as layout %}
+  <div class="form-group form-{{layout}} well">
+    <label class="control-label col-md-2" for="id_source">
+    Source
+    </label>
+    {% bootstrap_field  form.source layout=layout %}
+    {% bootstrap_field  form.created_date layout=layout %}
+    {% bootstrap_field  form.created_time layout=layout %}
+  </div>  {% endwith %}
+  <div class="well">
+    {% with "horizontal" as layout %}
+    <div class="form-group form-{{layout}}">
+      {% bootstrap_field  form.nom layout=layout %}
+      {% bootstrap_field  form.prenom layout=layout %}
+      {% bootstrap_field  form.genre layout=layout %}
+      {% bootstrap_field  form.age layout=layout %}
+    </div>  {% endwith %}
+  </div>
+  {% with "horizontal" as layout %}
+  <div class="form-group form-{{layout}}">
+    {% bootstrap_field  form.text layout=layout %}
+  </div>  {% endwith %}
+  <div class="pull-right">{% bootstrap_button "Enregistrer le signalement" button_type="submit" %}</div>
+</form>
