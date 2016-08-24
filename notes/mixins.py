@@ -31,6 +31,7 @@ class NoteFormMixin(FormMixin):
             form = self.get_form(prefix)
             if form.is_valid():
                 form.save()
+                # TODO: Add message to notify which form was saved
                 return self.form_valid(form)
         return self.form_invalid(form)
 

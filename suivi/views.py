@@ -6,6 +6,7 @@ from sujets.models import Sujet
 from .forms import *
 from notes.mixins import NoteFormMixin
 from notes.forms import AutoNoteForm
+from .search import SearchFormMixin, SearchFormProcessView
 # Create your views here.
 from website import decorators as website
 webpage = website.webpage(
@@ -17,7 +18,7 @@ webpage = website.webpage(
 
 
 @webpage
-class IndexView(NoteFormMixin, generic.TemplateView):
+class IndexView(SearchFormMixin, NoteFormMixin, generic.TemplateView):
     class PageInfo:
         title = "Suivi des bénéficiaires"
         header = "Suivi"
