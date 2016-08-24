@@ -1,5 +1,6 @@
 from django.shortcuts import render, reverse
 from django.views import generic
+from django.utils import timezone
 
 from sujets.models import Sujet
 from .forms import *
@@ -22,13 +23,16 @@ class IndexView(NoteFormMixin, generic.TemplateView):
         header = "Suivi"
         header_small = "Tableau de bord"
     #NoteFormMixin
-    form_class = AppelForm
+    forms = {
+        'appel': AppelForm,
+        'signalement': SignalementForm,
+    }
     success_url = "/suivi/"
     #FormView
     template_name = "suivi/index.html"
     def get_initial(self):
-        return {'created_date': timezone.now().date(),
-                'created_time': timezone.now().time()}
+        return {'created_date': timezone.localtime(timezone.now()).date(),
+                'created_time': timezone.localtime(timezone.now()).time()}
 
 
 
@@ -40,7 +44,9 @@ class SuiviSujetView(NoteFormMixin, generic.DetailView):
         header = "{{sujet}}"
         header_small = "suivi"
     #NoteFormMixin
-    form_class = AutoNoteForm
+    forms = {
+        'note': AutoNoteForm,
+        }
     def get_success_url(self):
         return reverse('suivi:details', kwargs={'pk': self.get_object().pk})
     def get_form_kwargs(self):

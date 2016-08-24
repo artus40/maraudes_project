@@ -18,3 +18,7 @@ class MaraudeurAdmin(admin.ModelAdmin):
 @admin.register(ReferentMaraude)
 class ReferentMaraudeAdmin(admin.ModelAdmin):
     fields = ['maraudeur']
+
+@admin.register(Organisme)
+class OrganismeAdmin(admin.ModelAdmin):
+    pass

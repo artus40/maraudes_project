@@ -2,7 +2,6 @@ from .models import Note
 from utilisateurs.models import Professionnel
 
 from django import forms
-from django.utils import timezone
 from django_select2.forms import Select2Widget
 from django.forms import Textarea
 
@@ -33,7 +32,8 @@ class SimpleNoteForm(forms.ModelForm):
 
 class UserNoteForm(NoteForm):
     """ Form that sets 'created_by' with current user id.
-        This requires 'request' object at initialization
+
+        It requires 'request' object at initialization
     """
     class Meta(NoteForm.Meta):
         fields = ['sujet', 'text', 'created_date', 'created_time']

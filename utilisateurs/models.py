@@ -31,6 +31,8 @@ class Organisme(models.Model):
     class Meta:
         verbose_name = "Organisme"
 
+    def __str__(self):
+        return self.nom
 
 class Professionnel(User):
     """ Professionnel d'un organisme """

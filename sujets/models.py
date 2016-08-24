@@ -53,6 +53,13 @@ RESSOURCES_CHOICES = (
 # - Personne
 # - Sujet
 
+HOMME = 'M'
+FEMME = 'Mme'
+GENRE_CHOICES = (
+        (HOMME, 'Homme'),
+        (FEMME, 'Femme'),
+    )
+
 class Personne(models.Model):
     """ Modèle de base d'une personne
         - genre
@@ -60,12 +67,6 @@ class Personne(models.Model):
         - prénom
     """
 
-    HOMME = 'M'
-    FEMME = 'Mme'
-    GENRE_CHOICES = (
-        (HOMME, 'Homme'),
-        (FEMME, 'Femme'),
-    )
     genre = models.CharField(max_length=3,
                              choices=GENRE_CHOICES,
                              default=HOMME)

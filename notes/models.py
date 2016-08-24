@@ -49,11 +49,11 @@ class Note(models.Model):
 
     def note_date(self):
         """ Default 'created_date' value. Child may override this method. """
-        return timezone.now().date()
+        return timezone.localtime(timezone.now()).date()
 
     def note_time(self):
         """ Default 'created_time' value. Child may override this method. """
-        return timezone.now().time()
+        return timezone.localtime(timezone.now()).time()
 
     def note_bg_colors(self):
         """ Returns (header background color, labels color).

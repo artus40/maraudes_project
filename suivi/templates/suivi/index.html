@@ -1,5 +1,7 @@
-<div class="col-md-6 col-md-offset-6">
-  {% include "suivi/appel_form.html" %}
+<div class="col-md-6">
+  {% include "suivi/signalement_form.html" with form=signalement_form %}
 </div>
-
+<div class="col-md-6">
+  {% include "suivi/appel_form.html" with form=appel_form %}
+</div>
 

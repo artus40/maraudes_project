@@ -11,10 +11,10 @@ class Appel(Note):
 
 class Signalement(Note):
 
-    source = models.CharField('Source', max_length=128)
+    source = models.ForeignKey("utilisateurs.Organisme")
 
-    def note_labels(self): return [self.source]
-    def note_bg_colors(self): return ('warning', 'alert')
+    def note_labels(self): return [self.source, self.created_by]
+    def note_bg_colors(self): return ('warning', 'info')
 
 
 
