@@ -1,16 +1,13 @@
 from django.views.generic.edit import FormMixin
+from django.contrib import messages
 
 from .forms import *
 
 class NoteFormMixin(FormMixin):
 
-    form_class = None
-
     forms = None
 
     def get_form(self, prefix, form_class=None):
-        # Should add test to ensure this instance class is
-        # has SingleObjectMixin set with Sujet model ??
         kwargs = self.get_form_kwargs()
         kwargs['prefix'] = prefix
         if not form_class:
@@ -31,9 +28,12 @@ class NoteFormMixin(FormMixin):
             form = self.get_form(prefix)
             if form.is_valid():
                 form.save()
-                # TODO: Add message to notify which form was saved
                 return self.form_valid(form)
         return self.form_invalid(form)
+
+    def form_valid(self, form):
+        messages.success(self.request, "Un nouveau %s a été enregistré" % form.prefix)
+        return super().form_valid(form)
 
     def get_context_data(self, **kwargs):
         context = super(FormMixin, self).get_context_data(**kwargs)
