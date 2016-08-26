@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import generic
 
 from .models import Sujet
@@ -38,7 +38,18 @@ class SujetListView(generic.ListView):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.insert_menu("suivi/menu_sujets.html")
-
+    def post(self, request, **kwargs):
+        from watson import search as watson
+        search_text = request.POST.get('q')
+        results = watson.filter(Sujet, search_text)
+        if results.count() == 1:
+            return redirect(results[0].get_absolute_url())
+        self.queryset = results
+        return self.get(request, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query_text'] = self.request.POST.get('q', None)
+        return context
 
 
 @webpage

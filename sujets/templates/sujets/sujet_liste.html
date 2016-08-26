@@ -5,7 +5,28 @@
     <div class="panel-heading text-center">
       <h3 class="panel-title">Sujets rencontrés</h3>
     </div>
-
+    <div class="panel-body">
+      <form action="" method="POST" class="form form-group">{% csrf_token %}
+      <div class="input-group">
+      <span class="input-group-addon" id="basic-addon1">
+        <span class=" glyphicon glyphicon-search"></span>
+      </span>
+      <input type="text" name="q" class="form-control" placeholder="Chercher un sujet" aria-describedby="basic-addon1">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary">Chercher</button>
+      </span>
+      </div>
+      </form>
+      {% if query_text %}<div class="well well-sm text-center">
+      <p class="label label-warning">'{{query_text}}'</p>
+      <p class="label label-info">
+        {% if not object_list %}Aucun résultat
+        {% else %} {{ object_list.count }} résultat(s)
+        {% endif %}
+      </p>
+      </div>{% endif %}
+    </div>
+    {% if object_list %}
     <!-- Table -->
     <table class="table table-striped table-hover">
     {% for sujet in object_list %}
@@ -15,15 +36,15 @@
     </tr>
     {% endfor %}
     </table>
-  {% if is_paginated %}
-  <div class="panel-footer text-center">
+    {% if is_paginated %}
+    <div class="panel-footer text-center">
       <ul class="pagination">
       {% for num in page_obj.paginator.page_range %}
         <li {% if page_obj.number == num %} class="active" {%endif%}><a href="?page={{num}}">{{num}}</a></li>
       {%endfor%}
       </ul>
-  </div>
-  {% endif %}
+    </div>
+    {% endif %}{% endif %}
   </div>
 </div>
 <div class="col-lg-3 col-md-3">

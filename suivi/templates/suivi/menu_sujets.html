@@ -3,12 +3,6 @@
                   <a href="{% url 'sujets:liste' %}">Liste des sujets
                   <span class="pull-right">{% bootstrap_icon "list" %}</span></a>
                 </li>
-                {% if search_form %}
-                <form class="nav navbar-form app-menu text-center" method="POST" action="search/">
-                  {% bootstrap_form search_form show_label=False %}
-                  {% bootstrap_button 'Chercher' button_type='submit' %}
-                </form>
-                {% endif %}
                 {% if user.is_superuser %}
                 <li class="dropdown app-menu">
                   <a class="dropdown-toggle" data-toggle="dropdown" href="#">
