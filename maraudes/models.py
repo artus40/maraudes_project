@@ -122,14 +122,8 @@ class Maraude(models.Model):
     est_passee.boolean = True
     est_passee.short_description = 'Passée ?'
 
-    def rencontre_count(self):
-        return self.rencontres.count()
-
     def get_observations(self):
-        observations = []
-        for r in self.rencontres.all():
-            observations += r.observations.all()
-        return observations
+        raise Warning("Deprecated ! Should use CompteRendu proxy object")
 
     def get_absolute_url(self):
         return reverse('maraudes:details', kwargs={'pk': self.id})

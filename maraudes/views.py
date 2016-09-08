@@ -229,7 +229,7 @@ class CompteRenduCreateView(generic.DetailView):
 @webpage
 class CompteRenduUpdateView(generic.DetailView):
     """ Mettre à jour le compte-rendu de la maraude """
-    model = Maraude
+    model = CompteRendu
     context_object_name = "maraude"
     template_name = "compte_rendu/compterendu_update.html"
 
@@ -243,9 +243,6 @@ class CompteRenduUpdateView(generic.DetailView):
     rencontres_queryset = None
     forms = None
 
-    def get_rencontres_queryset(self):
-        return self.get_object().rencontres.all()
-
     def get_forms_with_inline(self, *args):
         self.base_formset = RencontreInlineFormSet(
                                     *args,
@@ -254,7 +251,7 @@ class CompteRenduUpdateView(generic.DetailView):
                                     )
 
         self.inline_formsets = []
-        for i, instance in enumerate(self.get_rencontres_queryset()):
+        for i, instance in enumerate(self.get_object()):
             inline_formset = ObservationInlineFormSetNoExtra(
                     *args,
                     instance = instance,
