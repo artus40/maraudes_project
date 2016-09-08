@@ -7,21 +7,12 @@ class NoteFormMixin(FormMixin):
 
     forms = None
 
-    def get_form(self, prefix, form_class=None):
+    def get_form(self, prefix):
         kwargs = self.get_form_kwargs()
         kwargs['prefix'] = prefix
-        if not form_class:
-            form_class = self.forms[prefix]
-        try:
-            form = form_class(
-                        **kwargs
-                        )
-        except TypeError: #Forms that requires request
-            form = form_class(
-                        self.request,
-                        **kwargs
-                        )
-        return form
+        kwargs['request'] = self.request
+        form_class = self.forms[prefix]
+        return form_class(**kwargs)
 
     def post(self, request, **kwargs):
         for prefix in self.forms.keys():

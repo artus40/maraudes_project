@@ -38,7 +38,8 @@ class UserNoteForm(NoteForm):
     class Meta(NoteForm.Meta):
         fields = ['sujet', 'text', 'created_date', 'created_time']
 
-    def __init__(self, request, **kwargs):
+    def __init__(self, **kwargs):
+        request = kwargs.pop('request')
         super().__init__(**kwargs)
         try:
             self.author = Professionnel.objects.get(pk=request.user.pk)
@@ -47,7 +48,6 @@ class UserNoteForm(NoteForm):
             raise RuntimeError(msg)
 
     def save(self, commit=True):
-        print('save UserNote', self)
         instance = super().save(commit=False)
         instance.created_by = self.author
         if commit:
@@ -58,12 +58,11 @@ class AutoNoteForm(UserNoteForm):
     class Meta(UserNoteForm.Meta):
         fields = ['text']
 
-    def __init__(self, request, **kwargs):
+    def __init__(self, **kwargs):
         self.sujet = kwargs.pop('sujet')
-        super().__init__(request, **kwargs)
+        super().__init__(**kwargs)
 
     def save(self, commit=True):
-        print('Saving : ', self, 'with', self.sujet)
         inst = super().save(commit=False)
         inst.sujet = self.sujet
         if commit:
