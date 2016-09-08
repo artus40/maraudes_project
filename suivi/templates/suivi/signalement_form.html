@@ -1,8 +1,12 @@
 <div class="panel panel-warning">
-    <div class="panel-heading">
-      <h4 class="panel-title">Signalement</h4>
+    <div class="panel-heading" role="tab" id="signalementHeading">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#signalementCollapse" aria-expanded="true" aria-controls="collapseOne">
+      Signalement</a></h4>
     </div>
-    <div class="panel-body">
-    {% include "suivi/signalement_form_inner.html" %}
+    <div id="signalementCollapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="signalementHeading">
+      <div class="panel-body">
+        {% include "suivi/signalement_form_inner.html" %}
+      </div>
     </div>
   </div>
