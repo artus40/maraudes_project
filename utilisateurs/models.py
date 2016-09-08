@@ -34,6 +34,8 @@ class Organisme(models.Model):
     def __str__(self):
         return self.nom
 
+
+
 class Professionnel(User):
     """ Professionnel d'un organisme """
     organisme = models.ForeignKey(
@@ -41,6 +43,7 @@ class Professionnel(User):
                                 related_name="professionnels",
                                 blank=True, null=True # For now
                             )
+
 
 
 class Maraudeur(Professionnel):

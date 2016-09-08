@@ -63,6 +63,11 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         context['prochaine_maraude_abs'] = self.get_prochaine_maraude()
         context['prochaine_maraude'] = self.get_prochaine_maraude_for_user()
+        if self.request.user.is_superuser:
+            context['missing_cr'] = CompteRendu.objects.get_queryset().filter(
+                    heure_fin__isnull=True,
+                    date__lte = timezone.localtime(timezone.now()).date()
+                )
         return context
 
     def get_prochaine_maraude_for_user(self):
@@ -113,7 +118,7 @@ class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
     def get_queryset(self):
         today = datetime.date.today()
         return super().get_queryset().filter(
-                                        date__lte=datetime.date.today()
+                                        date__lte=timezone.localtime(timezone.now()).date()
                                     ).order_by('-date')
 
 

@@ -27,12 +27,13 @@ class IndexView(NoteFormMixin, generic.TemplateView):
         'appel': AppelForm,
         'signalement': SignalementForm,
     }
-    success_url = "/suivi/"
-    #FormView
-    template_name = "suivi/index.html"
     def get_initial(self):
         return {'created_date': timezone.localtime(timezone.now()).date(),
                 'created_time': timezone.localtime(timezone.now()).time()}
+    def get_success_url(self):
+        return reverse('suivi:index')
+    #FormView
+    template_name = "suivi/index.html"
 
 
 

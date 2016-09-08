@@ -1,6 +1,8 @@
 <div class="col-md-6">
     <div class="panel panel-primary">
-      <div class="panel-heading">Votre prochaine maraude</div>
+      <div class="panel-heading">
+        <h4 class="panel-title">Votre prochaine maraude</h4>
+      </div>
       <div class="panel-body">
       {% if prochaine_maraude %}<p>
         <span class="glyphicon glyphicon-calendar"></span>
@@ -16,9 +18,12 @@
 {% if user.is_superuser %}
 <div class="col-md-6">
     <div class="panel panel-warning">
-      <div class="panel-heading">Compte-rendus en retard</div>
-      <table class="table">
-        <tr><td>Lister les comptes-rendu passés qui ne sont pas finalisés</td></tr>
+      <div class="panel-heading">
+        <h4 class="panel-title">Compte-rendus en retard</h4>
+      </div>
+      <table class="table">{% for cr in missing_cr %}
+        <tr><td><a href="{% url 'maraudes:create' pk=cr.pk %}" class="btn btn-link">{{cr.date}}</a></td><td>{{cr.referent}} & {{cr.binome}}</td></tr>
+        {% endfor %}
       </table>
     </div>
 </div>
