@@ -32,7 +32,7 @@ class IndexView(NoteFormMixin, generic.TemplateView):
                 'created_time': timezone.localtime(timezone.now()).time()}
     def get_success_url(self):
         return reverse('suivi:index')
-    #FormView
+    #TemplateView
     template_name = "suivi/index.html"
 
 
