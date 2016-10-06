@@ -86,14 +86,23 @@ class Personne(models.Model):
             raise ValidationError(_("Vous devez remplir au moins un nom, prénom ou surnom"))
         return super().clean()
 
-
+#TODO:
+# Il serait préférable de séparer le Sujet (nom, prénom, age)
+# des données utilisées pour les statistiques
+# Solution : nouveau modèle "Informations" avec OneToOneRelation vers Sujet
+# Cette classe pourra être déplacée dans le module 'statistiques'
 
 class Sujet(Personne):
     """ Personne faisant l'objet d'un suivi par la maraude
     """
     # referent = models.ForeignKey("utilisateurs.Professionnel", related_name="suivis")
-    premiere_rencontre = models.DateField(blank=True, null=True)
-    age = models.SmallIntegerField(blank=True, null=True)
+    premiere_rencontre = models.DateField(
+                                    blank=True, null=True,
+                                    default=timezone.now
+                                    )
+    age = models.SmallIntegerField(
+                                blank=True, null=True
+                                )
 
     lien_familial = models.NullBooleanField("Lien Familial")
     parcours_de_vie = models.CharField(max_length=64,

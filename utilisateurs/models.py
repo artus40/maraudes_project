@@ -51,7 +51,7 @@ class Maraudeur(Professionnel):
 
     auto_fields = ['username', 'email', 'organisme']
 
-    # Donne accès aux vues des modules "maraudes" et "veille/suivis"
+    # Donne accès aux vues "maraudes" et "suivi"
 
     DEFAULT_ORGANISME = "ALSA"
 
