@@ -1,6 +1,5 @@
 # Requirements
 
-* django-bootstrap3
-* django_select2
-
-* django-watson
+django-bootstrap3
+django-select2
+django-watson
