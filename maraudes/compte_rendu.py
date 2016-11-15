@@ -2,6 +2,22 @@ from .models import Maraude
 
 from collections import OrderedDict
 
+import datetime
+
+def split_by_12h_blocks(iterable, field="heure_debut"):
+    """ Move object with given 'field' time under 12:00 to the end of stream.
+        Apart from this, order is untouched.
+    """
+    to_end = []
+    for note in iterable:
+        if getattr(note, "created_time") <= datetime.time(12):
+            to_end.append(note)
+        else:
+            yield note
+
+    for note in to_end:
+        yield note
+
 class CompteRendu(Maraude):
     """ Proxy for Maraude objects.
         Gives access to related Observation and Rencontre
@@ -21,7 +37,7 @@ class CompteRendu(Maraude):
         observations = []
         for r in self._iter(order=order, reverse=reverse):
             observations += r.observations.get_queryset()
-        return observations
+        return list(split_by_12h_blocks(observations, field=order))
 
     def __iter__(self):
         """ Iterates on related 'rencontres' objects using default ordering """

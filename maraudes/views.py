@@ -88,6 +88,8 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
 ## MARAUDES
 @webpage
 class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
+    """ Vue détaillé d'un compte-rendu de maraude """
+
     model = CompteRendu
     context_object_name = "maraude"
     template_name = "maraudes/details.html"
@@ -107,6 +109,8 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
 
 @webpage
 class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
+    """ Vue de la liste des compte-rendus de maraude """
+
     model = CompteRendu
     template_name = "maraudes/liste.html"
     paginate_by = 10
@@ -125,6 +129,8 @@ class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
 ## COMPTE-RENDU DE MARAUDE
 @webpage
 class CompteRenduCreateView(generic.DetailView):
+    """ Vue pour la création d'un compte-rendu de maraude """
+
     model = CompteRendu
     template_name = "compte_rendu/compterendu_create.html"
     context_object_name = "maraude"
@@ -228,7 +234,8 @@ class CompteRenduCreateView(generic.DetailView):
 
 @webpage
 class CompteRenduUpdateView(generic.DetailView):
-    """ Mettre à jour le compte-rendu de la maraude """
+    """ Vue pour mettre à jour le compte-rendu de la maraude """
+
     model = CompteRendu
     context_object_name = "maraude"
     template_name = "compte_rendu/compterendu_update.html"
