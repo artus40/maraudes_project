@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 import datetime
 
-def split_by_12h_blocks(iterable, field="heure_debut"):
+def split_by_12h_blocks(iterable):
     """ Move object with given 'field' time under 12:00 to the end of stream.
         Apart from this, order is untouched.
     """
@@ -37,7 +37,7 @@ class CompteRendu(Maraude):
         observations = []
         for r in self._iter(order=order, reverse=reverse):
             observations += r.observations.get_queryset()
-        return list(split_by_12h_blocks(observations, field=order))
+        return list(split_by_12h_blocks(observations))
 
     def __iter__(self):
         """ Iterates on related 'rencontres' objects using default ordering """
