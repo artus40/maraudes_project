@@ -5,10 +5,11 @@ from .models import Sujet
 from .forms import SujetCreateForm
 
 ### Webpage config
+from utilisateurs.models import Maraudeur
 from website import decorators as website
 webpage = website.webpage(
                     ajax=True,
-                    permissions=['sujets.view_sujets'],
+                    app_users=[Maraudeur],
                     app_name="suivi",
                     app_menu=[]
                 )
@@ -70,10 +71,6 @@ class SujetCreateView(generic.edit.CreateView):
     class PageInfo:
         title = "Nouveau sujet"
         header = "Nouveau sujet"
-    # Special permissions
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.permissions += ['sujets.add_sujet']
     #CreateView
     template_name = "sujets/sujet_create.html"
     form_class = SujetCreateForm

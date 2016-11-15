@@ -14,14 +14,18 @@ def webpage(**options):
     permissions = options.pop('permissions', [])
     app_menu = options.pop('app_menu', [])
     app_name = options.pop('app_name', None)
+    app_users = options.pop('app_users', [])
 
     new_bases = []
     if ajax:
         new_bases.append(WebsiteAjaxTemplateMixin)
     else:
         new_bases.append(WebsiteTemplateMixin)
+
     if permissions:
         new_bases.append(PermissionRequiredMixin)
+    if app_users:
+        new_bases.append(SpecialUserRequiredMixin)
 
     def class_decorator(cls):
         _insert_bases(cls, new_bases)
@@ -29,6 +33,7 @@ def webpage(**options):
             cls.permissions = permissions
         cls.app_menu = app_menu.copy() #avoid conflict between Views
         cls.app_name = app_name
+        cls.app_users = app_users.copy()
         return cls
 
     return class_decorator

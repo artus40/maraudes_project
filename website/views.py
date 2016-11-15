@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 class Index(WebsiteTemplateMixin, views.generic.TemplateView):
 
     template_name = "main.html"
-    app_menu = [] #TODO: fix this !
+    app_menu = None
     login_response = None
 
     class PageInfo:

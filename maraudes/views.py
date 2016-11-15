@@ -22,10 +22,12 @@ from .forms import (    RencontreForm, RencontreInlineFormSet,
                         ObservationInlineFormSet, ObservationInlineFormSetNoExtra,
                         MaraudeAutoDateForm, MonthSelectForm,   )
 
+from utilisateurs.models import Maraudeur
+
 from website import decorators as website
 webpage = website.webpage(
                     ajax=False,
-                    permissions=['maraudes.view_maraudes'],
+                    app_users=[Maraudeur],
                     app_menu=["maraudes/menu_dernieres_maraudes.html", "maraudes/menu_administration.html"]
                 )
 

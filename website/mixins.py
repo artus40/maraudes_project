@@ -2,7 +2,9 @@ import datetime
 from django.utils import timezone
 from django.core.exceptions import ImproperlyConfigured
 from django.apps import apps
+#TODO: remove next line
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.decorators import user_passes_test
 from django.template import Template, Context
 from django.views.generic.base import ContextMixin, TemplateResponseMixin
 
@@ -16,6 +18,28 @@ class PermissionRequiredMixin(object):
     def as_view(cls, **initkwargs):
         view = super(PermissionRequiredMixin, cls).as_view(**initkwargs)
         return permission_required(cls.permissions)(view)
+
+def special_user_required(authorized_users):
+
+    valid_cls = tuple(authorized_users)
+
+    def check_special_user(user):
+        print('check user is instance of', valid_cls)
+        if isinstance(user, valid_cls):
+            return True
+        else:
+            return False
+
+    return user_passes_test(check_special_user)
+
+
+class SpecialUserRequiredMixin(object):
+    app_users = []
+
+    @classmethod
+    def as_view(cls, **initkwargs):
+        view = super().as_view(**initkwargs)
+        return special_user_required(cls.app_users)(view)
 
 
 
@@ -105,10 +129,13 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     def get_active_app(self):
         if not self.app_name:
             self.app_name = self.__class__.__module__.split(".")[0]
+        # If app is website, there is no "active" application
+        if self.app_name == "website":
+            return None
+
         active_app = apps.get_app_config(self.app_name)
         if not active_app in self.apps: #TODO: how do we deal with this ?
-            print("%s must be registered in Configuration.navbar_apps" % active_app)
-            return None
+            raise ValueError("%s must be registered in Configuration.navbar_apps" % active_app)
         return active_app
 
     @property

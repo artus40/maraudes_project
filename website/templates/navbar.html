@@ -15,7 +15,7 @@
         <li class="{% if app == active_app %}active{%endif%}">
           <a href="/{{app.label}}/">{% bootstrap_icon app.menu_icon %} &middot; <strong>{{ app.name|title }}</strong></a>
         </li>
-        {% if app == active_app %}{% for t in app_menu %}{% include t %}{% endfor %}{% endif %}
+        {% if app == active_app %}{% for template in app_menu %}{% include template %}{% endfor %}{% endif %}
         {% endif %}{%endfor%}
       </ul>
       <ul class="nav navbar-nav navbar-right">

@@ -7,10 +7,11 @@ from .forms import *
 from notes.mixins import NoteFormMixin
 from notes.forms import AutoNoteForm
 # Create your views here.
+from utilisateurs.models import Maraudeur
 from website import decorators as website
 webpage = website.webpage(
                     ajax=False,
-                    permissions=['sujets.view_sujets'],
+                    app_users=[Maraudeur],
                     app_menu=["suivi/menu_sujets.html"]
                 )
 
