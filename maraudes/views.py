@@ -145,6 +145,7 @@ class CompteRenduCreateView(generic.DetailView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        # Overrides app_menu and replace it
         self.app_menu = ["compte_rendu/menu_creation.html"]
 
     def get_forms(self, *args, initial=None):
