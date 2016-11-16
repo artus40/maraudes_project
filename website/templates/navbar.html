@@ -28,13 +28,23 @@
             <li><a href="{% url 'logout' %}">{% bootstrap_icon "log-out" %} Déconnecter</a></li>
             {% else %}
             <li>
-              <form class="navbar-form navbar-left" method="post" action="">{% csrf_token %}
+              <form class="navbar-form navbar-left" method="post" action="/login/">{% csrf_token %}
                 {% if next %}
                 <p class="well-sm text-center"><strong style="color:#980300;">Vous devez vous connecter<br/> pour accéder à cette page.</strong></p>
                 <input name="next" value="{{next}}" hidden />
                 {% endif %}
                 <div class="form-group form-horizontal">
-                  {% bootstrap_form form layout="horizontal" show_label=False %}
+                  <div class="form-group">
+                    <label class="col-md-2 sr-only control-label" for="id_username">Username</label>
+                    <div class="col-md-10">
+                      <input autofocus="" class="form-control" id="id_username" maxlength="254" name="username" placeholder="Username" title="" type="text" required />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-md-2 sr-only control-label" for="id_password">Password</label>
+                    <div class="col-md-10"><input class="form-control" id="id_password" name="password" placeholder="Password" title="" type="password" required />
+                    </div>
+                  </div>
                 </div>
                 <div class="text-center"><button class="btn btn-primary navbar-button" type="submit">Connexion</button></div>
               </form>
