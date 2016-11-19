@@ -11,7 +11,7 @@ webpage = website.webpage(
                     ajax=True,
                     app_users=[Maraudeur],
                     app_name="suivi",
-                    app_menu=[]
+                    app_menu=["sujets/menu/admin_sujet.html"]
                 )
 ### Views
 
@@ -20,7 +20,7 @@ class SujetDetailsView(generic.DetailView):
     class PageInfo:
         title = "Sujet - {{ sujet }}"
         header = "{{ sujet }}"
-        header_small = "suivi"
+        header_small = "informations"
     #DetailView
     template_name = "sujets/sujet_details.html"
     model = Sujet
@@ -38,7 +38,7 @@ class SujetListView(generic.ListView):
     paginate_by = 30
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.insert_menu("suivi/menu_sujets.html")
+        self.insert_menu("sujets/menu/admin_sujet.html")
     def post(self, request, **kwargs):
         from watson import search as watson
         search_text = request.POST.get('q')

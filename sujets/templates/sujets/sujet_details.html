@@ -1,10 +1,13 @@
+<h4>Informations générales</h4>
+<p><strong>Première rencontre :</strong> {{ sujet.premiere_rencontre }}</p>
+
 <div class="panel panel-primary">
   <div class="panel-heading" role="tab" id="ficheInfoHeading">
     <div class="row">
       <div class="col-md-9">
         <h4 class="panel-title">
           <a role="button" data-toggle="collapse" href="#collapseFicheInfo" aria-expanded="true" aria-controls="collapseOne">
-          Fiche informations</a>
+          Fiche statistiques</a>
         </h4>
       </div>
       <div class="col-md-3 text-right">
@@ -12,7 +15,7 @@
       </div>
     </div>
   </div>
-  <div id="collapseFicheInfo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="ficheInfoHeading">
+  <div id="collapseFicheInfo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="ficheInfoHeading">
     {% include 'sujets/sujet_details_inner.html' %}
   </div>
 </div>
@@ -51,7 +54,7 @@
 
     var showUpdateDetails = function(button, panel) {
             $(panel).load("{% url "sujets:details" pk=sujet.pk %}", function() {
-                  $(button).text("Mise à jour");
+                  $(button).text("Mettre à jour");
                   });
             };
 

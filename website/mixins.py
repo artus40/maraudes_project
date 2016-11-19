@@ -94,8 +94,11 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         return [self.base_template]
 
     def get_content_template(self):
-        if hasattr(self, 'template_name'): #Ensure easy integration with other views
+        # Ensure easy integration with generic views
+        if hasattr(self, 'template_name'):
             self.content_template = self.template_name
+        else:
+            raise ImproperlyConfigured(self, "has no template defined !")
         return self.content_template
 
     def get_apps_config(self):

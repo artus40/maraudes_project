@@ -12,7 +12,7 @@ from website import decorators as website
 webpage = website.webpage(
                     ajax=False,
                     app_users=[Maraudeur],
-                    app_menu=["suivi/menu_sujets.html"]
+                    app_menu=["suivi/menu/sujets.html", "suivi/menu/admin_sujets.html"]
                 )
 
 
