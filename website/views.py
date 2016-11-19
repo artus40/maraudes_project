@@ -31,5 +31,6 @@ def login_view(request):
     if request.method == 'GET':
         return HttpResponsePermanentRedirect('/')
     elif request.method == 'POST':
+        #TODO: authenticate instead of mis-using 'login' view.
         response = login(request)
         return HttpResponseRedirect('/')

@@ -115,7 +115,7 @@ class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
 
     model = CompteRendu
     template_name = "maraudes/liste.html"
-    paginate_by = 10
+    paginate_by = 30
 
     class PageInfo:
         title = "Maraude - Liste des maraudes"

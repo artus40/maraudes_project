@@ -1,4 +1,5 @@
 {% load bootstrap3 %}
+{% load tables %}
 <div class="col-md-12 col-lg-6">
   <div class="panel panel-primary">
     <!-- Default panel contents -->
@@ -7,30 +8,7 @@
     </div>
 
     <!-- Table -->
-    <table class="table table-striped">
-    {% for maraude in object_list %}
-    <tr>
-      <td>
-        <div class="btn-group" role="group">
-        {% if maraude.est_terminee %}
-          <a href="{% url 'maraudes:details' maraude.id %}" class="btn btn-primary">
-        {% elif perms.maraudes.can_add_compterendu %}
-          <a href="{% url 'maraudes:create' maraude.id %}" class="btn btn-warning">
-        {% else %}
-          <a href="#" class="btn btn-default disabled">
-        {% endif %}
-        {{maraude.date}}
-        {% if user.is_superuser %}
-          </a><a class="btn btn-danger" href="/admin/maraudes/maraude/{{maraude.id}}/change/">{% bootstrap_icon "edit" %}
-        {% endif %}</a></div>
-        <div class="pull-right">
-        <span class="label label-success">{{maraude.rencontres.count}} rencontres</span>
-        <span class="label label-info">{{ maraude.binome }} & {{ maraude.referent }}</span>
-        </div>
-      </td>
-    </tr>
-  {% endfor %}
-    </table>
+    {% table object_list cols=2 cell_template="maraudes/list_table_cell.html" %}
   {% if is_paginated %}
   <div class="panel-footer text-center">
       <ul class="pagination">

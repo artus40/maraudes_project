@@ -1,5 +1,3 @@
-from notes.models import Note
-
 from django import template
 
 register = template.Library()

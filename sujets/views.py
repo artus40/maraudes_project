@@ -35,7 +35,7 @@ class SujetListView(generic.ListView):
     #ListView
     model = Sujet
     template_name = "sujets/sujet_liste.html"
-    paginate_by = 10
+    paginate_by = 30
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.insert_menu("suivi/menu_sujets.html")

@@ -1,0 +1,13 @@
+<table class="table table-condensed">
+  {% for row in rows %}
+    <tr>
+      {% for object in row %}
+        <td>
+        {% if object %}
+          {% include cell_template with object=object %}
+        {%endif%}
+        </td>
+      {% endfor %}
+    </tr>
+  {% endfor %}
+</table>

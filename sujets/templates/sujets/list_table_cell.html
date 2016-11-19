@@ -1,0 +1,6 @@
+<a href="{% url 'suivi:details' object.pk %}" class="btn btn-link">{{object}}</a>
+<div class="pull-right" style="padding-right: 20px;">
+  <span class="label label-info">{{ object.notes.count }} notes</span>
+</div>
+
+
