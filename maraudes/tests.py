@@ -7,7 +7,7 @@ from django.test import TestCase
 from .models import Maraude, Maraudeur, ReferentMaraude
 # Create your tests here.
 
-from alsa.base_data import MARAUDEURS
+from maraudes_project.base_data import MARAUDEURS
 
 MARAUDE_DAYS = [
     True, True, False, True, True, False, False

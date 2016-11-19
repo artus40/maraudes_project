@@ -9,15 +9,17 @@ from notes.forms import AutoNoteForm
 # Create your views here.
 from utilisateurs.models import Maraudeur
 from website import decorators as website
-webpage = website.webpage(
+suivi = website.app_config(
+                    name="suivi",
+                    groups=[Maraudeur],
+                    menu=["suivi/menu/sujets.html"],
+                    admin_menu=["suivi/menu/admin_sujets.html"],
                     ajax=False,
-                    app_users=[Maraudeur],
-                    app_menu=["suivi/menu/sujets.html", "suivi/menu/admin_sujets.html"]
                 )
 
 
 
-@webpage
+@suivi
 class IndexView(NoteFormMixin, generic.TemplateView):
     class PageInfo:
         title = "Suivi des bénéficiaires"
@@ -36,10 +38,33 @@ class IndexView(NoteFormMixin, generic.TemplateView):
     #TemplateView
     template_name = "suivi/index.html"
 
+@suivi
+class SujetListView(generic.ListView):
+    class PageInfo:
+        title = "Sujet - Liste des sujets"
+        header = "Liste des sujets"
+    #ListView
+    model = Sujet
+    template_name = "sujets/sujet_liste.html"
+    paginate_by = 30
 
+    def post(self, request, **kwargs):
+        from watson import search as watson
+        search_text = request.POST.get('q')
+        results = watson.filter(Sujet, search_text)
+        if results.count() == 1:
+            return redirect(results[0].get_absolute_url())
+        self.queryset = results
+        return self.get(request, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['query_text'] = self.request.POST.get('q', None)
+        return context
 
-
-@webpage
+# Import app_config from 'sujets' application, using
+# its admin_menu option
+from sujets.views import sujets
+@sujets
 class SuiviSujetView(NoteFormMixin, generic.DetailView):
     class PageInfo:
         title = "Sujet - {{sujet}}"
@@ -59,9 +84,6 @@ class SuiviSujetView(NoteFormMixin, generic.DetailView):
     model = Sujet
     template_name = "suivi/details.html"
     context_object_name = "sujet"
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.insert_menu("sujets/menu_sujet.html")
     def get_context_data(self, *args,  **kwargs):
         context = super().get_context_data(*args, **kwargs)
         context['notes'] = self.object.notes.by_date(reverse=True)

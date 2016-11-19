@@ -70,7 +70,12 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     """
     base_template = "base_site.html"
     content_template = None
+
     app_name = None
+    _user_menu = []
+    _admin_menu = []
+    _groups = []
+
 
     class Configuration:
         stylesheets = ['base.css']
@@ -147,16 +152,15 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
             self._active_app = self.get_active_app()
         return self._active_app
 
-    def get_menu(self):
+    @property
+    def menu(self):
         """ Renvoie la liste des templates utilisés comme menu pour l'application
             active
         """
-        return self.app_menu
+        if not self.request.user.is_superuser:
+            return self._user_menu
+        return self._user_menu + self._admin_menu
 
-    def insert_menu(self, template_name):
-        """ Insert menu at beginning of self.app_menu """
-        if not template_name in self.app_menu:
-            self.app_menu.insert(0, template_name)
 
     def _update_context_with_rendered_blocks(self, context):
         """ Render text for existing PageInfo attributes.
@@ -178,7 +182,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         context = user_processor(self.request, context)
         #Webpage
         context['content_template'] = self.get_content_template()
-        context['app_menu'] = self.get_menu()
+        context['app_menu'] = self.menu
         return context
 
 class WebsiteAjaxTemplateMixin(WebsiteTemplateMixin):

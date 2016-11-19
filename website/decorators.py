@@ -5,16 +5,19 @@ def _insert_bases(cls, bases):
     new_bases = tuple(bases) + old_bases
     cls.__bases__ = new_bases
 
-def webpage(**options):
-    """ Class decorators that insert needed bases according to options :
+def app_config(**options):
+    """ Insert per-application configuration options :
+        -- name : name of the app to register under in navbar
+        -- groups : user groups needed to access this application
+        -- menu : user menu templates to be used
+        -- admin_menu : admin menu templates, only appear for superuser
         -- ajax : view will return content_template for Ajax requests
-        -- permissions : list of permissions needed to access view
     """
+    name = options.pop('name', None)
+    groups = options.pop('groups', []) #Transition from app_users
+    menu = options.pop('menu', [])
+    admin_menu = options.pop('admin_menu', [])
     ajax = options.pop('ajax', False)
-    permissions = options.pop('permissions', [])
-    app_menu = options.pop('app_menu', [])
-    app_name = options.pop('app_name', None)
-    app_users = options.pop('app_users', [])
 
     new_bases = []
     if ajax:
@@ -22,18 +25,15 @@ def webpage(**options):
     else:
         new_bases.append(WebsiteTemplateMixin)
 
-    if permissions:
-        new_bases.append(PermissionRequiredMixin)
-    if app_users:
+    if groups: #TODO: use group instaed of user class
         new_bases.append(SpecialUserRequiredMixin)
 
     def class_decorator(cls):
         _insert_bases(cls, new_bases)
-        if permissions:
-            cls.permissions = permissions
-        cls.app_menu = app_menu.copy() #avoid conflict between Views
-        cls.app_name = app_name
-        cls.app_users = app_users.copy()
+        cls._user_menu = menu
+        cls._admin_menu = admin_menu
+        cls.app_name = name
+        cls.app_users = groups.copy()
         return cls
 
     return class_decorator
