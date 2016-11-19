@@ -1,3 +1,4 @@
+{% load tables %}
 <div class="col-md-6">
     <div class="panel panel-primary">
       <div class="panel-heading">
@@ -21,10 +22,7 @@
       <div class="panel-heading">
         <h4 class="panel-title">Compte-rendus en retard</h4>
       </div>
-      <table class="table">{% for cr in missing_cr %}
-        <tr><td><a href="{% url 'maraudes:create' pk=cr.pk %}" class="btn btn-link">{{cr.date}}</a></td><td>{{cr.referent}} & {{cr.binome}}</td></tr>
-        {% endfor %}
-      </table>
+      {% table missing_cr cols=2 cell_template="maraudes/missing_cr_table_cell.html" %}
     </div>
 </div>
 {% endif %}
