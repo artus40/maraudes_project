@@ -1,4 +1,4 @@
-from django.shortcuts import render, reverse, redirect
+from django.shortcuts import reverse, redirect
 from django.views import generic
 from django.utils import timezone
 
