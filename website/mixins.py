@@ -60,7 +60,7 @@ def user_processor(request, context):
 
 class NavbarMixin(object):
 
-    registered_apps = ['maraudes', 'suivi']
+    registered_apps = ['maraudes', 'suivi', 'statistiques']
     app_name = None
 
 
@@ -75,6 +75,7 @@ class NavbarMixin(object):
         APP_ICONS = {
             'maraudes': 'road',
             'suivi': 'eye-open',
+            'statistiques': 'bell',
         }
         app_names = self.registered_apps
         self._apps = []
@@ -82,6 +83,7 @@ class NavbarMixin(object):
             app_config = apps.get_app_config(name)
             app_config.menu_icon = APP_ICONS[name]
             #TODO: Seems unsafe (only need module perm)
+            # Should use 'groups' declared in webiste.decorators !!
             app_config.disabled = not self.request.user.has_module_perms(name)
             print(self.request.user, app_config, '-> has perm:', not app_config.disabled)
             self._apps.append(app_config)
