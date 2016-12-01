@@ -3,7 +3,7 @@ from django.urls import reverse
 from django import views
 from .mixins import WebsiteTemplateMixin
 
-from django.contrib.auth.views import login
+from django.contrib.auth import login, authenticate
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
 class Index(WebsiteTemplateMixin, views.generic.TemplateView):
@@ -16,21 +16,33 @@ class Index(WebsiteTemplateMixin, views.generic.TemplateView):
         header = "La Maraude ALSA"
         header_small = "accueil"
 
-    def _get_user_entry_point(self):
-        # Should find best entry point according to user Group
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["next"] = self.request.GET.get("next", "")
+        return context
+
+
+
+def _get_entry_point(user):
+    from utilisateurs.models import Maraudeur
+
+    if isinstance(user, Maraudeur):
         return reverse('maraudes:index')
-
-    def get(self, request, *args, **kwargs):
-        if request.user.is_authenticated():
-            return redirect(self._get_user_entry_point())
-        return super().get(request, *args, **kwargs)
-
-
+    else:
+        return reverse('index')
 
 def login_view(request):
     if request.method == 'GET':
         return HttpResponsePermanentRedirect('/')
     elif request.method == 'POST':
-        #TODO: authenticate instead of mis-using 'login' view.
-        response = login(request)
-        return HttpResponseRedirect('/')
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            next = request.POST.get('next', None)
+            if not next:
+                next = _get_entry_point(user)
+            return HttpResponseRedirect(next)
+        else:
+            return HttpResponseRedirect('/')

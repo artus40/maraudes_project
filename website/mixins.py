@@ -57,49 +57,13 @@ def user_processor(request, context):
     context['user_group'] = request.user.groups.first()
     return context
 
-class WebsiteTemplateMixin(TemplateResponseMixin):
-    """ Mixin for easy integration of 'website' templates
 
-        Each child can specify:
-        - title : title of the page
-        - header : header of the page
-        - header_small : sub-header of the page
+class NavbarMixin(object):
 
-        If 'content_template' is not defined, value will fallback to template_name
-        in child view.
-    """
-    base_template = "base_site.html"
-    content_template = None
+    registered_apps = ['maraudes', 'suivi']
     app_name = None
 
-    class Configuration:
-        stylesheets = ['base.css']
-        navbar_apps = ['maraudes', 'suivi']
-        page_blocks = ['header', 'header_small', 'title']
 
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.user = None
-        self._page_blocks = []
-        if not hasattr(self, "PageInfo"):
-            raise ImproperlyConfigured("You must define a PageInfo on ", self)
-        for attr, val in self.PageInfo.__dict__.items():
-            if attr[0] is not "_" and type(val) is str:
-                setattr(self, attr, Template(val))
-                self._page_blocks.append(attr)
-
-    def get_template_names(self):
-        """ Ensure same template for all children views. """
-        return [self.base_template]
-
-    def get_content_template(self):
-        # Ensure easy integration with generic views
-        if hasattr(self, 'template_name'):
-            self.content_template = self.template_name
-        else:
-            raise ImproperlyConfigured(self, "has no template defined !")
-        return self.content_template
 
     def get_apps_config(self):
         """ Load additionnal config data on each app registered in navbar
@@ -112,7 +76,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
             'maraudes': 'road',
             'suivi': 'eye-open',
         }
-        app_names = self.Configuration.navbar_apps
+        app_names = self.registered_apps
         self._apps = []
         for name in app_names:
             app_config = apps.get_app_config(name)
@@ -147,16 +111,64 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
             self._active_app = self.get_active_app()
         return self._active_app
 
-    def get_menu(self):
+    @property
+    def menu(self):
         """ Renvoie la liste des templates utilisés comme menu pour l'application
             active
         """
-        return self.app_menu
+        if not self.request.user.is_superuser:
+            return self._user_menu
+        return self._user_menu + self._admin_menu
 
-    def insert_menu(self, template_name):
-        """ Insert menu at beginning of self.app_menu """
-        if not template_name in self.app_menu:
-            self.app_menu.insert(0, template_name)
+
+
+class WebsiteTemplateMixin(NavbarMixin, TemplateResponseMixin):
+    """ Mixin for easy integration of 'website' templates
+
+        Each child can specify:
+        - title : title of the page
+        - header : header of the page
+        - header_small : sub-header of the page
+
+        If 'content_template' is not defined, value will fallback to template_name
+        in child view.
+    """
+    base_template = "base_site.html"
+    content_template = None
+
+    _user_menu = []
+    _admin_menu = []
+    _groups = []
+
+
+    class Configuration:
+        stylesheets = ['base.css']
+        page_blocks = ['header', 'header_small', 'title']
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.user = None
+        self._page_blocks = []
+        if not hasattr(self, "PageInfo"):
+            raise ImproperlyConfigured("You must define a PageInfo on ", self)
+        for attr, val in self.PageInfo.__dict__.items():
+            if attr[0] is not "_" and type(val) is str:
+                setattr(self, attr, Template(val))
+                self._page_blocks.append(attr)
+
+    def get_template_names(self):
+        """ Ensure same template for all children views. """
+        return [self.base_template]
+
+    def get_content_template(self):
+        # Ensure easy integration with generic views
+        if hasattr(self, 'template_name'):
+            self.content_template = self.template_name
+        else:
+            raise ImproperlyConfigured(self, "has no template defined !")
+        return self.content_template
+
 
     def _update_context_with_rendered_blocks(self, context):
         """ Render text for existing PageInfo attributes.
@@ -178,7 +190,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         context = user_processor(self.request, context)
         #Webpage
         context['content_template'] = self.get_content_template()
-        context['app_menu'] = self.get_menu()
+        context['app_menu'] = self.menu
         return context
 
 class WebsiteAjaxTemplateMixin(WebsiteTemplateMixin):
@@ -201,9 +213,4 @@ class WebsiteAjaxTemplateMixin(WebsiteTemplateMixin):
             return [self.ajax_template]
         return super().get_template_names()
 
-class WebsiteProtectedMixin(WebsiteTemplateMixin, PermissionRequiredMixin):
-    pass
-
-class WebsiteProtectedWithAjaxMixin(WebsiteAjaxTemplateMixin, PermissionRequiredMixin):
-    pass
 

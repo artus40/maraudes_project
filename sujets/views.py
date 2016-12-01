@@ -7,15 +7,16 @@ from .forms import SujetCreateForm
 ### Webpage config
 from utilisateurs.models import Maraudeur
 from website import decorators as website
-webpage = website.webpage(
+sujets = website.app_config(
+                    name="suivi",
+                    groups=[Maraudeur],
+                    menu=["suivi/menu/sujets.html"],
+                    admin_menu=["sujets/menu/admin_sujet.html"],
                     ajax=True,
-                    app_users=[Maraudeur],
-                    app_name="suivi",
-                    app_menu=["sujets/menu/admin_sujet.html"]
                 )
 ### Views
 
-@webpage
+@sujets
 class SujetDetailsView(generic.DetailView):
     class PageInfo:
         title = "Sujet - {{ sujet }}"
@@ -27,33 +28,10 @@ class SujetDetailsView(generic.DetailView):
 
 
 
-@webpage
-class SujetListView(generic.ListView):
-    class PageInfo:
-        title = "Sujet - Liste des sujets"
-        header = "Liste des sujets"
-    #ListView
-    model = Sujet
-    template_name = "sujets/sujet_liste.html"
-    paginate_by = 30
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.insert_menu("sujets/menu/admin_sujet.html")
-    def post(self, request, **kwargs):
-        from watson import search as watson
-        search_text = request.POST.get('q')
-        results = watson.filter(Sujet, search_text)
-        if results.count() == 1:
-            return redirect(results[0].get_absolute_url())
-        self.queryset = results
-        return self.get(request, **kwargs)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['query_text'] = self.request.POST.get('q', None)
-        return context
 
 
-@webpage
+
+@sujets
 class SujetUpdateView(generic.edit.UpdateView):
     class PageInfo:
         title = "Mise à jour - {{sujet}}"
@@ -66,7 +44,7 @@ class SujetUpdateView(generic.edit.UpdateView):
 
 
 
-@webpage
+@sujets
 class SujetCreateView(generic.edit.CreateView):
     class PageInfo:
         title = "Nouveau sujet"

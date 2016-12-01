@@ -25,11 +25,24 @@ from .forms import (    RencontreForm, RencontreInlineFormSet,
 from utilisateurs.models import Maraudeur
 
 from website import decorators as website
-webpage = website.webpage(
+maraudes = website.app_config(
+                    name="maraudes",
+                    groups=[Maraudeur],
+                    menu=["maraudes/menu/dernieres_maraudes.html"],
+                    admin_menu=["maraudes/menu/admin_menu.html"],
                     ajax=False,
-                    app_users=[Maraudeur],
-                    app_menu=["maraudes/menu_dernieres_maraudes.html", "maraudes/menu_administration.html"]
                 )
+compte_rendu = website.app_config(
+                    name="maraudes",
+                    groups=[Maraudeur],
+                    menu=["compte_rendu/menu/creation.html"],
+                    ajax=False,
+                )
+maraudes_ajax = website.app_config(
+                    name="maraudes",
+                    groups=[Maraudeur],
+                    ajax=True,
+)
 
 from django.core.mail import send_mail
 
@@ -51,7 +64,7 @@ class DerniereMaraudeMixin(object):
 
 
 
-@webpage
+@maraudes
 class IndexView(DerniereMaraudeMixin, generic.TemplateView):
 
     class PageInfo:
@@ -88,7 +101,7 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
         return Maraude.objects.next
 
 ## MARAUDES
-@webpage
+@maraudes
 class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
     """ Vue détaillé d'un compte-rendu de maraude """
 
@@ -109,7 +122,7 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
 
 
 
-@webpage
+@maraudes
 class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
     """ Vue de la liste des compte-rendus de maraude """
 
@@ -129,7 +142,7 @@ class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
 
 
 ## COMPTE-RENDU DE MARAUDE
-@webpage
+@compte_rendu
 class CompteRenduCreateView(generic.DetailView):
     """ Vue pour la création d'un compte-rendu de maraude """
 
@@ -147,8 +160,8 @@ class CompteRenduCreateView(generic.DetailView):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Overrides app_menu and replace it
-        self.app_menu = ["compte_rendu/menu_creation.html"]
+        #WARNING: Overrides app_menu and replace it
+        self._user_menu = ["compte_rendu/menu/creation.html"]
 
     def get_forms(self, *args, initial=None):
         self.form = RencontreForm(*args,
@@ -235,7 +248,7 @@ class CompteRenduCreateView(generic.DetailView):
 
 
 
-@webpage
+@compte_rendu
 class CompteRenduUpdateView(generic.DetailView):
     """ Vue pour mettre à jour le compte-rendu de la maraude """
 
@@ -301,7 +314,7 @@ class CompteRenduUpdateView(generic.DetailView):
 
 
 ## PLANNING
-@webpage
+@maraudes
 class PlanningView(generic.TemplateView):
     """ Display and edit the planning of next Maraudes """
 
@@ -371,7 +384,7 @@ class PlanningView(generic.TemplateView):
 
 ## LIEU
 
-@website.webpage(ajax=True, permissions=['maraudes.add_lieu'])
+@maraudes_ajax
 class LieuCreateView(generic.edit.CreateView):
     model = Lieu
     template_name = "maraudes/lieu_create.html"

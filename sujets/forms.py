@@ -5,7 +5,7 @@ from .models import Sujet
 import datetime
 
 current_year = datetime.date.today().year
-YEAR_CHOICE = (year - 2 for year in range(current_year, current_year + 10))
+YEAR_CHOICE = tuple(year - 2 for year in range(current_year, current_year + 10))
 
 class SujetCreateForm(ModelForm):
     class Meta:
