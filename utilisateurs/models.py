@@ -2,7 +2,7 @@ import datetime
 
 from django.db import models
 
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 # Create your models here.
 
 class SingletonModel(models.Model):
@@ -19,6 +19,13 @@ class SingletonModel(models.Model):
             return cls.objects.get()
         except cls.DoesNotExist:
             return cls()
+
+## Visiteur
+
+class Visiteur(AnonymousUser):
+
+    def __str__(self):
+        return "Visiteur"
 
 
 class Organisme(models.Model):

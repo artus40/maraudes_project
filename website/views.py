@@ -40,11 +40,9 @@ def login_view(request):
         user = authenticate(username=username, password=password)
         if user is not None:
             login(request, user)
-
             next = request.POST.get('next', None)
             if not next:
                 next = _get_entry_point(user)
             return HttpResponseRedirect(next)
-
         else:
             return HttpResponseRedirect('/')
