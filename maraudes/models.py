@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.db import models
 from django.core.urlresolvers import reverse
 
-from utilisateurs.models import Maraudeur, ReferentMaraude
+from utilisateurs.models import Maraudeur
 
 from . import managers
 
@@ -13,7 +13,7 @@ from . import managers
 
 def get_referent_maraude():
     """ Retourne l'administrateur et référent de la Maraude """
-    return Maraudeur.objects.filter(is_superuser=True).first()
+    return Maraudeur.objects.get_referent()
 
 
 ## Modèles

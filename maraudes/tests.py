@@ -4,7 +4,7 @@ import random
 from calendar import monthrange
 from django.test import TestCase
 
-from .models import Maraude, Maraudeur, ReferentMaraude
+from .models import Maraude, Maraudeur
 # Create your tests here.
 
 from maraudes_project.base_data import MARAUDEURS
@@ -41,15 +41,13 @@ class MaraudeManagerTestCase(TestCase):
         self.maraudeurs = Maraudeur.objects.all()
         #Set up Référent de la Maraude
         ref = self.maraudeurs[0]
-        ReferentMaraude.objects.create(
-            maraudeur=ref
-        )
+        Maraudeur.objects.set_referent(ref.first_name, ref.last_name)
 
         l = len(self.maraudeurs)
         today = datetime.date.today()
-        start_date = today.replace(month=today.month - 1,
+        start_date = today.replace(month=today.month - 1 if today.month > 1 else 12,
                                    day=1)
-        end_date = today.replace(month=today.month + 1,
+        end_date = today.replace(month=today.month + 1 if today.month < 12 else 1,
                                  day=28)
         for i, date in enumerate(get_maraude_days(start_date, end_date)):
             i = i % l

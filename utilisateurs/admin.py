@@ -12,12 +12,9 @@ class MaraudeurAdmin(admin.ModelAdmin):
         ('Informations', {'fields': [('first_name', 'last_name')]}),
     ]
 
-    list_display = ('first_name', 'last_name', 'is_superuser')
+    list_display = ('first_name', 'last_name', 'is_active')
 
 
-@admin.register(ReferentMaraude)
-class ReferentMaraudeAdmin(admin.ModelAdmin):
-    fields = ['maraudeur']
 
 @admin.register(Organisme)
 class OrganismeAdmin(admin.ModelAdmin):
