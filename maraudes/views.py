@@ -167,8 +167,8 @@ class CompteRenduCreateView(generic.DetailView):
         self.form = RencontreForm(*args,
                                   initial=initial)
         self.inline_formset = ObservationInlineFormSet(
-                                *args,
-                                instance=self.form.instance,
+                                    *args,
+                                    instance=self.form.instance
                                 )
 
     def finalize(self):
@@ -203,14 +203,11 @@ class CompteRenduCreateView(generic.DetailView):
             rencontre.save()
             self.inline_formset.save()
 
-        return self.get(request, *args, **kwargs)
+        return redirect('maraudes:create', pk=self.get_object().pk)
 
     def get(self, request, new_form=True, *args, **kwargs):
-        try:
-            if request.GET['finalize'] == "True":
-                return self.finalize()
-        except:
-            pass
+        if request.GET.get('finalize', False) == "True":
+            return self.finalize()
 
         def calculate_end_time(debut, duree):
             end_minute = debut.minute + duree

@@ -1,4 +1,6 @@
       <table class="table">
+      <tr><th colspan="4" class="active">Informations générales</th></tr>
+      <tr><th>Première rencontre :</th><td> {{ sujet.premiere_rencontre }}</td></tr>
       <tr><th colspan="4" class="active">État-civil</th></tr>
       <tr><th>Nom</th><td>{{ sujet.nom|default:'?' }}</td><th>Prénom</th><td>{{ sujet.prenom|default:'?' }}</td></tr>
       <tr><th>Sexe</th><td>{{ sujet.genre }}</td><th>Âge</th><td>{{ sujet.age|default:'?' }}</td></tr>
