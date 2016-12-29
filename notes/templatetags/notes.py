@@ -1,4 +1,5 @@
 from django import template
+from django.urls import reverse
 
 register = template.Library()
 
@@ -13,11 +14,16 @@ def inline_table(note, header=None):
 
     if header == "date":
         header_field = "created_date"
+        link = None
     elif header == "sujet":
         header_field = "sujet"
+        link = reverse("suivi:details", kwargs={'pk': note.sujet.pk})
+
+    header = getattr(note, header_field)
 
     return {
-        'header': getattr(note, header_field),
+        'header': header,
+        'link': link,
         'small': note.child_class.__qualname__,
         'bg_color': bg_color or "default",
         'bg_label_color': bg_label_color or "info",

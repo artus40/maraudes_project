@@ -1,6 +1,10 @@
 <tr>
   <th class="bg-{{bg_color}}" >
-    <strong>{{header}}</strong> <small>{{small}}</small>
+    {% if link %}
+      <a href="{{link}}"><strong>{{header}}</strong></a>
+    {% else %}
+      <strong>{{header}}</strong>
+    {% endif %} <small>{{small}}</small>
     <span class="pull-right">
     {% for label in labels %}
       <span class="label label-{{bg_label_color}}">{{label}}</span>
