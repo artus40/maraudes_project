@@ -1,6 +1,8 @@
 from django import forms
 from django.forms import inlineformset_factory
 from notes.forms import *
+from django_select2.forms import Select2Widget
+
 # Models
 from .models import *
 from .notes import *
@@ -22,7 +24,9 @@ class RencontreForm(forms.ModelForm):
     class Meta:
         model = Rencontre
         fields = ['lieu', 'heure_debut', 'duree']
-
+        widgets = {
+            'lieu': Select2Widget(),
+        }
 
 
 ObservationInlineFormSet = inlineformset_factory(   Rencontre, Observation,

@@ -113,7 +113,7 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
     class PageInfo:
         title = "Maraude - {{maraude.date}}"
         header = "{{maraude.date}}"
-        header_small = "compte-rendu"
+        header_small = "{{maraude.referent}} & {{maraude.binome}}"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

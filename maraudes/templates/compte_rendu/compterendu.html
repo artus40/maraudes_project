@@ -1,16 +1,15 @@
 {% load notes %}
-<div class="panel panel-primary">
-  <!-- Default panel contents -->
-  <div class="panel-heading">
-    <h3 class="panel-title">{{ maraude.binome }} & {{ maraude.referent }}
-    <span class="pull-right"><span class="label pull-right">Rencontres : {{ maraude.observation_count}}</span></span></h3>
-  </div>
-  <table class="table table-bordered table-striped">
+<h3> Compte-rendu </h3>
+
+<table class="table table-bordered">
   {% for note in notes %}
       {% inline_table note header="sujet" %}
   {% endfor %}
-  </table>
-    {% if user.is_superuser and maraude.est_terminee %}<div class="panel-footer text-right">
-      <a class="btn btn-sm btn-default" href="{% url 'maraudes:update' maraude.pk %}">Modifier</a>
-    </div>{%endif%}
+</table>
+
+<div class="well bg-info">
+  <p><strong>Informations</strong></p>
+  <p>Rencontres : {{ maraude.observation_count}}</p>
 </div>
+
+
