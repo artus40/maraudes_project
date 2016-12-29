@@ -1,5 +1,5 @@
 {% load bootstrap3 %}{% load staticfiles %}
-{{ form.media.js }}{{ form.media.css }}
+
 <script type="text/javascript" src="{% static "jquery.formset.js" %}"></script>
 <script type="text/javascript">
   /* Dynamic Formsets */
@@ -52,6 +52,7 @@
         </div>
       </div>
     </form>
+ {{ form.media.js }}{{ form.media.css }}
   </div>
   <div class="col-lg-6 col-md-12">
     <div class="panel panel-default">

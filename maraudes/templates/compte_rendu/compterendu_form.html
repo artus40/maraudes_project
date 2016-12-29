@@ -11,8 +11,6 @@
 </div>
 <div class="form-horizontal">
   {{ inline_formset.management_form }}
-  {{ inline_formset.media.js }}
-  {{ inline_formset.media.css }}
   {% for form in inline_formset %}
     <div class="dynamic-formset">
     {% if form.id %}{% bootstrap_field form.id %}{% endif %}
