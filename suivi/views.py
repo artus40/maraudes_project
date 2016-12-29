@@ -17,7 +17,18 @@ suivi = website.app_config(
                     ajax=False,
                 )
 
+from maraudes.compte_rendu import CompteRendu
 
+def derniers_sujets_rencontres():
+    """ Renvoie le 'set' des sujets rencontrés dans les deux dernières maraudes """
+    sujets = set()
+
+    # Issue: Récupère des comptes-rendus, même s'il n'ont pas été rédigé. Ne devrait pas
+    # être un souci si on reste à jour, mais sinon...
+    for cr in list(CompteRendu.objects.all())[-2:]:
+        for obs in cr.get_observations():
+            sujets.add(obs.sujet)
+    return sujets
 
 @suivi
 class IndexView(NoteFormMixin, generic.TemplateView):
@@ -37,6 +48,11 @@ class IndexView(NoteFormMixin, generic.TemplateView):
         return reverse('suivi:index')
     #TemplateView
     template_name = "suivi/index.html"
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['derniers_sujets'] = ", ".join(map(str, derniers_sujets_rencontres()))
+        return context
 
 @suivi
 class SujetListView(generic.ListView):

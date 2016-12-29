@@ -1,9 +1,10 @@
-<div class="col-md-6 col-md-offset-6">
+<div class="col-md-12 col-lg-6">
 <h4>Ces derniers temps</h4>
+<p> Nous avons rencontré {{ derniers_sujets }}. </p>
 <h4>Vigilance</h4>
 </div>
-</div>
-<div class="col-md-6 col-md-offset-6">
+
+<div class="col-md-12 col-lg-6">
   <h4><strong>Créer une note :</strong></h4>
   <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
     {% include "suivi/appel_form.html" with form=appel_form %}

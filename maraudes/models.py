@@ -188,6 +188,7 @@ class Rencontre(models.Model):
         else:
             return "Aucun"
 
+    # Should be a read only property
     def get_sujets(self):
         """ Renvoie la liste des sujets rencontrés """
         return [o.sujet for o in self.observations.all()]
