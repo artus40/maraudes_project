@@ -52,7 +52,9 @@ class MaraudeurManager(UserManager):
             'first_name': first_name,
             'last_name': last_name,
             'email': "%s@alsa68.org" % username,
-            }
+            'is_staff': True,
+            'is_active': True,
+           }
 
         return super().create_user(username, **data)
 

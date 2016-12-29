@@ -2,8 +2,6 @@ import datetime
 from django.utils import timezone
 from django.core.exceptions import ImproperlyConfigured
 from django.apps import apps
-#TODO: remove next line
-from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.decorators import user_passes_test
 from django.template import Template, Context
 from django.views.generic.base import ContextMixin, TemplateResponseMixin
@@ -11,13 +9,6 @@ from django.views.generic.base import ContextMixin, TemplateResponseMixin
 
 
 ## Mixins ##
-
-class PermissionRequiredMixin(object):
-    permissions = []
-    @classmethod
-    def as_view(cls, **initkwargs):
-        view = super(PermissionRequiredMixin, cls).as_view(**initkwargs)
-        return permission_required(cls.permissions)(view)
 
 def special_user_required(authorized_users):
 
@@ -54,7 +45,7 @@ class TemplateFieldsMetaclass(type):
 
 
 def user_processor(request, context):
-    context['user_group'] = request.user.groups.first()
+    context['user_group'] = request.user.__class__.__qualname__
     return context
 
 
@@ -83,7 +74,6 @@ class NavbarMixin(object):
             app_config.menu_icon = APP_ICONS[name]
             #TODO: Seems unsafe (only need module perm)
             app_config.disabled = not self.request.user.has_module_perms(name)
-            print(self.request.user, app_config, '-> has perm:', not app_config.disabled)
             self._apps.append(app_config)
         return self._apps
 

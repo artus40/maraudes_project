@@ -2,24 +2,22 @@ from django.contrib.auth.backends import ModelBackend
 
 from utilisateurs.models import Maraudeur
 
+
+def user_models():
+    return (Maraudeur,)
+
 class MyBackend(ModelBackend):
 
-    def authenticate(self, **kwargs):
-        print('authenticate using MyBackend')
-        return super().authenticate(**kwargs)
-
     def get_user(self, user_id):
-        """ Retourne la classe enfant de l'utilisateur connecté
-            s'il en a une, sinon le User par défaut.
+        """ Essaye de récupérer une classe enfant de User existante, telle que
+            définie dans 'utilisateurs.models'. Fallback to default user.
         """
-        print('use MyBackend: get_user', user_id)
-        try:
-            user = Maraudeur.objects.get(pk=user_id)
-        except Maraudeur.DoesNotExist:
-            print('no Maraudeur found. Using base user class')
-            user = super().get_user(user_id)
-        print("found:", user, user.__class__)
-        return user
+        for user_model in user_models():
+            try:
+                return user_model.objects.get(pk=user_id)
+            except user_model.DoesNotExist:
+                print('Tried %s.' % user_model.__class__)
+        return super().get_user(user_id)
 
     def has_perm(self, *args, **kwargs):
         print('call has_perm', args, kwargs)
