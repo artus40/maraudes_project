@@ -1,0 +1,12 @@
+{% load bootstrap3 %}
+<li {% if active %}class="active"{%endif%}>
+  <a href="{{header.href}}">{% if header.icon %}{% bootstrap_icon header.icon %} &middot; {% endif %}<strong>{{header.text}}</strong></a>
+</li>
+{% if active %}
+{% for link in links %}
+
+{% endfor %}
+{% for dropdown in dropdowns %}
+
+{% endfor %}
+{% endif %}
