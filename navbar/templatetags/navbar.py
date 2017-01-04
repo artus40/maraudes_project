@@ -5,56 +5,21 @@ from django.urls import reverse
 
 register = template.Library()
 
-class Link:
-    def __init__(self, text, target=None, icon=None):
-        self.text = text
-        if not target:
-            raise TypeError
-        try:
-            target, kwargs = target
-        except ValueError:
-            target = target
-            kwargs = {}
-        assert type(target) == str
-        assert type(kwargs) == dict
-        self.href = reverse(target, **kwargs)
-        self.icon = icon
-
-class Dropdown:
-    def __init__(self, header, links):
-        self.header = header
-        self.links = links
-  
-class AppMenu:
-
-    def __init__(self, header):
-        self.header = Link(header, 'maraudes:index', 'road')
-        self.is_active = False
-    
-    def get_links(self):
-        """ Shall be implemented in children. """
-        return []
-
-    def get_dropdowns(self):
-        """ Shall be implemented in children. """
-        return []
-
-    @property
-    def links(self):
-        return self.get_links()
-
-    @property
-    def dropdowns(self):
-        return self.get_dropdowns()
-
 
 class NavbarNode(template.Node):
+    
+    def get_apps(self):
+        from navbar.navbar import registered
+        if not registered:
+            print('WARNING: No app registered into "navbar" module')
+        print('getting registered apps:', registered)
+        return registered
 
     def get_template(self):
         return template.loader.get_template('navbar/layout.html')
 
     def render(self, context):
-        apps = [AppMenu('Maraudes'), AppMenu('Test app')]
+        apps = self.get_apps()
         # Set active app
         active = context['active_app']
         # Add user menu
@@ -66,7 +31,6 @@ class NavbarNode(template.Node):
             'next': context.get('next', None),
 
         })
-        print(context)
         return self.get_template().render(context, request)
 
 @register.tag

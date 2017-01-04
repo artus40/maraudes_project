@@ -22,29 +22,18 @@ from .forms import (    RencontreForm, RencontreInlineFormSet,
                         ObservationInlineFormSet, ObservationInlineFormSetNoExtra,
                         MaraudeAutoDateForm, MonthSelectForm,   )
 
+from django.core.mail import send_mail
+
 from utilisateurs.models import Maraudeur
 
-from website import decorators as website
-maraudes = website.app_config(
-                    name="maraudes",
-                    groups=[Maraudeur],
-                    menu=["maraudes/menu/dernieres_maraudes.html"],
-                    admin_menu=["maraudes/menu/admin_menu.html"],
-                    ajax=False,
-                )
-compte_rendu = website.app_config(
-                    name="maraudes",
-                    groups=[Maraudeur],
-                    menu=["compte_rendu/menu/creation.html"],
-                    ajax=False,
-                )
-maraudes_ajax = website.app_config(
-                    name="maraudes",
-                    groups=[Maraudeur],
-                    ajax=True,
-)
 
-from django.core.mail import send_mail
+from website.decorators import Webpage
+maraudes = Webpage('maraudes', defaults={
+                'users': [Maraudeur],
+                'ajax': False,
+                'title': ('Maraudes','app'),
+            })
+
 
 class DerniereMaraudeMixin(object):
     count = 5
@@ -64,14 +53,9 @@ class DerniereMaraudeMixin(object):
 
 
 
-@maraudes
+@maraudes.using(title=('La Maraude', 'Tableau de bord'))
 class IndexView(DerniereMaraudeMixin, generic.TemplateView):
 
-    class PageInfo:
-        title = "Maraude - Tableau de bord"
-        header = "La Maraude"
-        header_small = "Tableau de bord"
-    # TemplateView
     template_name = "maraudes/index.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -101,19 +85,13 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
         return Maraude.objects.next
 
 ## MARAUDES
-@maraudes
+@maraudes.using(title=('{{maraude.date}}', 'compte-rendu'))
 class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
     """ Vue détaillé d'un compte-rendu de maraude """
 
     model = CompteRendu
     context_object_name = "maraude"
     template_name = "maraudes/details.html"
-
-    # Template
-    class PageInfo:
-        title = "Maraude - {{maraude.date}}"
-        header = "{{maraude.date}}"
-        header_small = "{{maraude.referent}} & {{maraude.binome}}"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -122,17 +100,13 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
 
 
 
-@maraudes
+@maraudes.using(title=('Liste des maraudes',))
 class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
     """ Vue de la liste des compte-rendus de maraude """
 
     model = CompteRendu
     template_name = "maraudes/liste.html"
     paginate_by = 30
-
-    class PageInfo:
-        title = "Maraude - Liste des maraudes"
-        header = "Liste des maraudes"
 
     def get_queryset(self):
         today = datetime.date.today()
@@ -142,7 +116,7 @@ class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
 
 
 ## COMPTE-RENDU DE MARAUDE
-@compte_rendu
+@maraudes.using(title=('{{maraude.date}}', 'rédaction'))
 class CompteRenduCreateView(generic.DetailView):
     """ Vue pour la création d'un compte-rendu de maraude """
 
@@ -152,11 +126,6 @@ class CompteRenduCreateView(generic.DetailView):
 
     form = None
     inline_formset = None
-
-    class PageInfo:
-        title = "{{maraude}} - Compte-rendu"
-        header = "{{maraude.date}}"
-        header_small = "écriture du compte-rendu"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -245,7 +214,7 @@ class CompteRenduCreateView(generic.DetailView):
 
 
 
-@compte_rendu
+@maraudes.using(title=('{{maraude.date}}', 'mise à jour'))
 class CompteRenduUpdateView(generic.DetailView):
     """ Vue pour mettre à jour le compte-rendu de la maraude """
 
@@ -381,7 +350,7 @@ class PlanningView(generic.TemplateView):
 
 ## LIEU
 
-@maraudes_ajax
+@maraudes.using(ajax=True)
 class LieuCreateView(generic.edit.CreateView):
     model = Lieu
     template_name = "maraudes/lieu_create.html"

@@ -41,98 +41,64 @@ def app_config(**options):
 # Doing the same as class
 
 class Webpage:
-    """ Webpage configurator.
+    """ Webpage configurator. It is used as a decorator.
     
-    Used as a decorator :
-    
-    Set default for any app constructing an instance.
-    maraudes = Webpage(title=('Maraudes', 'app'), menu={'links': [], 'dropdowns': []})
+    The constructor takes one positionnal argument:
+        - app_name : name of the application where this view shall be categorized.
+    and a keyword argument:
+        - defaults : mapping of default options.
 
-    Then use as a decorator on app views. You can change options by calling
-    appropriated methods :
-        - header: title=('Big header',  'small one') ; Can use template syntax with view context variables
-        - menu : links=[], dropdowns=[], replace=False
-
+    Options are :
+        - title: tuple of (header, header_small), header_small is optionnal.
+        - restricted: set of group to which access is restricted.
+        - ajax: can this view be called as ajax ?
 
     """
 
-    def __init__(self, **options):
-        try:
-            self.app_name = options.get('name')
-        except KeyError:
-            raise TypeError('Webpage configurator must be given an application "name"')
-        self._defaults = {} # Store default options
+    options = [
+            ('title', ('Unset', 'small header')),
+            ('restricted', []),
+            ('ajax', False)
+        ]
+
+    def __init__(self, app_name, defaults={}):
+        self.app_name = app_name
+        self._defaults = {}
         self._updated = {} # Store updated options
-        # Set all attributes a first time, causing all defaults to be filled
-        self.title(*options.get('title', ('None', 'none')))
-        self.restricted(options.get('groups', []), replace=True)
-        self.is_ajax(options.get('ajax', False))
-        # self.menu(...)
-        # Further calls to these methods will set _updated instead of defaults.
+        # Set all default options
+        for opt_name, opt_default in self.options:
+            self._set_option(opt_name, defaults.get(opt_name, opt_default))
 
     def __getattr__(self, attr):
         """ Return the overriden value if any, default overwise """
         return self._updated.get(attr, self._defaults[attr])
     
-    def __setattr__(self, attr, value):
+    def _set_option(self, attr, value):
         """ Set the default value if there is none already, updated overwise """
         if not attr in self._defaults:
             self._defaults[attr] = value
         else:
-            if attr in self._udpated:
-                raise ValueError(attr, 'has already been updated !')
+            if attr in self._updated:
+                raise RuntimeError(attr, 'has already been updated !')
             self._updated[attr] = value
 
     def __call__(self, view_cls):
         """ Setup the view and return it """
         bases_to_add = []
-        if self.is_ajax:    bases_to_add.append(WebsiteAjaxTemplateMixin)
+        if self.ajax:       bases_to_add.append(WebsiteAjaxTemplateMixin)
         else:               bases_to_add.append(WebsiteTemplateMixin)
         if self.restricted: bases_to_add.append(SpecialUserRequiredMixin)
-        _insert_bases(cls, bases_to_add)
+        _insert_bases(view_cls, bases_to_add)
         # Setup configuration. ISSUE: defaults values will be overriden !
-        cls.app_name = self.app_name
-        #...
-        
+        view_cls.app_name = self.app_name
+        view_cls.header = self.title
+        view_cls.app_users = self.restricted
         self._updated = {} # Reset updated attributes to avoid misbehavior
-        return cls
+        return view_cls
 
-    def title(self, header='', header_small=''):
-        """ Sets the title and header of this view. Takes up to two arguments:
-            1. header
-            2. header_small
-
-            Title will be set to  header - header_small'
-        """
-        if not args: 
-            return self
-        
-        self.header = header
-        self.header_small = header_small
-        # self.title = ' - '.join()
+    def using(self, **kwargs):
+        """ Overrides defaults options with the values given """
+        for opt_name, _ in self.options:
+            if opt_name in kwargs:
+                self._set_option(opt_name, kwargs[opt_name])
         return self
-
-    def menu(self, links=[], dropdowns=[], replace_links=False, replace_dropdowns=False):
-        if links:
-            if not replace_links:
-                self.links += links
-            else:
-                self.links = links
-        if dropdowns:
-            if not replace_dropdowns:
-                self.dropdowns += dropdowns
-            else:
-                self.dropdowns = dropdowns
-        return self
-
-    def is_ajax(self, value):
-        self.is_ajax = bool(value)
-        return self
-
-    def restricted(self, users, replace=False):
-        if not replace:
-            self.users += users
-        else:
-            self.users = users
-        return self
-
