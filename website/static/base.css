@@ -1,23 +1,19 @@
 
-#menu {
-  border: none;
-  border-right: 4px solid #980300;
-}
-
-.dropdown-toggle{
-  border-right: 4px solid #980300 !important;
-}
-
-.dropdown-menu {
-  border-bottom: none !important;
-  }
-
 .navbar-fixed-side .navbar-nav>li>a {
   border-bottom: none;
   font-variant: small-caps;
   color: #fff;
 }
 
+#menu {
+  border: none;
+  border-right: 4px solid #980300;
+  background-color: #121212;
+}
+
+@media (max-width:768px){
+  #menu { border: none; }
+}
 
 .app-menu {
   background-color: #121212;
@@ -25,10 +21,12 @@
 }
 
 
-@media (max-width:768px){
-  #menu { border: none; }
+.dropdown-toggle{
+  border-right: 4px solid #980300 !important;
 }
 
-.jumbotron {
-  background-color: #fefefe;
+.dropdown-menu {
+  border-bottom: none !important;
 }
+
+
