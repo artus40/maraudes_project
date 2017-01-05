@@ -1,7 +1,6 @@
 import datetime
 import calendar
 from django.utils import timezone
-from django.utils.functional import cached_property
 from django.contrib import messages
 from django.shortcuts import render, redirect
 # Views
@@ -35,26 +34,10 @@ maraudes = Webpage('maraudes', defaults={
             })
 from maraudes.menu import MaraudesMenu
 
-class DerniereMaraudeMixin(object):
-    count = 5
-    @cached_property
-    def dernieres_maraudes(self):
-        """ Renvoie la liste des 'Maraude' passées et terminées """
-        return Maraude.objects.get_past().filter(
-                                            heure_fin__isnull=False
-                                        ).order_by(
-                                            '-date'
-                                        )[:self.count]
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['dernieres_maraudes'] = self.dernieres_maraudes
-        return context
-
 
 
 @maraudes.using(title=('La Maraude', 'Tableau de bord'))
-class IndexView(DerniereMaraudeMixin, generic.TemplateView):
+class IndexView(generic.TemplateView):
 
     template_name = "maraudes/index.html"
 
@@ -86,7 +69,7 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
 
 ## MARAUDES
 @maraudes.using(title=('{{maraude.date}}', 'compte-rendu'))
-class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
+class MaraudeDetailsView(generic.DetailView):
     """ Vue détaillé d'un compte-rendu de maraude """
 
     model = CompteRendu
@@ -101,7 +84,7 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
 
 
 @maraudes.using(title=('Liste des maraudes',))
-class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
+class MaraudeListView(generic.ListView):
     """ Vue de la liste des compte-rendus de maraude """
 
     model = CompteRendu

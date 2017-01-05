@@ -30,6 +30,10 @@ class DropDown:
 
     def get_links(self):
         raise NotImplemented
+    
+    @property
+    def links(self):
+        return [Link(text, target, icon) for text, target, icon in self.get_links()]
 
 class MenuRegistry(type):
 
@@ -70,6 +74,7 @@ class ApplicationMenu(metaclass=MenuRegistry):
 
     @property
     def dropdowns(self):
+        print('getting dropdowns', self, self.view)
         return self.get_dropdowns(self.view)
 
 
