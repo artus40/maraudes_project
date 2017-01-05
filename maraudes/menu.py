@@ -15,12 +15,12 @@ class DernieresMaraudes(DropDown):
 
 
 class MaraudesMenu(ApplicationMenu):
-
+    name = "maraudes" #Could be set by MenuRegistry metacls
     header = ('Maraudes', 'maraudes:index', 'road')
 
     def get_links(self):
         return [
-                ('Liste des maraudes', 'maraudes:list', 'list'),
+                ('Liste des maraudes', 'maraudes:liste', 'list'),
             ]
 
     def get_dropdowns(self, view):

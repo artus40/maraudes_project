@@ -33,7 +33,7 @@ maraudes = Webpage('maraudes', defaults={
                 'ajax': False,
                 'title': ('Maraudes','app'),
             })
-
+from maraudes.menu import MaraudesMenu
 
 class DerniereMaraudeMixin(object):
     count = 5

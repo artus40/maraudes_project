@@ -8,20 +8,23 @@ register = template.Library()
 
 class NavbarNode(template.Node):
     
-    def get_apps(self):
+    def get_apps(self, view):
         from navbar.navbar import registered
         if not registered:
             print('WARNING: No app registered into "navbar" module')
         print('getting registered apps:', registered)
-        return registered
+        return [cls(view) for cls in registered]
 
     def get_template(self):
         return template.loader.get_template('navbar/layout.html')
 
     def render(self, context):
-        apps = self.get_apps()
+        apps = self.get_apps(context['view'])
         # Set active app
         active = context['active_app']
+        for app_menu in apps:
+            if app_menu.name == active:
+                app_menu.is_active = True
         # Add user menu
         request = context.get('request')
         context = template.Context({
@@ -39,6 +42,7 @@ def navbar(parser, token):
 
 @register.inclusion_tag("navbar/navbar-menu.html")
 def navbar_menu(app_menu):
+    print('include some menu', app_menu, app_menu.is_active)
     return {
         'active': app_menu.is_active,
         'header': app_menu.header,

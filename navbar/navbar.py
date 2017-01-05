@@ -31,11 +31,21 @@ class DropDown:
     def get_links(self):
         raise NotImplemented
 
+class MenuRegistry(type):
+
+    def __new__(metacls, name, bases, dct):
+        print('call MenuRegistry.__new__', name, bases, dct)
+
+        cls = type.__new__(metacls, name, bases, dct)
+        if name != "ApplicationMenu":
+            print('registering menu', cls)
+            registered.append(cls)       
+        return cls
 
 
-class ApplicationMenu:
+class ApplicationMenu(metaclass=MenuRegistry):
 
-    def __init__(self):
+    def __init__(self, view):
         try:
             header, target, icon = self.header
         except ValueError:
@@ -44,24 +54,22 @@ class ApplicationMenu:
             icon = None
         self.header = Link(header, target, icon)
         self.is_active = False
-        
-        # Register the instance into module
-        registered.append(self)
+        self.view = view
 
     def get_links(self):
         """ Shall be implemented in children. """
         return []
 
-    def get_dropdowns(self):
+    def get_dropdowns(self, view):
         """ Shall be implemented in children. """
         return []
 
     @property
     def links(self):
-        return self.get_links()
+        return [Link(text, target, icon) for text, target, icon in self.get_links()]
 
     @property
     def dropdowns(self):
-        return self.get_dropdowns()
+        return self.get_dropdowns(self.view)
 
 

@@ -4,9 +4,19 @@
 </li>
 {% if active %}
 {% for link in links %}
-
+  <li class="app-menu">
+      <a href="{{ link.href }}">{{ link.text }}
+{% if link.icon %}<span class="pull-right">{% bootstrap_icon link.icon %}</span>{% endif %}
+      </a>
+  </li>
 {% endfor %}
 {% for dropdown in dropdowns %}
-
+  <li class="dropdown app-menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Dernières maraudes <b class="caret"></b></a>
+    <ul class="dropdown-menu">{% for m in dernieres_maraudes %}
+      <li><a href="{% url 'maraudes:details' m.pk %}" {% if maraude == m %}style="color:#fff;"{% endif %}>
+        <strong>{{ m }}</strong> <small>{{m.binome}} & {{m.referent}}</small></a>
+      </li>{% endfor %}
+    </ul>
+  </li>
 {% endfor %}
 {% endif %}

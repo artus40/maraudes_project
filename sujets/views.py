@@ -6,37 +6,24 @@ from .forms import SujetCreateForm
 
 ### Webpage config
 from utilisateurs.models import Maraudeur
-from website import decorators as website
-sujets = website.app_config(
-                    name="suivi",
-                    groups=[Maraudeur],
-                    menu=["suivi/menu/sujets.html"],
-                    admin_menu=["sujets/menu/admin_sujet.html"],
-                    ajax=True,
-                )
+from website.decorators import Webpage 
+sujets = Webpage( "suivi", {
+                        'restricted': [Maraudeur],
+                        'ajax': True,
+                        }
+                    )
 ### Views
 
-@sujets
+@sujets.using(title=("{{ sujet }}", "informations"))
 class SujetDetailsView(generic.DetailView):
-    class PageInfo:
-        title = "Sujet - {{ sujet }}"
-        header = "{{ sujet }}"
-        header_small = "informations"
     #DetailView
     template_name = "sujets/sujet_details.html"
     model = Sujet
 
 
 
-
-
-
-@sujets
+@sujets.using(title=('{{sujet}}', 'mise à jour'))
 class SujetUpdateView(generic.edit.UpdateView):
-    class PageInfo:
-        title = "Mise à jour - {{sujet}}"
-        header = "{{sujet}}"
-        header_small = "mise à jour"
     #UpdateView
     template_name = "sujets/sujet_update.html"
     model = Sujet
@@ -44,11 +31,8 @@ class SujetUpdateView(generic.edit.UpdateView):
 
 
 
-@sujets
+@sujets.using(title=('Nouveau sujet', ))
 class SujetCreateView(generic.edit.CreateView):
-    class PageInfo:
-        title = "Nouveau sujet"
-        header = "Nouveau sujet"
     #CreateView
     template_name = "sujets/sujet_create.html"
     form_class = SujetCreateForm
