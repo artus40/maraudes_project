@@ -205,11 +205,6 @@ class CompteRenduUpdateView(generic.DetailView):
     context_object_name = "maraude"
     template_name = "compte_rendu/compterendu_update.html"
 
-    class PageInfo:
-        title = "{{maraude}} - Compte-rendu"
-        header = "{{maraude.date}}"
-        header_small = "compte-rendu"
-
     base_formset = None
     inline_formsets = []
     rencontres_queryset = None
@@ -263,16 +258,11 @@ class CompteRenduUpdateView(generic.DetailView):
 
 
 ## PLANNING
-@maraudes
+@maraudes.using(title=('Planning',))
 class PlanningView(generic.TemplateView):
     """ Display and edit the planning of next Maraudes """
 
     template_name = "planning/planning.html"
-
-    class PageInfo:
-        title = "Planning"
-        header = "Planning"
-        header_small = "{{month}} {{year}}" #TODO: does not parse extra context
 
     def _parse_request(self):
         self.current_date = datetime.date.today()
@@ -339,11 +329,6 @@ class LieuCreateView(generic.edit.CreateView):
     template_name = "maraudes/lieu_create.html"
     fields = "__all__"
     success_url = "/maraudes/"
-
-    class PageInfo:
-        pass
-
-    permissions = ['maraudes.add_lieu']
 
     def post(self, request, *args, **kwargs):
         if 'next' in self.request.POST:

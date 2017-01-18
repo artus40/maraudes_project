@@ -16,6 +16,7 @@ INSTALLED_APPS += [
     'suivi',
     'utilisateurs',
     'website',
+    'navbar',
 ]
 
 
@@ -23,8 +24,8 @@ LOGIN_URL = 'index'
 
 BOOTSTRAP3 = {
     # The URL to the jQuery JavaScript file
-    'base_url': os.path.join(STATIC_URL, 'bootstrap/'),
-    'jquery_url': '//code.jquery.com/jquery.min.js',
+    'base_url': os.path.join(STATIC_URL, 'css', 'bootstrap/'),
+    'jquery_url': os.path.join(STATIC_URL, 'scripts', 'jquery.min.js'),
     'include_jquery': True,
     # Label class to use in horizontal forms
     'horizontal_label_class': 'col-md-2',

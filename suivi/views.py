@@ -29,6 +29,8 @@ def derniers_sujets_rencontres():
             sujets.add(obs.sujet)
     return sujets
 
+
+
 @suivi.using(title=("Suivi", "Tableau de bord"))
 class IndexView(NoteFormMixin, generic.TemplateView):
     #NoteFormMixin
@@ -48,6 +50,8 @@ class IndexView(NoteFormMixin, generic.TemplateView):
         context = super().get_context_data(*args, **kwargs)
         context['derniers_sujets'] = ", ".join(map(str, derniers_sujets_rencontres()))
         return context
+
+
 
 @suivi.using(title=('Liste des sujets',))
 class SujetListView(generic.ListView):
@@ -69,15 +73,10 @@ class SujetListView(generic.ListView):
         context['query_text'] = self.request.POST.get('q', None)
         return context
 
-# Import app_config from 'sujets' application, using
-# its admin_menu option
-from sujets.views import sujets
-@sujets
+
+
+@suivi.using(title=('{{sujet}}', 'suivi'))
 class SuiviSujetView(NoteFormMixin, generic.DetailView):
-    class PageInfo:
-        title = "Sujet - {{sujet}}"
-        header = "{{sujet}}"
-        header_small = "suivi"
     #NoteFormMixin
     forms = {
         'note': AutoNoteForm,
