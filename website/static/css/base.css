@@ -1,21 +1,32 @@
 
-/* Maraudes application base stylesheet */
-
-.rencontre {
-  background-color: #efefef;
-  width:100%;
-  border: 5px dotted white;
-  margin:2px;
-  margin-bottom:8px;
-  font-family: Arial;
+.navbar-fixed-side .navbar-nav>li>a {
+  border-bottom: none;
+  font-variant: small-caps;
+  color: #fff;
 }
 
-.header td {
-  color: white;
-  background-color: black;
-  text-align:center;
-  font-weight:bold;
-  font-family: Arial;
-  padding: 2px;
+#menu {
+  border: none;
+  border-right: 4px solid #980300;
+  background-color: #121212;
 }
+
+@media (max-width:768px){
+  #menu { border: none; }
+}
+
+.app-menu {
+  background-color: #121212;
+  border: none;
+}
+
+
+.active{
+  border-right: 2px solid #980300 !important;
+}
+
+.dropdown-menu {
+  border-bottom: none !important;
+}
+
 

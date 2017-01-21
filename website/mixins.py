@@ -53,7 +53,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     app_name = None
 
     class Configuration:
-        stylesheets = ['base.css']
+        stylesheets = ['css/base.css']
 
 
     def __init__(self, *args, **kwargs):
