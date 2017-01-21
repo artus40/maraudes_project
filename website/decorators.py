@@ -44,6 +44,8 @@ class Webpage:
                         (ApplicationMenu,),
                         {'name': app_name,
                          'header': (app_name.title(), '%s:index' % app_name, icon),
+                         '_links': [],
+                         '_dropdowns': [],
                         }
                     )
             self.app_menu = app_menu

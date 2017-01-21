@@ -7,13 +7,7 @@ from .forms import *
 from notes.mixins import NoteFormMixin
 from notes.forms import AutoNoteForm
 # Create your views here.
-from utilisateurs.models import Maraudeur
-from website.decorators import Webpage
-suivi = Webpage("suivi", icon="eye-open", defaults={
-                        'restricted': [Maraudeur],
-                        'ajax': False,
-                    }
-                )
+
 
 from maraudes.compte_rendu import CompteRendu
 
@@ -28,7 +22,7 @@ def derniers_sujets_rencontres():
             sujets.add(obs.sujet)
     return sujets
 
-
+from .apps import suivi
 
 @suivi.using(title=("Suivi", "Tableau de bord"))
 class IndexView(NoteFormMixin, generic.TemplateView):

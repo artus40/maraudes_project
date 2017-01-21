@@ -13,8 +13,8 @@
 {% for dropdown in dropdowns %}
 <li class="dropdown app-menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#">{{ dropdown.header }} <b class="caret"></b></a>
       <ul class="dropdown-menu">{% for link in dropdown.links %}
-  <li><a href="{{ link.href }}">{% if link.icon %}{% bootstrap_icon link.icon %}{% endif %} {{ link.text}}</a>
-      </li>{% endfor %}
+	<li><a href="{{ link.href }}">{% if link.icon %}{% bootstrap_icon link.icon %}{% endif %} {{ link.text}}</a>
+        </li>{% endfor %}
     </ul>
   </li>
 {% endfor %}

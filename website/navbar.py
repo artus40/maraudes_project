@@ -55,11 +55,12 @@ class MenuRegistry(type):
 
 
 class ApplicationMenu(metaclass=MenuRegistry):
-
+    name = None
+    header = None
     _links = []
     _dropdowns = []
 
-    def __init__(self, view):
+    def __init__(self, view, user):
         try:
             header, target, icon = self.header
         except ValueError:
@@ -67,12 +68,23 @@ class ApplicationMenu(metaclass=MenuRegistry):
             target = "#"
             icon = None
         self.header = Link(header, target, icon)
-        self.is_active = False
         self.view = view
+        self.user = user
+        self.is_active = self.name == self.view.app_name
+
+    @classmethod
+    def add_link(cls, link, admin=False):
+        if not isinstance(link, Link):
+            link = Link(*link)
+        link.admin_link = admin
+        cls._links.append(link)
+
 
 
     @property
     def links(self):
+        if not self.user.is_superuser:
+            return filter(lambda l: l.admin_link == False, self._links)
         return self._links
 
     @property

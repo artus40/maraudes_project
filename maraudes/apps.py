@@ -20,9 +20,6 @@ maraudes = Webpage('maraudes',
                 'ajax': False,
                 'title': ('Maraudes','app'),
             })
-
-#Hack to create class-wide links
-#Needs some thinking...
-
-from website.navbar import Link
-maraudes.app_menu._links.append(Link('Liste des maraudes', 'maraudes:liste', "list"))
+# Setting up some links
+maraudes.app_menu.add_link(('Liste des maraudes', 'maraudes:liste', "list"))
+maraudes.app_menu.add_link(('Planning', 'maraudes:planning', "calendar"), admin=True)
