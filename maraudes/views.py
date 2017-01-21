@@ -23,16 +23,7 @@ from .forms import (    RencontreForm, RencontreInlineFormSet,
 
 from django.core.mail import send_mail
 
-from utilisateurs.models import Maraudeur
-
-
-from website.decorators import Webpage
-maraudes = Webpage('maraudes', icon="road", defaults={
-                'users': [Maraudeur],
-                'ajax': False,
-                'title': ('Maraudes','app'),
-            })
-
+from .apps import maraudes
 
 
 @maraudes.using(title=('La Maraude', 'Tableau de bord'))
@@ -79,7 +70,6 @@ class MaraudeDetailsView(generic.DetailView):
         context = super().get_context_data(**kwargs)
         context['notes'] = self.object.get_observations()
         return context
-
 
 
 @maraudes.using(title=('Liste des maraudes',))

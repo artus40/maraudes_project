@@ -8,12 +8,16 @@ register = template.Library()
 
 class NavbarNode(template.Node):
 
+    _apps = None
+
     def get_apps(self, view):
-        from website.navbar import registered
-        if not registered:
-            print('WARNING: No app registered into "navbar" module')
-        print('getting registered apps:', registered)
-        return [cls(view) for cls in registered]
+        if not self._apps:
+            from website.navbar import registered
+            if not registered:
+                print('WARNING: No app registered into "navbar" module')
+            self._apps = [cls(view) for cls in registered]
+        print('gettin apps :', self._apps)
+        return self._apps
 
     def get_template(self):
         return template.loader.get_template('navbar/layout.html')

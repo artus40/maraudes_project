@@ -56,6 +56,9 @@ class MenuRegistry(type):
 
 class ApplicationMenu(metaclass=MenuRegistry):
 
+    _links = []
+    _dropdowns = []
+
     def __init__(self, view):
         try:
             header, target, icon = self.header
@@ -67,21 +70,13 @@ class ApplicationMenu(metaclass=MenuRegistry):
         self.is_active = False
         self.view = view
 
-    def get_links(self):
-        """ Shall be implemented in children. """
-        return []
-
-    def get_dropdowns(self, view):
-        """ Shall be implemented in children. """
-        return []
 
     @property
     def links(self):
-        return [Link(text, target, icon) for text, target, icon in self.get_links()]
+        return self._links
 
     @property
     def dropdowns(self):
-        print('getting dropdowns', self, self.view)
-        return self.get_dropdowns(self.view)
+        return self._dropdowns
 
 
