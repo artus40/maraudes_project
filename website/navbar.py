@@ -41,6 +41,8 @@ class DropDown:
     def links(self):
         return [Link(text, target, icon) for text, target, icon in self.get_links()]
 
+
+
 class MenuRegistry(type):
     """ Metaclass that registers subclass into module level variable 'registered' """
     def __new__(metacls, name, bases, dct):
@@ -49,6 +51,7 @@ class MenuRegistry(type):
             print('registering menu', cls)
             registered.append(cls)       
         return cls
+
 
 
 class ApplicationMenu(metaclass=MenuRegistry):
