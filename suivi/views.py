@@ -9,12 +9,11 @@ from notes.forms import AutoNoteForm
 # Create your views here.
 from utilisateurs.models import Maraudeur
 from website.decorators import Webpage
-suivi = Webpage("suivi", {
+suivi = Webpage("suivi", icon="eye-open", defaults={
                         'restricted': [Maraudeur],
                         'ajax': False,
                     }
                 )
-from suivi.menu import SuiviMenu
 
 from maraudes.compte_rendu import CompteRendu
 

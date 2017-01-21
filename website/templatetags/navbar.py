@@ -7,9 +7,9 @@ register = template.Library()
 
 
 class NavbarNode(template.Node):
-    
+
     def get_apps(self, view):
-        from navbar.navbar import registered
+        from website.navbar import registered
         if not registered:
             print('WARNING: No app registered into "navbar" module')
         print('getting registered apps:', registered)
@@ -28,7 +28,7 @@ class NavbarNode(template.Node):
         # Add user menu
         request = context.get('request')
         context = template.Context({
-            'apps': apps, 
+            'apps': apps,
             'user': context.get('user'),
             'user_group': context.get('user_group', None),
             'next': context.get('next', None),

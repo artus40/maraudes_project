@@ -16,7 +16,6 @@ INSTALLED_APPS += [
     'suivi',
     'utilisateurs',
     'website',
-    'navbar',
 ]
 
 

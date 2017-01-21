@@ -40,13 +40,17 @@ def app_config(**options):
 
 # Doing the same as class
 
+from .navbar import ApplicationMenu
+
 class Webpage:
     """ Webpage configurator. It is used as a decorator.
     
     The constructor takes one positionnal argument:
         - app_name : name of the application where this view shall be categorized.
-    and a keyword argument:
+    and keyword arguments:
         - defaults : mapping of default options.
+        - menu : does it register a menu ? default is True
+        - icon : bootstrap name of menu header icon, ignored if 'menu' is False.
 
     Options are :
         - title: tuple of (header, header_small), header_small is optionnal.
@@ -61,8 +65,21 @@ class Webpage:
             ('ajax', False)
         ]
 
-    def __init__(self, app_name, defaults={}):
+    def __init__(self, app_name, icon=None, defaults={}, menu=True):
         self.app_name = app_name
+
+        if menu: # Build ApplicationMenu subclass
+            app_menu = type(
+                        app_name.title() + "Menu",
+                        (ApplicationMenu,),
+                        {'name': app_name,
+                         'header': (app_name.title(), '%s:index' % app_name, icon),
+                        }
+                    )
+            self.app_menu = app_menu
+        else:
+            self.app_menu = None
+
         self._defaults = {}
         self._updated = {} # Store updated options
         # Set all default options

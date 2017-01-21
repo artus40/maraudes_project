@@ -18,16 +18,15 @@ class SpecialUserRequiredMixin(object):
     @staticmethod
     def special_user_required(authorized_users):
         valid_cls = tuple(authorized_users)
+        if not valid_cls: # No restriction usually means misconfiguration !
+                raise ImproperlyConfigured(
+'A view was configured as "restricted" with no restricting parameters !')
 
         def check_special_user(user):
-            # No valid cls means no restrictions !
-            # Usually means misconfiguration
-            if not valid_cls:              
-                raise ImproperlyConfigured('A view was configured as "restricted" with no restricting parameters !')
-
-            if isinstance(user, valid_cls): return True
-            else:                           return False
-
+            if isinstance(user, valid_cls):
+                return True
+            else:
+                return False
         return user_passes_test(check_special_user)
 
 
@@ -51,7 +50,6 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
     """
     base_template = "base_site.html"
     content_template = None
-
     app_name = None
 
     class Configuration:
@@ -74,7 +72,6 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
             raise ImproperlyConfigured(self, "has no template defined !")
         return self.content_template
 
-
     def get_context_data(self, **kwargs):
         context = Context(super().get_context_data(**kwargs))
         #Website processor
@@ -86,6 +83,8 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         #Webpage
         context['content_template'] = self.get_content_template()
         return context
+
+
 
 class WebsiteAjaxTemplateMixin(WebsiteTemplateMixin):
     """ Mixin that returns content_template instead of base_template when

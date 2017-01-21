@@ -27,12 +27,11 @@ from utilisateurs.models import Maraudeur
 
 
 from website.decorators import Webpage
-maraudes = Webpage('maraudes', defaults={
+maraudes = Webpage('maraudes', icon="road", defaults={
                 'users': [Maraudeur],
                 'ajax': False,
                 'title': ('Maraudes','app'),
             })
-from maraudes.menu import MaraudesMenu
 
 
 
