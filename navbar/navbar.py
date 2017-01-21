@@ -7,22 +7,28 @@ from django.urls import reverse
 registered = []
 
 class Link:
-    def __init__(self, text, target=None, icon=None):
+    def __init__(self, text, target="#", icon=None):
         self.text = text
-        if not target:
-            raise TypeError
-        if target == "#": #Create void link
-            self.href="#"
-        else:
-            try:
-                target, kwargs = target
-            except ValueError:
-                target = target
-                kwargs = {}
-            assert type(target) == str
-            assert type(kwargs) == dict
-            self.href = reverse(target, **kwargs)
+        self.target = target
         self.icon = icon
+    
+    @property
+    def href(self):
+        if not hasattr(self, '_href'):
+            if self.target == "#": #Create void link
+                self._href = "#"
+            else:
+                try:
+                    target, kwargs = self.target
+                except ValueError:
+                    target = self.target
+                    kwargs = {}
+                assert type(target) == str
+                assert type(kwargs) == dict
+                self._href = reverse(target, **kwargs)
+        return self._href
+
+
 
 class DropDown:
  
@@ -36,10 +42,8 @@ class DropDown:
         return [Link(text, target, icon) for text, target, icon in self.get_links()]
 
 class MenuRegistry(type):
-
+    """ Metaclass that registers subclass into module level variable 'registered' """
     def __new__(metacls, name, bases, dct):
-        print('call MenuRegistry.__new__', name, bases, dct)
-
         cls = type.__new__(metacls, name, bases, dct)
         if name != "ApplicationMenu":
             print('registering menu', cls)
