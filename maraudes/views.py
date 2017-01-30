@@ -121,11 +121,8 @@ class CompteRenduCreateView(generic.DetailView):
         # Add text to some mails ? Transmission, message à un référent, etc...
         # Send mail to Maraudeurs
         _from = maraude.referent.email
-        exclude = (maraude.referent, maraude.binome)
-        recipients = []
-        for m in Maraudeur.objects.all():
-            if not m in exclude:
-                recipients.append(m.email)
+        # Shall select only Maraudeur where 'is_active' is True !
+        recipients = [m for m in Maraudeur.objects.all() if m not in (maraude.referent, maraude.binome)]
         objet = "Compte-rendu de maraude : %s" % maraude.date
         message = "Sujets rencontrés : ..." #TODO: Mail content
         send_mail(objet, message, _from, recipients)
