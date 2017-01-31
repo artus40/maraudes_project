@@ -31,6 +31,10 @@ Used as a decorator in views.py:
 Dropdowns could be created in apps.py, or directly into view class ?
 How to best declare dropdown subclasses ??
 
+Added 'LinkManager' to help implement per-view links. How to best do this ?
+Specially useful for dropdowns, as Dropdown shall be reactive, thus 
+instanciated by DropdownManager when accessed from a Menu instance ??
+-> 
 
 """
 
@@ -90,6 +94,41 @@ class DropDown:
         return [Link(text, target, icon) for text, target, icon in self.get_links()]
 
 
+class LinkManager:
+    """ Per-class manager of links """
+
+    def __init__(self):
+        self.items = []
+
+    def __get__(self, instance, owner):
+        if instance: #Filtering done at each call, not optimized at all !
+            if not instance.user.is_superuser:
+                return [link for link in self.items if link.admin_link == False]
+            else:
+                return self.items.copy()
+        return self
+
+    def add(self, link):
+        self.items.append(link)
+
+    def __repr__(self):
+        return '<LinkManager: [' + ', '.join((l.text for l in self.items)) + ']>'
+
+
+
+class DropdownManager:
+    """ Per-class manager of dropdowns """
+
+    def __init__(self):
+        self.items = {}
+
+    def __get__(self, instance, owner):
+        if instance:
+            key = instance.view.view_class
+            return self.items.get(key, self.items.get('default', []))
+        return self
+
+
 
 class MenuRegistry(type):
     """ Metaclass that registers subclass into module level variable 'registered' """
@@ -106,8 +145,8 @@ class MenuRegistry(type):
                 target = "#"
                 icon = None
             cls.header = Link(header, target, icon)
-            cls._links = []
-            cls._dropdowns = []
+            cls.links = LinkManager()
+            cls.dropdowns = DropdownManager()
         return cls
 
 
@@ -115,8 +154,6 @@ class MenuRegistry(type):
 class ApplicationMenu(metaclass=MenuRegistry):
     name = None
     header = None
-    _links = None
-    _dropdowns = None
 
     def __init__(self, view, user):
         self.view = view
@@ -128,17 +165,5 @@ class ApplicationMenu(metaclass=MenuRegistry):
         if not isinstance(link, Link):
             link = Link(*link)
         link.admin_link = admin
-        cls._links.append(link)
-
-    @property
-    def links(self):
-        if not self.user.is_superuser:
-            return filter(lambda l: l.admin_link == False, self._links)
-        return self._links
-
-    @property
-    def dropdowns(self):
-        # add Dropdown instances stored in view ??
-        return self._dropdowns
-
+        cls.links.add(link)
 
