@@ -124,7 +124,7 @@ class DropdownManager:
 
     def __get__(self, instance, owner):
         if instance:
-            key = instance.view.view_class
+            key = instance.view
             return self.items.get(key, self.items.get('default', []))
         return self
 
