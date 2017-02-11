@@ -87,10 +87,11 @@ class MaraudeListView(generic.ListView):
                                     ).order_by('-date')
 
         filtre = self.request.GET.get('filter', None)
-        if not filtre:
-            return qs
-        elif filtre == "month-only":
+        if filtre == "month-only":
             return qs.filter(date__month=current_date.month)
+        #Other cases...
+        else:
+            return qs
 
 
 ## COMPTE-RENDU DE MARAUDE

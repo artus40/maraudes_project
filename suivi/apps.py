@@ -14,16 +14,3 @@ suivi = Webpage("suivi", icon="eye-open", defaults={
 
 suivi.app_menu.add_link(('Liste des sujets', 'suivi:liste', 'list'))
 
-# Admin dropdown
-"""
-class SujetsDropdown:
-    header = "Gérer les sujets"
-
-    links = [
-        ('Nouveau sujet', 'sujets:create', 'plus'),
-        ('Administration', ('admin:app_list', {'app_label': 'sujets' }), 'wrench'),
-    ]
-
-"""
-# Suivi:Details
-# new link: ('Éditer les notes', ('admin:notes_note_changelist', {'get': {'sujet__personne_ptr': sujet.pk}}), 'wrench') 
