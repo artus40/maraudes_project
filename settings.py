@@ -32,6 +32,10 @@ BOOTSTRAP3 = {
     'horizontal_field_class': 'col-md-10',
     }
 
+# Django-select2 Configuration
+SELECT2_JS = 'scripts/select2.min.js'
+SELECT2_CSS = 'css/select2.min.css'
+
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 AUTHENTICATION_BACKENDS = [
     'website.backends.MyBackend'
