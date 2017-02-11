@@ -1,7 +1,0 @@
-{% if user.is_superuser %}
-{% load bootstrap3 %}
-  <li class="dropdown app-menu"><a class="dropdown-toggle" data-toggle="dropdown" href="#">Sujet<b class="caret"></b></a>
-  <ul class="dropdown-menu">
-    <li><a href="{% url 'admin:notes_note_changelist' %}?sujet__personne_ptr__exact={{sujet.pk}}">{% bootstrap_icon "wrench" %} Éditer les notes</a></li>
-  </ul>
-{% endif %}
