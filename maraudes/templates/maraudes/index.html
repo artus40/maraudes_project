@@ -11,7 +11,13 @@
           avec {% if user.is_superuser %}{{prochaine_maraude.binome}}{%else%}{{prochaine_maraude.referent}}{%endif%}.
         </strong></p>
         <hr />
-        <p><mark>Informations, notes, rendez-vous ?</mark></p>
+        {% if prochaine_maraude.est_terminee %}
+        <a class="btn btn-sm btn-primary" href="{% url 'maraudes:details' pk=prochaine_maraude.pk %}">
+          Voir le compte-rendu
+        </a>{%else%}
+        <a class="btn btn-sm btn-primary" href="{% url 'maraudes:create' pk=prochaine_maraude.pk %}">
+          Rédiger le compte-rendu
+        </a>{% endif %}
       {% else %}<p>Aucune maraude prévue.</p>{% endif %}
       </div>
     </div>

@@ -1,7 +1,6 @@
 import datetime
 import calendar
 from django.utils import timezone
-from django.utils.functional import cached_property
 from django.contrib import messages
 from django.shortcuts import render, redirect
 # Views
@@ -22,56 +21,14 @@ from .forms import (    RencontreForm, RencontreInlineFormSet,
                         ObservationInlineFormSet, ObservationInlineFormSetNoExtra,
                         MaraudeAutoDateForm, MonthSelectForm,   )
 
-from utilisateurs.models import Maraudeur
-
-from website import decorators as website
-maraudes = website.app_config(
-                    name="maraudes",
-                    groups=[Maraudeur],
-                    menu=["maraudes/menu/dernieres_maraudes.html"],
-                    admin_menu=["maraudes/menu/admin_menu.html"],
-                    ajax=False,
-                )
-compte_rendu = website.app_config(
-                    name="maraudes",
-                    groups=[Maraudeur],
-                    menu=["compte_rendu/menu/creation.html"],
-                    ajax=False,
-                )
-maraudes_ajax = website.app_config(
-                    name="maraudes",
-                    groups=[Maraudeur],
-                    ajax=True,
-)
-
 from django.core.mail import send_mail
 
-class DerniereMaraudeMixin(object):
-    count = 5
-    @cached_property
-    def dernieres_maraudes(self):
-        """ Renvoie la liste des 'Maraude' passées et terminées """
-        return Maraude.objects.get_past().filter(
-                                            heure_fin__isnull=False
-                                        ).order_by(
-                                            '-date'
-                                        )[:self.count]
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['dernieres_maraudes'] = self.dernieres_maraudes
-        return context
+from .apps import maraudes
 
 
+@maraudes.using(title=('La Maraude', 'Tableau de bord'))
+class IndexView(generic.TemplateView):
 
-@maraudes
-class IndexView(DerniereMaraudeMixin, generic.TemplateView):
-
-    class PageInfo:
-        title = "Maraude - Tableau de bord"
-        header = "La Maraude"
-        header_small = "Tableau de bord"
-    # TemplateView
     template_name = "maraudes/index.html"
 
     def get_context_data(self, *args, **kwargs):
@@ -101,19 +58,13 @@ class IndexView(DerniereMaraudeMixin, generic.TemplateView):
         return Maraude.objects.next
 
 ## MARAUDES
-@maraudes
-class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
+@maraudes.using(title=('{{maraude.date}}', 'compte-rendu'))
+class MaraudeDetailsView(generic.DetailView):
     """ Vue détaillé d'un compte-rendu de maraude """
 
     model = CompteRendu
     context_object_name = "maraude"
     template_name = "maraudes/details.html"
-
-    # Template
-    class PageInfo:
-        title = "Maraude - {{maraude.date}}"
-        header = "{{maraude.date}}"
-        header_small = "{{maraude.referent}} & {{maraude.binome}}"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -121,28 +72,30 @@ class MaraudeDetailsView(DerniereMaraudeMixin, generic.DetailView):
         return context
 
 
-
-@maraudes
-class MaraudeListView(DerniereMaraudeMixin, generic.ListView):
+@maraudes.using(title=('Liste des maraudes',))
+class MaraudeListView(generic.ListView):
     """ Vue de la liste des compte-rendus de maraude """
 
     model = CompteRendu
     template_name = "maraudes/liste.html"
     paginate_by = 30
 
-    class PageInfo:
-        title = "Maraude - Liste des maraudes"
-        header = "Liste des maraudes"
-
     def get_queryset(self):
-        today = datetime.date.today()
-        return super().get_queryset().filter(
-                                        date__lte=timezone.localtime(timezone.now()).date()
+        current_date = timezone.localtime(timezone.now()).date()
+        qs = super().get_queryset().filter(
+                                        date__lte=current_date
                                     ).order_by('-date')
+
+        filtre = self.request.GET.get('filter', None)
+        if filtre == "month-only":
+            return qs.filter(date__month=current_date.month)
+        #Other cases...
+        else:
+            return qs
 
 
 ## COMPTE-RENDU DE MARAUDE
-@compte_rendu
+@maraudes.using(title=('{{maraude.date}}', 'rédaction'))
 class CompteRenduCreateView(generic.DetailView):
     """ Vue pour la création d'un compte-rendu de maraude """
 
@@ -152,11 +105,6 @@ class CompteRenduCreateView(generic.DetailView):
 
     form = None
     inline_formset = None
-
-    class PageInfo:
-        title = "{{maraude}} - Compte-rendu"
-        header = "{{maraude.date}}"
-        header_small = "écriture du compte-rendu"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -180,11 +128,8 @@ class CompteRenduCreateView(generic.DetailView):
         # Add text to some mails ? Transmission, message à un référent, etc...
         # Send mail to Maraudeurs
         _from = maraude.referent.email
-        exclude = (maraude.referent, maraude.binome)
-        recipients = []
-        for m in Maraudeur.objects.all():
-            if not m in exclude:
-                recipients.append(m.email)
+        # Shall select only Maraudeur where 'is_active' is True !
+        recipients = [m for m in Maraudeur.objects.all() if m not in (maraude.referent, maraude.binome)]
         objet = "Compte-rendu de maraude : %s" % maraude.date
         message = "Sujets rencontrés : ..." #TODO: Mail content
         send_mail(objet, message, _from, recipients)
@@ -245,18 +190,13 @@ class CompteRenduCreateView(generic.DetailView):
 
 
 
-@compte_rendu
+@maraudes.using(title=('{{maraude.date}}', 'mise à jour'))
 class CompteRenduUpdateView(generic.DetailView):
     """ Vue pour mettre à jour le compte-rendu de la maraude """
 
     model = CompteRendu
     context_object_name = "maraude"
     template_name = "compte_rendu/compterendu_update.html"
-
-    class PageInfo:
-        title = "{{maraude}} - Compte-rendu"
-        header = "{{maraude.date}}"
-        header_small = "compte-rendu"
 
     base_formset = None
     inline_formsets = []
@@ -311,16 +251,11 @@ class CompteRenduUpdateView(generic.DetailView):
 
 
 ## PLANNING
-@maraudes
+@maraudes.using(title=('Planning',))
 class PlanningView(generic.TemplateView):
     """ Display and edit the planning of next Maraudes """
 
     template_name = "planning/planning.html"
-
-    class PageInfo:
-        title = "Planning"
-        header = "Planning"
-        header_small = "{{month}} {{year}}" #TODO: does not parse extra context
 
     def _parse_request(self):
         self.current_date = datetime.date.today()
@@ -381,17 +316,12 @@ class PlanningView(generic.TemplateView):
 
 ## LIEU
 
-@maraudes_ajax
+@maraudes.using(ajax=True)
 class LieuCreateView(generic.edit.CreateView):
     model = Lieu
     template_name = "maraudes/lieu_create.html"
     fields = "__all__"
     success_url = "/maraudes/"
-
-    class PageInfo:
-        pass
-
-    permissions = ['maraudes.add_lieu']
 
     def post(self, request, *args, **kwargs):
         if 'next' in self.request.POST:

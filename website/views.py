@@ -10,7 +10,7 @@ class Index(WebsiteTemplateMixin, views.generic.TemplateView):
 
     template_name = "main.html"
     app_menu = None
-
+    header = ('La Maraude ALSA', 'accueil')
     class PageInfo:
         title = "La maraude ALSA"
         header = "La Maraude ALSA"

@@ -7,15 +7,7 @@ from .forms import *
 from notes.mixins import NoteFormMixin
 from notes.forms import AutoNoteForm
 # Create your views here.
-from utilisateurs.models import Maraudeur
-from website import decorators as website
-suivi = website.app_config(
-                    name="suivi",
-                    groups=[Maraudeur],
-                    menu=["suivi/menu/sujets.html"],
-                    admin_menu=["suivi/menu/admin_sujets.html"],
-                    ajax=False,
-                )
+
 
 from maraudes.compte_rendu import CompteRendu
 
@@ -30,12 +22,10 @@ def derniers_sujets_rencontres():
             sujets.add(obs.sujet)
     return sujets
 
-@suivi
+from .apps import suivi
+
+@suivi.using(title=("Suivi", "Tableau de bord"))
 class IndexView(NoteFormMixin, generic.TemplateView):
-    class PageInfo:
-        title = "Suivi des bénéficiaires"
-        header = "Suivi"
-        header_small = "Tableau de bord"
     #NoteFormMixin
     forms = {
         'appel': AppelForm,
@@ -54,11 +44,10 @@ class IndexView(NoteFormMixin, generic.TemplateView):
         context['derniers_sujets'] = ", ".join(map(str, derniers_sujets_rencontres()))
         return context
 
-@suivi
+
+
+@suivi.using(title=('Liste des sujets',))
 class SujetListView(generic.ListView):
-    class PageInfo:
-        title = "Sujet - Liste des sujets"
-        header = "Liste des sujets"
     #ListView
     model = Sujet
     template_name = "sujets/sujet_liste.html"
@@ -77,15 +66,10 @@ class SujetListView(generic.ListView):
         context['query_text'] = self.request.POST.get('q', None)
         return context
 
-# Import app_config from 'sujets' application, using
-# its admin_menu option
-from sujets.views import sujets
-@sujets
+
+
+@suivi.using(title=('{{sujet}}', 'suivi'))
 class SuiviSujetView(NoteFormMixin, generic.DetailView):
-    class PageInfo:
-        title = "Sujet - {{sujet}}"
-        header = "{{sujet}}"
-        header_small = "suivi"
     #NoteFormMixin
     forms = {
         'note': AutoNoteForm,

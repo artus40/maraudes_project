@@ -8,3 +8,19 @@ class Config(AppConfig):
     menu_icon = "road"
     def get_index_url(self):
         return "/maraudes/"
+
+
+from utilisateurs.models import Maraudeur
+from website.decorators import Webpage
+
+maraudes = Webpage('maraudes',
+                icon="road",
+                defaults={
+                'users': [Maraudeur],
+                'ajax': False,
+                'title': ('Maraudes','app'),
+            })
+# Setting up some links
+maraudes.app_menu.add_link(('Liste des maraudes', 'maraudes:liste', "list"))
+maraudes.app_menu.add_link(('Planning', 'maraudes:planning', "calendar"), admin=True)
+

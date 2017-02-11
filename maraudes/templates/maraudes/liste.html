@@ -1,14 +1,13 @@
 {% load bootstrap3 %}
 {% load tables %}
-<div class="col-md-12 col-lg-6">
+<div class="col-lg-10">
   <div class="panel panel-primary">
     <!-- Default panel contents -->
     <div class="panel-heading text-center">
       <h3 class="panel-title">Maraudes passées</h3>
     </div>
-
     <!-- Table -->
-    {% table object_list cols=2 cell_template="maraudes/list_table_cell.html" %}
+    {% table object_list cols=3 cell_template="maraudes/list_table_cell.html" %}
   {% if is_paginated %}
   <div class="panel-footer text-center">
       <ul class="pagination">
@@ -20,15 +19,14 @@
   {% endif %}
   </div>
 </div>
-<div class="col-lg-3 col-md-3">
-  <div class="panel panel-default">
-    <!-- Default panel contents -->
-    <div class="panel-heading text-center">
-      <h3 class="panel-title">Filtres</h3>
-    </div>
-    <div class="list-group">
-      <a href="#" class="list-group-item disabled">Vos maraudes seulement</a></li>
-      <a href="#" class="list-group-item disabled">Ce mois-ci</a></li>
-    </div>
-  </div>
-</div>
+<div class="pull-left">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Filtrer <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'maraudes:liste' %}">Pas de filtre</a></li>
+            <li><a href="?filter=month-only">Ce mois-ci</a></li>
+          </ul>
+        </div>
+      </div>

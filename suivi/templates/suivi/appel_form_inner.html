@@ -1,5 +1,4 @@
 {% load bootstrap3 %}
-{{ form.media.js }}{{ form.media.css }}
 <form action="" method="POST">{% csrf_token %}
   {% with "inline" as layout %}
   <div class="form-{{layout}} well col-md-10 col-md-offset-2">
@@ -14,3 +13,4 @@
   </div>  {% endwith %}
   <div class="pull-right">{% bootstrap_button "Enregistrer l'appel" button_type="submit" %}</div>
 </form>
+{{ form.media.js }}{{ form.media.css }}

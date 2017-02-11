@@ -1,0 +1,52 @@
+{% load bootstrap3 %}{% load staticfiles %}{% load navbar %}
+<nav class="navbar navbar-inverse navbar-fixed-side" role="navigation" id="menu">
+  <div class="container">
+    <div class="navbar-header">
+      <button class="navbar-toggle" data-target=".navbar-collapse" data-toggle="collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="{% url 'index' %}">La Maraude ALSA</a>
+    </div>
+    <div class="collapse navbar-collapse">
+      <ul class="nav navbar-nav">{% for app in apps %}
+          {% navbar_menu app %}
+      {% endfor %}</ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+          <a id="UserMenu" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+          <strong style="color:#fff;">{% bootstrap_icon "user" %} &middot; {{user}} </strong>&middot; {{ user_group }}<span class="caret"></span></a>
+          <ul class="dropdown-menu" aria-labelledby="UserMenu">
+            {% if next %}
+            <p class="well-sm text-center"><strong style="color:#980300;">Vous n'avez pas l'autorisation<br/> d'accéder à cette page.</strong></p>
+            {%endif%}
+            {% if user.is_authenticated %}
+            {% if user.is_superuser %}<li><a href="{% url 'admin:index' %}">{% bootstrap_icon "wrench" %} Administration</a></li>{% endif %}
+            <li><a href="{% url 'logout' %}">{% bootstrap_icon "log-out" %} Déconnecter</a></li>
+            {% else %}
+            <li>
+              <form class="navbar-form navbar-left" method="post" action="/login/">{% csrf_token %}
+                {% if next %}<input name="next" value="{{next}}" hidden />{% endif %}
+                <div class="form-group form-horizontal">
+                  <div class="form-group">
+                    <label class="col-md-2 sr-only control-label" for="id_username">Username</label>
+                    <div class="col-md-10">
+                      <input autofocus="" class="form-control" id="id_username" maxlength="254" name="username" placeholder="Username" title="" type="text" required />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="col-md-2 sr-only control-label" for="id_password">Password</label>
+                    <div class="col-md-10"><input class="form-control" id="id_password" name="password" placeholder="Password" title="" type="password" required />
+                    </div>
+                  </div>
+                </div>
+                <div class="text-center"><button class="btn btn-primary navbar-button" type="submit">Connexion</button></div>
+              </form>
+            </li>
+            {% endif %}
+          </ul>
+    </div>
+  </div>
+</nav>

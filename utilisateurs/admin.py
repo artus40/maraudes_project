@@ -12,7 +12,7 @@ class MaraudeurAdmin(admin.ModelAdmin):
         ('Informations', {'fields': [('first_name', 'last_name')]}),
     ]
 
-    list_display = ('first_name', 'last_name', 'is_active')
+    list_display = ('username', 'is_active')
 
 
 

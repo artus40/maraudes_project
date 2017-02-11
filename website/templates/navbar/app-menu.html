@@ -1,0 +1,11 @@
+{% load bootstrap3 %}
+    <li {% if active %}class="active"{%endif%}>
+      <a href="{{header.href}}">{% if header.icon %}{% bootstrap_icon header.icon %} &middot; {% endif %}<strong>{{header.text}}</strong></a>
+    </li>
+    {% if active %}{% for link in links %}
+      <li class="app-menu">
+          <a href="{{link.href}}">{{ link.text }}
+          {% if link.icon %}<span class="pull-right">{% bootstrap_icon link.icon %}</span>{% endif %}
+          </a>
+      </li>
+    {% endfor %}{% endif %}

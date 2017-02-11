@@ -87,6 +87,7 @@ class Maraude(models.Model):
                             limit_choices_to={
                                 'is_superuser': False,
                                 'is_staff': True,
+                                'is_active': True,
                             }
                         )
 
