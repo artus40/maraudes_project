@@ -81,10 +81,16 @@ class MaraudeListView(generic.ListView):
     paginate_by = 30
 
     def get_queryset(self):
-        today = datetime.date.today()
-        return super().get_queryset().filter(
-                                        date__lte=timezone.localtime(timezone.now()).date()
+        current_date = timezone.localtime(timezone.now()).date()
+        qs = super().get_queryset().filter(
+                                        date__lte=current_date
                                     ).order_by('-date')
+
+        filtre = self.request.GET.get('filter', None)
+        if not filtre:
+            return qs
+        elif filtre == "month-only":
+            return qs.filter(date__month=current_date.month)
 
 
 ## COMPTE-RENDU DE MARAUDE
