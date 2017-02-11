@@ -39,13 +39,12 @@ class NavbarNode(template.Node):
 def navbar(parser, token):
     return NavbarNode()
 
-@register.inclusion_tag("navbar/navbar-menu.html")
+@register.inclusion_tag("navbar/app-menu.html")
 def navbar_menu(app_menu):
     return {
         'active': app_menu.is_active,
         'header': app_menu.header,
         'links': app_menu.links,
-        'dropdowns': app_menu.dropdowns,
     }
 
 

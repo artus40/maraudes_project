@@ -1,10 +1,12 @@
 {% load tables %}
 {% load bootstrap3 %}
-<div class="col-md-12 col-lg-6">
+<div class="col-lg-10">
   <div class="panel panel-primary">
     <!-- Default panel contents -->
     <div class="panel-heading text-center">
-      <h3 class="panel-title">Sujets rencontrés</h3>
+      <h3 class="panel-title">Sujets rencontrés
+
+      </h3>
     </div>
     <div class="panel-body">
       <form action="" method="POST" class="form form-group">{% csrf_token %}
@@ -41,19 +43,17 @@
     {% endif %}{% endif %}
   </div>
 </div>
-
-<div class="col-lg-3 col-md-3">
-  <div class="panel panel-default">
-    <!-- Default panel contents -->
-    <div class="panel-heading text-center">
-      <h3 class="panel-title">Filtres</h3>
-    </div>
-    <div class="list-group">
-      <a href="#" class="list-group-item disabled">Rencontrés ce mois-ci</a></li>
-      <a href="#" class="list-group-item disabled"><strong>Mes accompagnements</strong></a></li>
-      <a href="#" class="list-group-item disabled">Hébérgé en urgence</a></li>
-      <a href="#" class="list-group-item disabled">Sans logement</a></li>
-
-    </div>
-  </div>
+<div class="pull-left">
+        <div class="btn-group">
+          <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Filtrer <span class="caret"></span>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a href="{% url 'suivi:liste' %}">Pas de filtre</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="?filter=month-only">Rencontrés ce mois-ci</a></li>
+            <li><a href="?filter=">Hébérgé en urgence</a></li>
+            <li><a href="?filter=">Sans abri</a></li>
+          </ul>
+        </div>
 </div>

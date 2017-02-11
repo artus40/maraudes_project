@@ -38,6 +38,14 @@
 
 <div class="row">
   <div class="col-lg-6 col-md-12">
+    <!-- Modal buttons -->
+    <div class="well well-sm text-right"><strong>Créer un nouvel objet :</strong>
+    <div class="btn-group" role="group" aria-label="...">
+      <button id="new-sujet" class="btn btn-sm btn-primary">{% bootstrap_icon "user" %} Sujet</button>
+      <button id="new-lieu" class="btn btn-sm btn-primary">{% bootstrap_icon "globe" %} Lieu</button>
+    </div>
+    </div>
+
     <form method="post" action="{% url 'maraudes:create' maraude.pk %}?finalize=False">
     {% csrf_token %}
       <div class="panel panel-primary panel-collapse">
@@ -71,7 +79,7 @@
     </div>
   </div>
 </div>
-
+<!-- Modal and button linking -->
 <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
    <div class="modal-dialog">
      <div class="modal-content">
@@ -85,3 +93,12 @@
      </div>
    </div>
 </div>
+<script type="text/javascript" src="{% static 'scripts/bootstrap-modal.js' %}"></script>
+<script type="text/javascript">
+  $.fn.openModalEvent('new-sujet',
+  '{% url "sujets:create" %}?next={% url "maraudes:create" pk=maraude.pk %}',
+  'Nouveau sujet');
+  $.fn.openModalEvent('new-lieu',
+  '{% url "maraudes:lieu-create" %}?next={% url "maraudes:create" pk=maraude.pk %}',
+  'Nouveau lieu');
+</script>
