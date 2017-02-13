@@ -3,3 +3,4 @@
 django-bootstrap3
 django-select2
 django-watson
+django-graphos
