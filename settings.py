@@ -9,6 +9,8 @@ INSTALLED_APPS += [
     'django_select2',
     # Search Engine
     'watson',
+    # Graph package
+    'graphos',
     # Project apps
     'maraudes',
     'sujets',
