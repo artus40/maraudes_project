@@ -16,6 +16,7 @@ INSTALLED_APPS += [
     'suivi',
     'utilisateurs',
     'website',
+    'statistiques',
 ]
 
 
