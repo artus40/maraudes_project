@@ -42,7 +42,7 @@ class Note(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return "%s" % (self.child_class.__qualname__)
+        return "<%s: %s>" % (self.child_class.__qualname__, self.sujet)
 
     def note_author(self):
         return None
