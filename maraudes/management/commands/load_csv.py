@@ -199,6 +199,11 @@ class Command(BaseCommand):
                     assert sujet is not None
                     assert lieu is not None
                     assert maraude is not None
+                    if prems and self._commit:
+                        sujet.premiere_rencontre = date
+                        sujet.save()
+                        self.stdout.write(self.style.SUCCESS("[%i]* Updated premiere_rencontre on %s" % (self.cur_line, sujet)))
+
                     self.add_rencontre(maraude, sujet, lieu)
 
                 #Summary
