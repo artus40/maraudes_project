@@ -1,0 +1,8 @@
+{% load bootstrap3 %}
+{{ form.media }}
+<p>Vous allez intégrer la fiche de {{object}} dans celle de : </p>
+<form action="{% url 'sujets:merge' pk=object.pk %}" method="POST">
+{% csrf_token %}
+{% bootstrap_form form %}
+{% bootstrap_button 'Fusionner' button_type='submit' %}
+</form>

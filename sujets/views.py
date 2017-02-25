@@ -1,8 +1,8 @@
 from django.shortcuts import render, redirect
-from django.views import generic
+from django.views import View, generic
 
 from .models import Sujet
-from .forms import SujetCreateForm
+from .forms import SujetCreateForm, SelectSujetForm
 
 ### Webpage config
 from utilisateurs.models import Maraudeur
@@ -43,3 +43,26 @@ class SujetCreateView(generic.edit.CreateView):
         try:   context['next'] = self.request.GET['next']
         except:context['next'] = None
         return context
+
+from .actions import merge_two
+from django.shortcuts import redirect
+from django.contrib import messages
+
+@sujets.using(title=('Fusionner',))
+class MergeView(generic.DetailView, generic.FormView):
+    """ Implement actions.merge_two as a view """
+    
+    template_name = "sujets/sujet_merge.html"
+    model = Sujet
+    form_class = SelectSujetForm
+
+    def form_valid(self, form):
+        slave = self.get_object()
+        master = form.cleaned_data['sujet']
+        try:
+            merge_two(master, slave)
+        except:
+            messages.error(self.request, "La fusion vers %s a échoué !" % master)
+            return redirect(slave)
+        messages.success(self.request, "%s vient d'être fusionné" % slave)        
+        return redirect(master)

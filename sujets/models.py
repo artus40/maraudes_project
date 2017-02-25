@@ -7,14 +7,15 @@ from django.db import models
 
 ### Item choices
 
+NSP = "Ne sait pas"
+
 # Item: Parcours institutionnel
 PARCOURS_INSTITUTIONNEL = "Institutionnel"
 PARCOURS_FAMILIAL = "Familial"
-PARCOURS_NR = "Non renseigné"
 PARCOURS_DE_VIE_CHOICES = (
+    (NSP, "Ne sait pas"),
     (PARCOURS_FAMILIAL, "Parcours familial"),
     (PARCOURS_INSTITUTIONNEL, "Parcours institutionnel"),
-    (PARCOURS_NR, "Ne sait pas"),
     )
 
 #Item: Type d'habitation
@@ -22,13 +23,12 @@ HABITATION_SANS = "Sans Abri"
 HABITATION_LOGEMENT = "Logement"
 HABITATION_TIERS = "Hébergement"
 HABITATION_MAL_LOGEMENT = "Mal logé"
-HABITATION_NR = "Non renseigné"
 HABITATION_CHOICES = (
+    (NSP, "Ne sait pas"),
     (HABITATION_SANS, "Sans abri"),
     (HABITATION_TIERS, "Hébergé"),
     (HABITATION_LOGEMENT, "Logé"),
     (HABITATION_MAL_LOGEMENT, "Mal logé"),
-    (HABITATION_NR, "Ne sait pas"),
     )
 
 #Item: Ressources
@@ -37,14 +37,13 @@ RESSOURCES_AAH = "AAH"
 RESSOURCES_POLE_EMPLOI = "Pôle Emploi"
 RESSOURCES_AUTRES = "Autres"
 RESSOURCES_SANS = "Pas de ressources"
-RESSOURCES_NR = "Non renseigné"
 RESSOURCES_CHOICES = (
+    (NSP, "Ne sait pas"),
     (RESSOURCES_AAH, "AAH"),
     (RESSOURCES_RSA, "RSA"),
     (RESSOURCES_SANS, "Aucune"),
     (RESSOURCES_POLE_EMPLOI, "Pôle emploi"),
     (RESSOURCES_AUTRES, "Autres ressources"),
-    (RESSOURCES_NR, "Ne sait pas")
     )
 
 
@@ -107,7 +106,7 @@ class Sujet(Personne):
     lien_familial = models.NullBooleanField("Lien Familial")
     parcours_de_vie = models.CharField(max_length=64,
                                        choices=PARCOURS_DE_VIE_CHOICES,
-                                       default=PARCOURS_NR)
+                                       default=NSP)
 
     # Problématiques
     prob_psychiatrie = models.NullBooleanField("Psychiatrie")
@@ -118,10 +117,10 @@ class Sujet(Personne):
     # Logement
     habitation = models.CharField("Type d'habitat", max_length=64,
                                   choices=HABITATION_CHOICES,
-                                  default=HABITATION_NR)
+                                  default=NSP)
     ressources = models.CharField("Ressources", max_length=64,
                                   choices=RESSOURCES_CHOICES,
-                                  default=RESSOURCES_NR)
+                                  default=NSP)
     connu_siao = models.NullBooleanField("Connu du SIAO ?")
 
     class Meta:
