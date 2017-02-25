@@ -132,3 +132,16 @@ class Sujet(Personne):
 
     def get_absolute_url(self):
         return reverse('suivi:details', kwargs={'pk': self.id})
+
+    @property
+    def info_completed(self):
+        observed = ('premiere_rencontre', 'age', 'prob_psychiatrie', 'prob_addiction',
+                    'prob_administratif', 'prob_somatique', 'habitation', 'ressources', 
+                    'connu_siao', 'lien_familial', 'parcours_de_vie')
+        completed = 0
+        for f in observed:
+            if getattr(self, f) == None or getattr(self, f) == NSP:
+                continue
+            else:
+                completed += 1
+        return int(completed / len(observed) * 100)
