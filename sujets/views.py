@@ -48,7 +48,7 @@ from .actions import merge_two
 from django.shortcuts import redirect
 from django.contrib import messages
 
-@sujets.using(title=('Fusionner',))
+@sujets.using(title=('Fusionner','{{object}}'))
 class MergeView(generic.DetailView, generic.FormView):
     """ Implement actions.merge_two as a view """
     

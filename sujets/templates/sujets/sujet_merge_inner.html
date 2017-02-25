@@ -1,8 +1,8 @@
 {% load bootstrap3 %}
-{{ form.media }}
-<p>Vous allez intégrer la fiche de {{object}} dans celle de : </p>
+<p> Vous allez fusionner la fiche de <strong>{{object}}</strong> et ses {{object.notes.count}} notes vers :</p>
 <form action="{% url 'sujets:merge' pk=object.pk %}" method="POST">
 {% csrf_token %}
-{% bootstrap_form form %}
-{% bootstrap_button 'Fusionner' button_type='submit' %}
+{{ form.media }}
+{% bootstrap_field form.sujet %}
+<div class="pull-right">{% bootstrap_button 'Fusionner' button_type='submit' icon='paste' %}</div>
 </form>

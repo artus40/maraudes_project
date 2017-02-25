@@ -1,6 +1,6 @@
 {% load bootstrap3 %}
 <div class="col-lg-6 col-md-12">
-  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+ <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
   {% include "suivi/sujet_suivi.html" %}
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="notesAjoutHeading">
@@ -23,4 +23,13 @@
   </div>
   </div>
 </div>
-<div class="col-lg-6 col-md-12"> {% include "sujets/sujet_details.html" %}</div>
+<div class="col-lg-6 col-md-12"> 
+    {% include "sujets/sujet_details.html" %}
+{% if user.is_superuser %}
+    <div class="well well-sm text-right"><strong>Administration :</strong>
+    <div class="btn-group" role="group" aria-label="...">
+	    <a href="{% url 'sujets:merge' pk=object.pk %}" class="btn btn-primary">{% bootstrap_icon "paste" %} Fusionner</a>
+    </div>
+    </div>
+{% endif %}
+</div>
