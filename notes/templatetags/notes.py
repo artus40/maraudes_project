@@ -5,6 +5,7 @@ register = template.Library()
 
 @register.inclusion_tag("notes/table_inline.html")
 def inline_table(note, header=None):
+    from maraudes.models import Maraude
     bg_color, bg_label_color = note.bg_colors
 
     if not header:
@@ -14,7 +15,11 @@ def inline_table(note, header=None):
 
     if header == "date":
         header_field = "created_date"
-        link = None
+        try:
+            maraude = Maraude.objects.get(date=note.created_date)
+            link = reverse('maraudes:details', kwargs={'pk': maraude.pk})
+        except Maraude.DoesNotExist:
+            link = None
     elif header == "sujet":
         header_field = "sujet"
         link = reverse("suivi:details", kwargs={'pk': note.sujet.pk})
