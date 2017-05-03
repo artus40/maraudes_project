@@ -1,0 +1,24 @@
+{% extends "base_site.html" %}
+{% load tables %}
+
+{% block breadcrumbs %}
+  <li>Liste</li>
+{% endblock %}
+
+{% block sidebar %}
+  {% include "notes/menu.html" %}
+{% endblock %}
+
+{% block page_content %}
+  {% block search %}{% endblock %}
+
+  <!-- Table -->
+  {% table object_list cols=3 cell_template=table_cell_template %}
+  {% if is_paginated %}
+      <ul class="pagination">
+      {% for num in page_obj.paginator.page_range %}
+        <li {% if page_obj.number == num %} class="active" {%endif%}><a href="?page={{num}}">{{num}}</a></li>
+      {%endfor%}
+      </ul>
+  {% endif %}
+{% endblock %}

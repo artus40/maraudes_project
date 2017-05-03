@@ -1,13 +1,15 @@
 {% extends "base.html" %}
 
-{% block title %}{{ page_title }}{% endblock %}
-
-{% block page_header %}
-<span style="color:#980300;">{{ page_header }}</span>
-<small>{{ page_header_small }}</small>
+{% block sidebar %}
+{% if menu_template %}{% include menu_template %}{% endif %}
+{% if toolbox_template %}
+  <div class="well">
+    {% include toolbox_template %}
+  </div>
+{% endif %}
 {% endblock %}
 
-{% block content %}
+{% block page_content %}
   {% include content_template %}
 {% endblock %}
 

@@ -42,7 +42,7 @@ class MaraudeAdmin(admin.ModelAdmin):
     list_display = ('date', 'heure_debut', 'binome', 'est_passee', 'est_terminee')
     list_filter = ['date', 'binome']
 
+
 @admin.register(Planning)
 class PlanningAdmin(admin.ModelAdmin):
-
     list_display = ('week_day', 'horaire')

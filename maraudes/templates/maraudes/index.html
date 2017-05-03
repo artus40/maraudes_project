@@ -1,3 +1,13 @@
+{% extends "maraudes/base.html" %}
+
+{% block title %} {{ block.super }} Tableau de bord {% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li>Tableau de bord</li>
+{% endblock %}
+
+{% block page_content %}
 {% load tables %}
 <div class="col-md-6">
     <div class="panel panel-primary">
@@ -11,24 +21,32 @@
           avec {% if user.is_superuser %}{{prochaine_maraude.binome}}{%else%}{{prochaine_maraude.referent}}{%endif%}.
         </strong></p>
         <hr />
-        {% if prochaine_maraude.est_terminee %}
-        <a class="btn btn-sm btn-primary" href="{% url 'maraudes:details' pk=prochaine_maraude.pk %}">
-          Voir le compte-rendu
-        </a>{%else%}
-        <a class="btn btn-sm btn-primary" href="{% url 'maraudes:create' pk=prochaine_maraude.pk %}">
-          Rédiger le compte-rendu
-        </a>{% endif %}
+
       {% else %}<p>Aucune maraude prévue.</p>{% endif %}
       </div>
     </div>
-</div>
+{% if derniers_sujets_rencontres %}
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <h4 class="panel-title">Ces derniers temps...</h4>
+      </div>
+      {% table derniers_sujets_rencontres cols=3 %}
+    </div>
+{% endif %}
 {% if user.is_superuser %}
-<div class="col-md-6">
     <div class="panel panel-warning">
       <div class="panel-heading">
         <h4 class="panel-title">Compte-rendus en retard</h4>
       </div>
-      {% table missing_cr cols=2 cell_template="maraudes/missing_cr_table_cell.html" %}
+      {% table missing_cr cols=2 cell_template="maraudes/table_cell_missing_cr.html" %}
     </div>
-</div>
 {% endif %}
+</div>
+<div class="col-md-12 col-lg-6">
+  <h4><strong>Nouvelle note :</strong></h4>
+  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    {% include "notes/form_appel.html" with form=appel_form %}
+    {% include "notes/form_signalement.html" with form=signalement_form %}
+  </div>
+</div>
+{% endblock %}

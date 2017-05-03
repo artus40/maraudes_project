@@ -1,0 +1,18 @@
+{% load navbar %}
+            <ul class="nav nav-pills nav-stacked text-right">
+              <li role="presentation" {% active namespace="notes" viewname="index" %}>
+                <a href="{% url "notes:index" %}">Tableau de bord&nbsp;
+                  <span class="glyphicon glyphicon-home"></span>
+                </a>
+              </li>
+              <li role="presentation" {% active namespace="notes" viewname="liste-sujet" %}>
+                <a href="{% url "notes:liste-sujet" %}">Par sujet&nbsp;
+                  <span class="glyphicon glyphicon-user"></span>
+                </a>
+              </li>
+              <li role="presentation" {% active namespace="notes" viewname="liste-maraude" %}>
+                <a href="{% url "notes:liste-maraude" %}">Par maraude&nbsp;
+                  <span class="glyphicon glyphicon-road"></span>
+                </a>
+              </li>
+            </ul>

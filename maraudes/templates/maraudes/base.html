@@ -1,0 +1,11 @@
+{% extends "base_site.html" %}
+
+{% block title %} Maraudes > {% endblock %}
+
+{% block breadcrumbs %}
+  <li><a href="{% url "maraudes:index" %}">{{ date }}</a></li>
+{% endblock %}
+
+{% block sidebar %}
+{% include "maraudes/menu.html"%}
+{% endblock %}

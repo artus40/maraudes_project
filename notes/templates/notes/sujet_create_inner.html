@@ -1,0 +1,8 @@
+{% load bootstrap3 %}
+<form class="form-horizontal" action="{% url "notes:create-sujet" %}" method="post">{% csrf_token %}
+{% bootstrap_form form layout="horizontal"%}
+<div class="pull-right">
+  {% bootstrap_button "Ajouter un sujet" button_type="submit" button_class="btn btn-primary" icon="plus" %}
+</div>
+{% if next %}<input type="text" hidden=True name="next" value="{{ next }}" />{%endif%}
+</form>

@@ -1,0 +1,119 @@
+{% extends "maraudes/base.html" %}
+{% load bootstrap3 %}{% load staticfiles %}
+
+{% block title %} {{ block.super }} Compte-rendu du {{ date }} {% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li>Compte-rendu</li>
+{% endblock %}
+
+{% block sidebar %}
+      <!-- Modal buttons -->
+    <div class="well text-right"><p><strong>Créer un nouvel objet :</strong></p>
+    <div class="btn-group" role="group" aria-label="...">
+      <button id="new-sujet" class="btn btn-primary">{% bootstrap_icon "user" %} Sujet</button>
+      <button id="new-lieu" class="btn btn-primary">{% bootstrap_icon "globe" %} Lieu</button>
+    </div>
+    </div>
+{% endblock %}
+
+{% block page_content %}
+<script type="text/javascript" src="{% static "scripts/jquery.formset.js" %}"></script>
+<script type="text/javascript">
+  /* Dynamic Formsets */
+  $(function() {
+    $.fn.onAddForm = function(row) {
+      // Load django_select2 fields
+      row.find('.django-select2').djangoSelect2();
+      var button = row.find('a.btn-delete')
+      var text = button.text()
+      button.html('<span class="glyphicon glyphicon-minus"></span> ' + text);
+    };
+
+    $.fn.onDeleteForm = function(row) {
+      /*
+      * Custom code when deleting dynamic form
+      */
+    };
+  });
+    $(function() {
+        $('.dynamic-formset').formset({
+                    prefix: '{{ inline_formset.prefix }}',
+                    addText: 'Ajouter une personne',
+                    deleteText: 'Supprimer',
+                    addCssClass: 'btn btn-link btn-add',
+                    deleteCssClass: 'btn btn-link btn-delete',
+                    added: $.fn.onAddForm,
+                    removed: $.fn.onDeleteForm
+        });
+
+        var text = $('a.btn-add').text()
+        $('a.btn-add').html('<span class="glyphicon glyphicon-plus"></span> ' + text)
+        text = $('a.btn-delete:first').text()
+        $('a.btn-delete').html('<span class="glyphicon glyphicon-minus"></span> ' + text);
+    });
+</script>
+
+
+
+<div class="row">
+  <div class="col-lg-6 col-md-12">
+
+    <form method="post" action="{% url 'maraudes:create' maraude.pk %}?finalize=False">
+    {% csrf_token %}
+      <div class="panel panel-primary panel-collapse">
+        <div class="panel-heading">
+          <h4 class="panel-title">Nouvelle rencontre</h4>
+        </div>
+        <div class="panel-body">
+          {% include "maraudes/compterendu_form.html" %}
+        </div>
+        <div class="panel-footer text-right">
+        {% bootstrap_button "Enregistrer" icon="save" button_type="submit" button_class="btn btn-success btn-sm" %}
+        </div>
+      </div>
+    </form>
+ {{ form.media.js }}{{ form.media.css }}
+  </div>
+  <div class="col-lg-6 col-md-12">
+    <div class="panel panel-default">
+      <div class="panel-heading"><h4 class="panel-title">Enregistrées</h4></div>
+      <table class="table">
+        {% for rencontre in rencontres %}<tr><th colspan="2" class="active">{{ rencontre }}</th></tr>
+        {% for observation in rencontre.observations.all %}<tr>
+            <td>{{observation.sujet}}</td>
+            <td>{{observation.text}}</td>
+        </tr>{% endfor %}{% endfor %}
+      </table>
+      <div class="panel-footer text-right">
+        <a class="btn btn-danger btn-sm" href="{% url 'maraudes:create' maraude.pk %}?finalize=True">
+        {% bootstrap_icon "ok-circle" %} Finaliser</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Modal and button linking -->
+<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+         <h4 class="modal-title">Modal title</h4>
+       </div>
+       <div id="form-modal-body" class="modal-body">
+         <div class="alert alert-warning">Content should be there...</div>
+       </div>
+     </div>
+   </div>
+</div>
+<script type="text/javascript" src="{% static 'scripts/bootstrap-modal.js' %}"></script>
+<script type="text/javascript">
+  $.fn.openModalEvent('new-sujet',
+  '{% url "notes:create-sujet" %}?next={% url "maraudes:create" pk=maraude.pk %}',
+  'Nouveau sujet');
+  $.fn.openModalEvent('new-lieu',
+  '{% url "maraudes:lieu-create" %}?next={% url "maraudes:create" pk=maraude.pk %}',
+  'Nouveau lieu');
+</script>
+{% endblock %}

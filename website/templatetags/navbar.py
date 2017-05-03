@@ -2,6 +2,8 @@
 
 from django import template
 from django.urls import reverse
+from django.utils.safestring import mark_safe
+
 
 register = template.Library()
 
@@ -48,4 +50,14 @@ def navbar_menu(app_menu):
     }
 
 
+@register.simple_tag(takes_context=True)
+def active(context, namespace=None, viewname=None):
+    try:
+        (cur_namespace, cur_viewname) = context.request.resolver_match.view_name.split(":")
+    except:
+        (cur_namespace, cur_viewname) = (None, context.request.resolver_match.view_name)
 
+    if namespace == cur_namespace:
+        if not viewname or viewname == cur_viewname:
+            return mark_safe("class=\"active\"")
+    return ""

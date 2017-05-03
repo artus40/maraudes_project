@@ -4,7 +4,10 @@ import random
 from calendar import monthrange
 from django.test import TestCase
 
-from .models import Maraude, Maraudeur
+from .models import (
+    Maraude, Maraudeur, Planning,
+    WEEKDAYS, HORAIRES_SOIREE,
+    )
 # Create your tests here.
 
 from maraudes_project.base_data import MARAUDEURS
@@ -31,6 +34,34 @@ def get_maraude_days(start, end):
 
     return maraude_days
 
+class PlanningTestCase(TestCase):
+
+    def setUp(self):
+        for i, is_maraude in enumerate(MARAUDE_DAYS):
+            if is_maraude:
+                Planning.objects.create(week_day=i, horaire=HORAIRES_SOIREE)
+
+    def test_get_planning(self):
+        maraudes = {i for i in range(7) if MARAUDE_DAYS[i]}
+        test_maraudes = set()
+        for p in Planning.get_planning():
+            test_maraudes.add(p.week_day)
+            self.assertEqual(p.horaire, HORAIRES_SOIREE)
+        self.assertEqual(maraudes, test_maraudes)
+
+    def test_get_maraudes_days_for_month(self):
+        test_values = [
+                {'year': 2017, 'month': 2,
+'test': [(day, HORAIRES_SOIREE) for day in (2,3,6,7,9,10,13,14,16,17,20,21,23,24,27,28)] },
+                {'year': 2016, 'month': 3,
+'test': [(day, HORAIRES_SOIREE) for day in (1,3,4,7,8,10,11,14,15,17,18,21,22,24,25,28,29,31)] },
+            ]
+
+        for test in test_values:
+            self.assertEqual(test['test'], list(Planning.get_maraudes_days_for_month(test['year'], test['month'])))
+
+
+# TODO: Make some actual tests !!
 class MaraudeManagerTestCase(TestCase):
 
     def setUp(self):

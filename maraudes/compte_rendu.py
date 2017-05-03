@@ -1,3 +1,5 @@
+from django.db.models import Count
+
 from .models import Maraude
 
 from collections import OrderedDict
@@ -18,19 +20,15 @@ def split_by_12h_blocks(iterable):
     for note in to_end:
         yield note
 
+
 class CompteRendu(Maraude):
     """ Proxy for Maraude objects.
         Gives access to related Observation and Rencontre
     """
 
-    def rencontre_count(self):
-        return self.rencontres.count()
 
     def observation_count(self):
-        count = 0
-        for r in self:
-            count += r.observations.count()
-        return count
+        return self.rencontres.aggregate(Count("observations"))['observation__count']
 
     def get_observations(self, order="heure_debut", reverse=False):
         """ Returns list of all observations related to this instance """

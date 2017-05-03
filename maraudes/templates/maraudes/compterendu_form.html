@@ -1,0 +1,28 @@
+{% load bootstrap3 %}{% load staticfiles %}
+<div class="form-inline well well-sm text-center">
+  {% if form.id %}{% bootstrap_field form.id %}{% endif %}
+    {% bootstrap_field form.lieu layout="inline" size="small" %}
+    <div class="input-group">{% bootstrap_field form.heure_debut layout="inline" size="small" %}
+      <span class="input-group-btn">
+        <button id="minus-5" class="btn btn-default btn-sm" type="button"><strong>-5</strong></button>
+        <button id="plus-5" class="btn btn-default btn-sm" type="button"><strong>+5</strong></button>
+      </span></div>
+    {% bootstrap_field form.duree layout="inline" size="small" %}
+</div>
+
+<div class="form-horizontal">
+  {{ inline_formset.management_form }}
+  {% for form in inline_formset %}
+    <div class="dynamic-formset">
+    {% if form.id %}{% bootstrap_field form.id %}{% endif %}
+    {% bootstrap_field form.sujet size="small" layout="horizontal" %}
+    {% bootstrap_field form.text size="small" layout="horizontal" %}
+    {% if form.instance.pk %}
+      {% bootstrap_field form.note_ptr %}
+      {% bootstrap_field form.DELETE layout="horizontal" %}
+    {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+<script type="text/javascript" src="{% static "scripts/update_time.js" %}"></script>

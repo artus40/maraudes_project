@@ -1,8 +1,78 @@
+""" Notes models :
+
+Personne
+Sujet
+
+Note
+
+"""
 from django.utils import timezone
 from django.utils.html import format_html
+from django.core.exceptions import ValidationError
+from django.urls import reverse
 
 from django.db import models
 from . import managers
+
+### Models
+# - Personne
+# - Sujet
+
+HOMME = 'M'
+FEMME = 'Mme'
+GENRE_CHOICES = (
+        (HOMME, 'Homme'),
+        (FEMME, 'Femme'),
+    )
+
+class Personne(models.Model):
+    """ Modèle de base d'une personne
+        - genre
+        - nom
+        - prénom
+    """
+
+    genre = models.CharField(max_length=3,
+                             choices=GENRE_CHOICES,
+                             default=HOMME)
+    nom = models.CharField(max_length=32, blank=True)
+    prenom = models.CharField(max_length=32, blank=True)
+    surnom = models.CharField(max_length=64, blank=True)
+
+    def __str__(self):
+        string = '%s ' % self.genre
+        if self.nom:    string += '%s ' % self.nom
+        if self.surnom: string += '"%s" ' % self.surnom
+        if self.prenom: string += '%s' % self.prenom
+        return string
+
+    def clean(self):
+        if not any([self.nom, self.prenom, self.surnom]):
+            raise ValidationError("Vous devez remplir au moins un nom, prénom ou surnom")
+        return super().clean()
+
+
+class Sujet(Personne):
+    """ Personne faisant l'objet d'un suivi par la maraude
+    """
+    # referent = models.ForeignKey("utilisateurs.Professionnel", related_name="suivis")
+
+    premiere_rencontre = models.DateField(
+                                    blank=True, null=True,
+                                    default=timezone.now
+                                    )
+    age = models.SmallIntegerField(
+                                blank=True, null=True
+                                )
+
+    class Meta:
+        verbose_name = "Sujet"
+        ordering = ('surnom', 'nom', 'prenom')
+
+    def get_absolute_url(self):
+        return reverse("notes:create-sujet", kwargs={"pk": self.pk })
+
+
 
 class Note(models.Model):
     """ Note relative à un sujet.
@@ -19,11 +89,12 @@ class Note(models.Model):
     objects = managers.NoteManager()
 
     sujet = models.ForeignKey(
-                        'sujets.Sujet',
+                        Sujet,
                         related_name="notes",
                         on_delete=models.CASCADE
                         )
     text = models.TextField("Texte")
+
     created_by = models.ForeignKey(
                         'utilisateurs.Professionnel',
                         blank=True,
@@ -42,7 +113,7 @@ class Note(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return "<%s: %s>" % (self.child_class.__qualname__, self.sujet)
+        return "<%s: %s>" % (self.child_class.__qualname__, self.created_date)
 
     def note_author(self):
         return None

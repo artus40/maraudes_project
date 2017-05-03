@@ -1,9 +1,12 @@
 from django.core.exceptions import ImproperlyConfigured
 from django.contrib.auth.decorators import user_passes_test
-from django.template import Template, Context
+from django.contrib.auth.mixins import UserPassesTestMixin
+
+from django.template import Template, Context, loader
 from django.views.generic.base import TemplateResponseMixin
 
 ## Mixins ##
+
 
 
 class SpecialUserRequiredMixin(object):
@@ -72,6 +75,12 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
             raise ImproperlyConfigured(self, "has no template defined !")
         return self.content_template
 
+    def get_extra_templates(self, context):
+        """ Loads extra menu and toolbox templates, if any, into context """
+        if self.app_name:
+            context['menu_template'] = self.app_name + "/menu.html"
+        return context
+
     def get_context_data(self, **kwargs):
         context = Context(super().get_context_data(**kwargs))
         #Website processor
@@ -82,6 +91,7 @@ class WebsiteTemplateMixin(TemplateResponseMixin):
         context = user_processor(self.request, context)
         #Webpage
         context['content_template'] = self.get_content_template()
+        context = self.get_extra_templates(context)
         return context
 
 

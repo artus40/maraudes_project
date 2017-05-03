@@ -8,13 +8,9 @@ from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
 class Index(WebsiteTemplateMixin, views.generic.TemplateView):
 
-    template_name = "main.html"
+    template_name = "index.html"
     app_menu = None
     header = ('La Maraude ALSA', 'accueil')
-    class PageInfo:
-        title = "La maraude ALSA"
-        header = "La Maraude ALSA"
-        header_small = "accueil"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -25,7 +21,7 @@ class Index(WebsiteTemplateMixin, views.generic.TemplateView):
 
 def _get_entry_point(user):
     from utilisateurs.models import Maraudeur
-
+    print("Entry point for ", user)
     if isinstance(user, Maraudeur):
         return reverse('maraudes:index')
     else:

@@ -1,0 +1,70 @@
+<div class="panel panel-primary">
+  <div class="panel-heading" role="tab" id="ficheInfoHeading">
+    <div class="row">
+      <div class="col-md-9">
+        <h4 class="panel-title">
+          <a role="button" data-toggle="collapse" href="#collapseFicheInfo" aria-expanded="true" aria-controls="collapseOne">
+          Fiche statistiques</a>
+        </h4>
+      </div>
+      <div class="col-md-3 text-right">
+        <a href="#" class="btn btn-sm btn-primary" id="updateButton">Mettre à jour</a>
+      </div>
+    </div>
+  </div>
+  <div id="collapseFicheInfo" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="ficheInfoHeading">
+    {% include 'notes/sujet_details_inner.html' %}
+  </div>
+</div>
+<script type="text/javascript">
+  $(function() {
+    var formAjaxSubmit = function(form, panel) {
+         $(form).submit(function (e) {
+         e.preventDefault();
+         $.ajax({
+             type: $(this).attr('method'),
+             url: $(this).attr('action'),
+             data: $(this).serialize(),
+             success: function (xhr, ajaxOptions, thrownError) {
+                 if ( $(xhr).find('.has-error').length > 0 || $(xhr).find('.alert-danger').length > 0) {
+                     $(panel).html(xhr);
+                     formAjaxSubmit(form, panel);
+                 } else {
+                    showUpdateDetails($('#updateButton'), panel);
+                 }
+             },
+             error: function (xhr, ajaxOptions, thrownError) {
+                 // handle response errors here
+             }
+         });
+      });
+    };
+  /* TODO: Use formAjaxSubmit above, but reload page on form success */
+
+    var showUpdateForm = function(button, panel) {
+          $(panel).load('{% url "notes:update-sujet" pk=sujet.pk %}', function () {
+                  formAjaxSubmit($(panel).find("form"), $(panel));
+                  $(panel).collapse('show');
+                  $(button).text("Annuler");
+                  });
+          };
+
+    var showUpdateDetails = function(button, panel) {
+            $(panel).load("{% url "notes:details-sujet" pk=sujet.pk %}", function() {
+                  $(button).text("Mettre à jour");
+                  });
+            };
+
+    $('#updateButton').click(function(){
+        var panel = $('#collapseFicheInfo');
+        var button = $(this);
+        if (panel.find('form').length > 0) {
+              showUpdateDetails(button, panel);
+              } else {
+              showUpdateForm(button, panel);
+              };
+
+        });
+
+  });
+</script>

@@ -1,11 +1,12 @@
-from .models import Note
+import datetime
+
+from .models import Note, Sujet
 from utilisateurs.models import Professionnel
 
 from django import forms
 from django_select2.forms import Select2Widget
-from django.forms import Textarea
 
-
+### NOTES
 
 class NoteForm(forms.ModelForm):
     """ Generic Note form """
@@ -14,7 +15,7 @@ class NoteForm(forms.ModelForm):
         fields = ['sujet', 'text', 'created_by', 'created_date', 'created_time']
         widgets = {
             'sujet': Select2Widget(),
-            'text': Textarea(attrs={'rows':4}),
+            'text': forms.Textarea(attrs={'rows':4}),
         }
 
 
@@ -54,6 +55,8 @@ class UserNoteForm(NoteForm):
             instance.save()
         return instance
 
+
+
 class AutoNoteForm(UserNoteForm):
     class Meta(UserNoteForm.Meta):
         fields = ['text']
@@ -68,3 +71,24 @@ class AutoNoteForm(UserNoteForm):
         if commit:
             inst.save()
         return inst
+
+
+
+### SUJETS
+
+current_year = datetime.date.today().year
+YEAR_CHOICE = tuple(year - 2 for year in range(current_year, current_year + 10))
+
+class SujetCreateForm(forms.ModelForm):
+    class Meta:
+        model = Sujet
+        fields = ['nom', 'surnom', 'prenom', 'genre', 'premiere_rencontre']
+        widgets = {
+            'premiere_rencontre': forms.SelectDateWidget( empty_label=("Année", "Mois", "Jour"),
+                                                    years = YEAR_CHOICE,
+                                                    ),
+        }
+
+class SelectSujetForm(forms.Form):
+
+    sujet = forms.ModelChoiceField(queryset=Sujet.objects.all(), widget=Select2Widget)

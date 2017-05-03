@@ -12,15 +12,16 @@ INSTALLED_APPS += [
     # Graph package
     'graphos',
     # Project apps
-    'maraudes',
-    'sujets',
-    'notes',
-    'suivi',
-    'utilisateurs',
     'website',
+    'maraudes',
+    'notes',
+    'utilisateurs',
     'statistiques',
 ]
 
+TEMPLATES[0]['OPTIONS']['context_processors'] += [
+    "website.context_processors.website_processor"
+    ]
 
 LOGIN_URL = 'index'
 
@@ -41,7 +42,7 @@ SELECT2_CSS = 'css/select2.min.css'
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 AUTHENTICATION_BACKENDS = [
-    'website.backends.MyBackend'
+    'utilisateurs.backends.CustomUserAuthentication'
     ]
 
 

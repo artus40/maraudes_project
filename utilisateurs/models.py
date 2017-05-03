@@ -1,25 +1,17 @@
 import datetime
 
 from django.db import models
-
 from django.contrib.auth.models import User, UserManager, AnonymousUser
 # Create your models here.
 
-
-## Visiteur
-
-class Visiteur(AnonymousUser):
-
-    def __str__(self):
-        return "Visiteur"
 
 
 class Organisme(models.Model):
     """ Organisme : Association, Entreprise, Service public, ..."""
 
-    nom = models.CharField(max_length=64)
-    email = models.EmailField("e-mail")
-    adresse = models.CharField(max_length=128)
+    nom = models.CharField(max_length=64, primary_key=True)
+    email = models.EmailField("e-mail", blank=True, null=True)
+    adresse = models.CharField(max_length=128, blank=True, null=True)
 
     class Meta:
         verbose_name = "Organisme"
@@ -41,32 +33,7 @@ class Professionnel(User):
 
 class MaraudeurManager(UserManager):
     """ Manager for Maraudeurs objects.
-
-    Updates `create`, `get_or_create` methods signatures : 'first_name', 'last_name'.
-    Add `set_referent` method (same signature).
     """
-
-    def create(self, first_name, last_name):
-        username = "%s.%s" % (first_name[0].lower(), last_name.lower())
-        data = {
-            'first_name': first_name,
-            'last_name': last_name,
-            'email': "%s@alsa68.org" % username,
-            'is_staff': True,
-            'is_active': True,
-           }
-
-        return super().create_user(username, **data)
-
-    def get_or_create(self, first_name, last_name):
-        try:
-            maraudeur = self.get(first_name=first_name, last_name=last_name)
-            created = False
-        except self.model.DoesNotExist:
-            created = True
-            maraudeur = self.create(first_name, last_name)
-
-        return (maraudeur, created)
 
     def get_referent(self):
         try:
@@ -75,7 +42,7 @@ class MaraudeurManager(UserManager):
             return None
 
     def set_referent(self, first_name, last_name):
-        maraudeur, created = self.get_or_create(first_name, last_name)
+        maraudeur, created = self.get_or_create(first_name=first_name, last_name=last_name)
         for previous in self.get_queryset().filter(is_superuser=True):
             previous.is_superuser = False
             previous.save()
@@ -86,15 +53,24 @@ class MaraudeurManager(UserManager):
 
 
 class Maraudeur(Professionnel):
-    """ Professionnels qui participent aux maraudes   """
+    """ Professionnel qui participe aux maraudes """
 
-    # Donne accès aux vues "maraudes" et "suivi"
+    def est_referent(self):
+        return self.is_superuser
+    est_referent.boolean = True
+    est_referent.short_description = 'Référent Maraude'
 
     objects = MaraudeurManager()
 
     class Meta:
         verbose_name = "Maraudeur"
 
+    def save(self, *args, **kwargs):
+        self.username = "%s.%s" % (self.first_name[0].lower(), self.last_name.lower())
+        self.email = "%s@alsa68.org" % self.username
+        self.is_staff = True
+        super().save(*args, **kwargs)
+
     def __str__(self):
-        return "%s %s" % (self.first_name, self.last_name[0])
+        return "%s %s" % (self.first_name, self.last_name)
 

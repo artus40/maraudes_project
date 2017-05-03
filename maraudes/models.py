@@ -15,13 +15,43 @@ def get_referent_maraude():
     """ Retourne l'administrateur et référent de la Maraude """
     return Maraudeur.objects.get_referent()
 
+## Constantes
+
+# Jours de la semaine
+WEEKDAYS = [
+        (0, "Lundi"),
+        (1, "Mardi"),
+        (2, "Mercredi"),
+        (3, "Jeudi"),
+        (4, "Vendredi"),
+        (5, "Samedi"),
+        (6, "Dimanche")
+    ]
+
+# Horaires
+HORAIRES_APRESMIDI = datetime.time(16, 0)
+HORAIRES_SOIREE = datetime.time(20, 0)
+HORAIRES_CHOICES = (
+    (HORAIRES_APRESMIDI, 'Après-midi'),
+    (HORAIRES_SOIREE, 'Soirée')
+)
+
+# Durées
+DUREE_CHOICES = (
+    (5, '5 min'),
+    (10, '10 min'),
+    (15, '15 min'),
+    (20, '20 min'),
+    (30, '30 min'),
+    (45, '45 min'),
+    (60, '1 heure'),
+)
 
 ## Modèles
 
 
 class Lieu(models.Model):
     """ Lieu de rencontre """
-
     nom = models.CharField(max_length=128)
 
     def __str__(self):
@@ -29,9 +59,6 @@ class Lieu(models.Model):
 
     class Meta:
         verbose_name = "Lieu de rencontre"
-
-
-
 
 
 
@@ -53,13 +80,7 @@ class Maraude(models.Model):
                         "Date",
                         unique=True
                     )
-    # Horaires
-    HORAIRES_APRESMIDI = datetime.time(16, 0)
-    HORAIRES_SOIREE = datetime.time(20, 0)
-    HORAIRES_CHOICES = (
-        (HORAIRES_APRESMIDI, 'Après-midi'),
-        (HORAIRES_SOIREE, 'Soirée')
-    )
+
     heure_debut = models.TimeField(
                         "Horaire",
                         choices=HORAIRES_CHOICES,
@@ -98,13 +119,10 @@ class Maraude(models.Model):
             ('view_maraudes', "Accès à l'application 'maraudes'"),
         )
 
-    # TODO: A remplacer !
-    JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi",
-             "Vendredi", "Samedi", "Dimanche"]
     MOIS = ["Jan.", "Fév.", "Mars", "Avr.", "Mai", "Juin",
             "Juil.", "Août", "Sept.", "Oct.", "Nov.", "Déc."]
     def __str__(self):
-        return '%s %i %s' % (self.JOURS[self.date.weekday()],
+        return '%s %i %s' % (WEEKDAYS[self.date.weekday()][1], # Retrieve text inside tuple
                                         self.date.day,
                                         self.MOIS[self.date.month - 1])
 
@@ -134,16 +152,6 @@ class Maraude(models.Model):
 class Rencontre(models.Model):
     """ Une Rencontre dans le cadre d'une maraude
     """
-    # Choices
-    DUREE_CHOICES = (
-        (5, '5 min'),
-        (10, '10 min'),
-        (15, '15 min'),
-        (20, '20 min'),
-        (30, '30 min'),
-        (45, '45 min'),
-        (60, '1 heure'),
-    )
 
     # Fields
     maraude = models.ForeignKey(
@@ -195,14 +203,6 @@ class Rencontre(models.Model):
         return [o.sujet for o in self.observations.all()]
 
 
-WEEKDAYS = [
-        (0, "Lundi"),
-        (1, "Mardi"),
-        (2, "Mercredi"),
-        (3, "Jeudi"),
-        (4, "Vendredi"),
-        (5, "Samedi"),
-    ]
 
 class FoyerAccueil(Lieu):
     """ Foyer d'hébergement partenaire """
@@ -220,11 +220,12 @@ class Planning(models.Model):
     """
 
     week_day = models.IntegerField(
+                        primary_key=True,
                         choices=WEEKDAYS,
                         )
     horaire = models.TimeField(
                         "Horaire",
-                        choices=Maraude.HORAIRES_CHOICES,
+                        choices=HORAIRES_CHOICES,
                     )
 
     class Meta:
