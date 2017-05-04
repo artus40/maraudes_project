@@ -54,7 +54,7 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['prochaine_maraude'] = self.get_prochaine_maraude_for_user()
+        context['prochaine_maraude'] = Maraude.objects.get_next_of(self.request.user)
         context['derniers_sujets_rencontres'] = derniers_sujets_rencontres()
 
         if self.request.user.is_superuser:
@@ -63,11 +63,6 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
                     date__lte = timezone.localtime(timezone.now()).date()
                 )
         return context
-
-    def get_prochaine_maraude_for_user(self):
-        """ Retourne le prochain objet Maraude auquel
-            l'utilisateur participe, ou None """
-        return Maraude.objects.get_next_of(self.request.user)
 
 
 

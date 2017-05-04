@@ -4,7 +4,7 @@ import datetime
 from django.utils import timezone
 from django.utils.functional import cached_property
 
-
+# TODO: What is really useful in there ??
 class MaraudeManager(Manager):
     """ Manager for Maraude objects """
 
@@ -20,24 +20,7 @@ class MaraudeManager(Manager):
         if not maraudes_ref:
             return maraudes_bin
 
-        cursor = 0
-        complete_list = []
-        for i, m in enumerate(maraudes_bin):
-            if cursor >= 0 and maraudes_ref[cursor].date < m.date:
-                complete_list.append(maraudes_ref[cursor])
-                complete_list.append(m)
-                if cursor < len(maraudes_ref) - 1:
-                    cursor += 1
-                else:
-                    cursor = -1
-            else:
-                complete_list.append(m)
-        # Don't lose remaining items of maraudes_ref
-        if cursor >= 0:
-            complete_list += maraudes_ref[cursor:]
-
-        return complete_list
-
+        return sorted(maraudes_ref + maraudes_bin)
 
     def get_next_of(self, maraudeur):
         """ Retourne la prochaine maraude de 'maraudeur' """
