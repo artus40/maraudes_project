@@ -1,9 +1,7 @@
 from django.views import generic
 
-from .apps import utilisateurs
 from .models import Professionnel
 
-@utilisateurs
 class UtilisateurView(generic.DetailView):
 
     template_name = "utilisateurs/details.html"

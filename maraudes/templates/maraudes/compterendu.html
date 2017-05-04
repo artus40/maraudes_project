@@ -1,5 +1,5 @@
 {% extends "maraudes/base.html" %}
-{% load bootstrap3 %}{% load staticfiles %}
+{% load bootstrap3 staticfiles %}
 
 {% block title %} {{ block.super }} Compte-rendu du {{ date }} {% endblock %}
 
@@ -10,7 +10,7 @@
 
 {% block sidebar %}
       <!-- Modal buttons -->
-    <div class="well text-right"><p><strong>Créer un nouvel objet :</strong></p>
+    <div class="well text-right"><h4>{% bootstrap_icon "plus" %} <strong>Créer un nouveau</strong></h4>
     <div class="btn-group" role="group" aria-label="...">
       <button id="new-sujet" class="btn btn-primary">{% bootstrap_icon "user" %} Sujet</button>
       <button id="new-lieu" class="btn btn-primary">{% bootstrap_icon "globe" %} Lieu</button>

@@ -1,17 +1,10 @@
 {% extends "notes/liste.html" %}
 
 {% block breadcrumbs %}
-  <li>Maraudes</li>
+  <li><a href="{% url "notes:liste-maraude" %}">Maraudes</a></li>
+  {{block.super}}
 {% endblock %}
 
-
-{% block sidebar %}
-{{ block.super }}
-<br />
-<div class="well">
-  FILTRES
-</div>
-{% endblock %}
 
 
 

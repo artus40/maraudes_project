@@ -1,6 +1,16 @@
+{% extends "notes/base.html" %}
+
+{% block title %}{{block.super}} Tableau de bord{% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li>Tableau de bord</li>
+{% endblock %}
+
+{% block page_content %}
 <div class="col-md-12 col-lg-6">
 <h4>To be deleted</h4>
 <p> Dans la rubrique "Notes": Par maraude, Par sujet, Appels, Signalements </p>
 <h4>Vigilance</h4>
 </div>
-
+{% endblock %}

@@ -17,12 +17,12 @@ def inline_table(note, header=None):
         header_field = "created_date"
         try:
             maraude = Maraude.objects.get(date=note.created_date)
-            link = reverse('maraudes:details', kwargs={'pk': maraude.pk})
+            link = maraude.get_absolute_url()
         except Maraude.DoesNotExist:
             link = None
     elif header == "sujet":
         header_field = "sujet"
-        link = reverse("suivi:details", kwargs={'pk': note.sujet.pk})
+        link = note.sujet.get_absolute_url()
 
     header = getattr(note, header_field)
 

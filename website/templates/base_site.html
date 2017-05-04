@@ -1,17 +1,5 @@
 {% extends "base.html" %}
 
-{% block sidebar %}
-{% if menu_template %}{% include menu_template %}{% endif %}
-{% if toolbox_template %}
-  <div class="well">
-    {% include toolbox_template %}
-  </div>
-{% endif %}
-{% endblock %}
-
-{% block page_content %}
-  {% include content_template %}
-{% endblock %}
 
 
 

@@ -1,4 +1,4 @@
-{% if object.est_terminee %}<a href="{% url 'maraudes:details' object.id %}" class="btn btn-link">
+{% if object.est_terminee %}<a href="{% url 'notes:details-maraude' object.id %}" class="btn btn-link">
 {% else %}<a href="#" class="btn btn-link disabled">{% endif %}{{ object }}</a>
         <div class="pull-right">
           <span class="label label-info">{{ object.binome }} & {{ object.referent }}</span>

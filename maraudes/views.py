@@ -11,11 +11,11 @@ from django.core.mail import send_mail
 from django.forms import modelformset_factory
 
 from utilisateurs.mixins import MaraudeurMixin
-# Models
+
 from .models import (   Maraude, Maraudeur,
+                        CompteRendu,
                         Rencontre, Lieu,
                         Planning,   )
-from .compte_rendu import CompteRendu
 # Forms
 from .forms import (    RencontreForm,
                         ObservationInlineFormSet,

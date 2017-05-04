@@ -70,7 +70,7 @@ class Sujet(Personne):
         ordering = ('surnom', 'nom', 'prenom')
 
     def get_absolute_url(self):
-        return reverse("notes:create-sujet", kwargs={"pk": self.pk })
+        return reverse("notes:details-sujet", kwargs={"pk": self.pk })
 
 
 

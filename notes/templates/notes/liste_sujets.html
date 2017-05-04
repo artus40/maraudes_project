@@ -1,30 +1,37 @@
 {% extends "notes/liste.html" %}
 
+{% block title %}{{block.super}} Liste des sujets {% endblock %}
+
 {% block breadcrumbs %}
   <li>Sujets</li>
+  <li><a href="{% url "notes:liste-sujet" %}">Liste</a></li>
+  {% if query_text %}<li>'{{query_text}}'</li>{% endif %}
 {% endblock %}
 
-{% block search %}
-<div class="col-lg-6 col-lg-offset-3">
+{% block sidebar_insert %}
+  <hr />
+  <a href="{% url "notes:create-sujet" %}">Ajouter un sujet</a>
+  <div class="well text-right">
+    <h4><strong>Rechercher</strong></h4>
       <form action="" method="POST" class="form form-group">{% csrf_token %}
       <div class="input-group">
-      <span class="input-group-addon" id="basic-addon1">
-        <span class=" glyphicon glyphicon-search"></span>
-      </span>
       <input type="text" name="q" class="form-control" placeholder="Chercher un sujet" aria-describedby="basic-addon1">
       <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary">Chercher</button>
+        <button type="submit" class="btn btn-primary"><span class=" glyphicon glyphicon-search"></span> </button>
       </span>
       </div>
       </form>
-      {% if query_text %}
-      <p class="label label-warning">'{{query_text}}'</p>
-      <p class="label label-info">
+  </div>
+{% endblock %}
+
+{% block search %}
+  {% if query_text %}<div class="well well-sm text-center">
+      <h4><span class="label label-primary">'{{query_text}}'</span>
+      <span class="label label-danger">
         {% if not object_list %}Aucun résultat
         {% else %} {{ object_list.count }} résultats
         {% endif %}
-      </p>
-      {% endif %}
-</div>
+      </span></h4>
+  </div>{% endif %}
 {% endblock %}
 

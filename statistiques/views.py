@@ -1,15 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib import messages
 from django.views import generic
-# Create your views here.
-from .apps import stats
 
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import flot
 
+from .actions import merge_two
 from .models import *
 from notes.forms import SelectSujetForm
 
-@stats.using(title=('Statistiques', 'accueil'))
 class IndexView(generic.TemplateView):
 
     template_name = "statistiques/index.html"
@@ -27,11 +26,8 @@ class IndexView(generic.TemplateView):
         return context
 
 
-from .actions import merge_two
-from django.shortcuts import redirect
-from django.contrib import messages
 
-@stats.using(title=('Fusionner','{{object}}'))
+
 class MergeView(generic.DetailView, generic.FormView):
     """ Implement actions.merge_two as a view """
 
