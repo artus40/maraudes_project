@@ -1,5 +1,11 @@
+{% extends "base.html" %}
 {% load bootstrap3 %}
-<div class="col-md-12 col-lg-6">
+
+{% block sidebar %}
+  {% include "login.html" %}
+{% endblock %}
+
+{% block page_content %}
 <div class="jumbotron">
           <h2>Objectifs</h2>
           <p>Description de la maraude à destination des visiteurs, partenaires, etc...</p>
@@ -11,6 +17,4 @@
           <p>Ils sont reconnaissables à leur vestes oranges, n'hésitez pas à les interpeller.</p>
         </div>
 </div>
-<div class="col-md-12 col-lg-6">
-  {% include "login.html" %}
-</div>
+{% endblock %}

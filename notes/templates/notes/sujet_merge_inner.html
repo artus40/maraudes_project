@@ -1,6 +1,6 @@
 {% load bootstrap3 %}
 <p> Vous allez fusionner la fiche de <strong>{{object}}</strong> et ses {{object.notes.count}} notes vers :</p>
-<form action="{% url 'sujets:merge' pk=object.pk %}" method="POST">
+<form action="{% url 'notes:sujets-merge' pk=object.pk %}" method="POST">
 {% csrf_token %}
 {{ form.media }}
 {% bootstrap_field form.sujet %}

@@ -1,10 +1,10 @@
 {% extends "maraudes/base.html" %}
 {% load bootstrap3 staticfiles %}
 
-{% block title %} {{ block.super }} Compte-rendu du {{ date }} {% endblock %}
+{% block title %} {{ block.super }} Compte-rendu du {{ object.date }} {% endblock %}
 
 {% block breadcrumbs %}
-  {{ block.super }}
+  <li><a href="{% url "maraudes:index" %}">{{ object.date }}</a></li>
   <li>Compte-rendu</li>
 {% endblock %}
 

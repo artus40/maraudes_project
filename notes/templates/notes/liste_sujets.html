@@ -3,14 +3,12 @@
 {% block title %}{{block.super}} Liste des sujets {% endblock %}
 
 {% block breadcrumbs %}
-  <li>Sujets</li>
-  <li><a href="{% url "notes:liste-sujet" %}">Liste</a></li>
+  {{ block.super }}
+  <li><a href="{% url "notes:liste-sujet" %}">Sujets</a></li>
   {% if query_text %}<li>'{{query_text}}'</li>{% endif %}
 {% endblock %}
 
 {% block sidebar_insert %}
-  <hr />
-  <a href="{% url "notes:create-sujet" %}">Ajouter un sujet</a>
   <div class="well text-right">
     <h4><strong>Rechercher</strong></h4>
       <form action="" method="POST" class="form form-group">{% csrf_token %}
@@ -21,7 +19,10 @@
       </span>
       </div>
       </form>
-  </div>
+        <hr/>
+    <h4><strong>Outils</strong></h4>
+   <a class="btn btn-primary" href="{% url "notes:create-sujet" %}">
+    <span class="glyphicon glyphicon-plus"></span> Ajouter un sujet</a> </div>
 {% endblock %}
 
 {% block search %}

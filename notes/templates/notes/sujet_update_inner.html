@@ -1,5 +1,5 @@
 {% load bootstrap3 %}
-<form action="{% url 'sujets:update' pk=form.instance.pk %}" method="post">{% csrf_token %}
+<form action="{% url 'notes:update-sujet' pk=form.instance.pk %}" method="post">{% csrf_token %}
     <div class="panel-body">{% bootstrap_field form.premiere_rencontre %}</div>
       <table class="table">
       <tr><th colspan="4" class="active">État-civil</th></tr>

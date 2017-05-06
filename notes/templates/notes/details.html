@@ -1,35 +1,28 @@
-{% load bootstrap3 %}
-<div class="col-lg-8 col-md-12">
- <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-  {% include "notes/sujet_suivi.html" %}
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="notesAjoutHeading">
-      <h4 class="panel-title">
-        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNotesAjout" aria-expanded="false" aria-controls="collapseTwo">
-          {% bootstrap_icon "plus" %} Ajouter une note
-        </a>
-      </h4>
-    </div>
-    <div id="collapseNotesAjout" class="panel-collapse collapse" role="tabpanel" aria-labelledby="notesAjoutHeading">
-      <div class="panel-body">
-        <form method="POST" action="">{% csrf_token %}
-        {% bootstrap_form note_form show_label=False %}
-      </div>
-      <div class="panel-footer text-right">
-        {% bootstrap_button "Enregistrer" button_type="submit" %}
-        </form>
-      </div>
-    </div>
+{% extends "notes/base.html" %}
+{% load bootstrap3 notes %}
+
+{% block page_content %}
+<div class="col-lg-6 col-md-12">
+{% block pre_content %}{% endblock %}
+<div class="panel panel-primary">
+  <div class="panel-heading" role="tab" id="notesSujetHeading">
+    <h3 class="panel-title">
+      <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNotesSujet" aria-expanded="true" aria-controls="collapseOne">
+      Notes</a><span class="pull-right label">Total : {{ notes.count }}</span></h3>
   </div>
+  <div id="collapseNotesSujet" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="notesSujetHeading">
+    <table class="table table-striped table-bordered">
+        {% for note in notes %}
+          {% if maraude %}
+            {% inline_table note header="sujet" %}
+          {% elif sujet %}
+            {% inline_table note header="date" %}
+          {% endif %}
+        {% endfor %}
+    </table>
   </div>
 </div>
-<div class="col-lg-4 col-md-12">
-    {% include "sujets/sujet_details.html" %}
-{% if user.is_superuser %}
-    <div class="well well-sm text-right"><strong>Administration :</strong>
-    <div class="btn-group" role="group" aria-label="...">
-	    <a href="{% url 'sujets:merge' pk=object.pk %}" class="btn btn-primary">{% bootstrap_icon "paste" %} Fusionner</a>
-    </div>
-    </div>
-{% endif %}
+{% block post_content %}{% endblock %}
 </div>
+{% endblock %}
+

@@ -1,4 +1,5 @@
-from .models import FicheStatistique, NSP
+from .models import Sujet
+from statistiques.models import FicheStatistique, NSP
 
 
 def merge_stats(main, merged):

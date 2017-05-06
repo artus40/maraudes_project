@@ -3,13 +3,14 @@ import logging
 from django.shortcuts import redirect, reverse
 from django.views import generic
 from django.utils import timezone
+from django.contrib import messages
 
 from utilisateurs.mixins import MaraudeurMixin
 from maraudes.models import Maraude, CompteRendu
 from .models import Sujet
-from .forms import SujetCreateForm, AutoNoteForm
+from .forms import SujetCreateForm, AutoNoteForm, SelectSujetForm
 from .mixins import NoteFormMixin
-
+from .actions import merge_two
 
 logger = logging.getLogger(__name__)
 # Create your views here.
@@ -17,8 +18,8 @@ logger = logging.getLogger(__name__)
 class IndexView(MaraudeurMixin, generic.TemplateView):
     template_name = "notes/index.html"
 
-class Filter:
 
+class Filter:
     def __init__(self, title, name, filter_func):
         self.title = title
         self.parameter_name = name
@@ -108,14 +109,16 @@ class SujetListView(ListView):
         return context
 
 
+class DetailView(MaraudeurMixin, generic.DetailView):
 
+    template_name = "notes/details.html"
 
-class CompteRenduDetailsView(generic.DetailView):
+class CompteRenduDetailsView(DetailView):
     """ Vue détaillé d'un compte-rendu de maraude """
 
     model = CompteRendu
     context_object_name = "maraude"
-    template_name = "maraudes/details.html"
+    template_name = "notes/details_maraude.html"
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -123,20 +126,20 @@ class CompteRenduDetailsView(generic.DetailView):
         return context
 
 
-class SuiviSujetView(NoteFormMixin, generic.DetailView):
+class SuiviSujetView(NoteFormMixin, DetailView):
     #NoteFormMixin
     forms = {
         'note': AutoNoteForm,
         }
     def get_success_url(self):
-        return reverse('notes:details', kwargs={'pk': self.get_object().pk})
+        return reverse('notes:details-sujet', kwargs={'pk': self.get_object().pk})
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['sujet'] = self.get_object()
         return kwargs
     #DetailView
     model = Sujet
-    template_name = "suivi/details.html"
+    template_name = "notes/details_sujet.html"
     context_object_name = "sujet"
     def get_context_data(self, *args,  **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -175,4 +178,20 @@ class SujetCreateView(generic.edit.CreateView):
         except:context['next'] = None
         return context
 
+class MergeView(generic.DetailView, generic.FormView):
+    """ Implement actions.merge_two as a view """
 
+    template_name = "notes/sujet_merge.html"
+    model = Sujet
+    form_class = SelectSujetForm
+
+    def form_valid(self, form):
+        slave = self.get_object()
+        master = form.cleaned_data['sujet']
+        try:
+            merge_two(master, slave)
+        except:
+            messages.error(self.request, "La fusion vers %s a échoué !" % master)
+            return redirect(slave)
+        messages.success(self.request, "%s vient d'être fusionné" % slave)
+        return redirect(master)

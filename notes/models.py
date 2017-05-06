@@ -1,11 +1,5 @@
-""" Notes models :
+import logging
 
-Personne
-Sujet
-
-Note
-
-"""
 from django.utils import timezone
 from django.utils.html import format_html
 from django.core.exceptions import ValidationError
@@ -14,9 +8,7 @@ from django.urls import reverse
 from django.db import models
 from . import managers
 
-### Models
-# - Personne
-# - Sujet
+logger = logging.getLogger(__name__)
 
 HOMME = 'M'
 FEMME = 'Mme'
@@ -25,11 +17,8 @@ GENRE_CHOICES = (
         (FEMME, 'Femme'),
     )
 
-class Personne(models.Model):
-    """ Modèle de base d'une personne
-        - genre
-        - nom
-        - prénom
+class Sujet(models.Model):
+    """ Personne faisant l'objet d'un suivi par la maraude
     """
 
     genre = models.CharField(max_length=3,
@@ -38,6 +27,16 @@ class Personne(models.Model):
     nom = models.CharField(max_length=32, blank=True)
     prenom = models.CharField(max_length=32, blank=True)
     surnom = models.CharField(max_length=64, blank=True)
+
+    premiere_rencontre = models.DateField(
+                                    blank=True, null=True,
+                                    default=timezone.now
+                                    )
+    age = models.SmallIntegerField(
+                                blank=True, null=True
+                                )
+
+    # referent = models.ForeignKey("utilisateurs.Professionnel", related_name="suivis")
 
     def __str__(self):
         string = '%s ' % self.genre
@@ -51,19 +50,10 @@ class Personne(models.Model):
             raise ValidationError("Vous devez remplir au moins un nom, prénom ou surnom")
         return super().clean()
 
-
-class Sujet(Personne):
-    """ Personne faisant l'objet d'un suivi par la maraude
-    """
-    # referent = models.ForeignKey("utilisateurs.Professionnel", related_name="suivis")
-
-    premiere_rencontre = models.DateField(
-                                    blank=True, null=True,
-                                    default=timezone.now
-                                    )
-    age = models.SmallIntegerField(
-                                blank=True, null=True
-                                )
+    def save(self, *args, **kwargs):
+        if not self.id:
+            logger.warning("SHOULD CREATE FicheStatistique")
+        return super().save()
 
     class Meta:
         verbose_name = "Sujet"
@@ -113,7 +103,11 @@ class Note(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return "<%s: %s>" % (self.child_class.__qualname__, self.created_date)
+        return "<%s: %s>" % (self.child_class.__qualname__, self.sujet)
+
+    @classmethod
+    def __str__(cls):
+        return "<%s>" % cls.__qualname__
 
     def note_author(self):
         return None

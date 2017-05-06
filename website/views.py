@@ -6,7 +6,7 @@ from .mixins import WebsiteTemplateMixin
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
-class Index(WebsiteTemplateMixin, views.generic.TemplateView):
+class Index(views.generic.TemplateView):
 
     template_name = "index.html"
     app_menu = None
@@ -21,7 +21,7 @@ class Index(WebsiteTemplateMixin, views.generic.TemplateView):
 
 def _get_entry_point(user):
     from utilisateurs.models import Maraudeur
-    print("Entry point for ", user)
+    print("Entry point for ", user, user.__class__)
     if isinstance(user, Maraudeur):
         return reverse('maraudes:index')
     else:

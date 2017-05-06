@@ -1,15 +1,10 @@
 {% extends "notes/base.html" %}
 {% load tables %}
 
-{% block breadcrumbs %}
-  <li>Liste</li>
-{% endblock %}
-
 {% block sidebar %}
 {{ block.super }}
 {% block sidebar_insert %}{% endblock %}
 {% if filters %}
-<hr />
 <div class="well">
   <h4 class="text-right"><span class="glyphicon glyphicon-filter"></span> <strong>Filtres</strong></h4>
   <ul class="nav nav-pills nav-stacked text-right">

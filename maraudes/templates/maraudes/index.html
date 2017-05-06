@@ -33,7 +33,7 @@
       {% table derniers_sujets_rencontres cols=3 %}
     </div>
 {% endif %}
-{% if user.is_superuser %}
+{% if user.is_superuser and missing_cr %}
     <div class="panel panel-warning">
       <div class="panel-heading">
         <h4 class="panel-title">Compte-rendus en retard</h4>
