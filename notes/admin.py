@@ -25,4 +25,4 @@ class NoteAdmin(admin.ModelAdmin):
     ]
 
     list_display = ['created_date', 'sujet', 'child_class', 'text']
-    list_filter = ('sujet', 'created_date', 'created_by')
+    list_filter = ('created_date', 'created_by')

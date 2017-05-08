@@ -6,4 +6,9 @@
   <li><a href="{% url "notes:index" %}">Notes</a></li>
 {% endblock %}
 
-{% block sidebar %}{% include "notes/menu.html" %}{% endblock %}
+{% block sidebar %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    {% include "notes/menu.html" %}
+  </div>
+</div>{% endblock %}

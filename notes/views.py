@@ -8,7 +8,7 @@ from django.contrib import messages
 
 from utilisateurs.mixins import MaraudeurMixin
 from maraudes.models import Maraude, CompteRendu
-from .models import Sujet
+from .models import Sujet, Note
 from .forms import SujetCreateForm, AutoNoteForm, SelectSujetForm
 from .mixins import NoteFormMixin
 from .actions import merge_two
@@ -93,6 +93,7 @@ class SujetListView(ListView):
     model = Sujet
     template_name = "notes/liste_sujets.html"
     cell_template = "notes/table_cell_sujets.html"
+    table_header = "Liste des sujets"
 
     filters = [
         ("Rencontré(e)s cette année", lambda qs: qs.filter(premiere_rencontre__year=timezone.now().date().year)),
@@ -127,7 +128,7 @@ class CompteRenduDetailsView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['notes'] = self.object.get_observations()
+        context['notes'] = sorted(Note.objects.get_queryset().filter(created_date=self.object.date), key=lambda n: n.created_time)
         context['next_maraude'] = Maraude.objects.get_future(
                                         date=self.object.date + datetime.timedelta(1)
                                     ).filter(

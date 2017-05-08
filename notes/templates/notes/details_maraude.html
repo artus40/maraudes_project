@@ -7,23 +7,25 @@
 {% endblock %}
 
 {% block sidebar %}
-  <div class="well text-right">
-    <h4>Navigation</h4>
+<div class="panel panel-primary text-right">
+  <div class="panel-heading"><h4 class="panel-title">Navigation</h4></div>
+  <div class="panel-body text-center">
     <nav aria-label="Maraudes navigation">
     <ul class="pagination">
     {% if prev_maraude %}<li>
       <a href="{% url "notes:details-maraude" prev_maraude.pk %}" aria-label="Previous">
-        <strong><span aria-hidden="true">&laquo;</span> {{ prev_maraude.date }}</strong>
+        {{ prev_maraude.date }} &nbsp; <span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span>
       </a>
     </li>{% endif %}
     {% if next_maraude %}<li>
       <a href="{% url "notes:details-maraude" next_maraude.pk %}" aria-label="Next">
-        <strong>{{ next_maraude.date }} <span aria-hidden="true">&raquo;</span></strong>
+        <span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span> &nbsp; {{ next_maraude.date }}
       </a>
     </li>{% endif %}
     </ul>
   </nav>
   </div>
+</div>
 {% endblock %}
 
 {% block right_column %}

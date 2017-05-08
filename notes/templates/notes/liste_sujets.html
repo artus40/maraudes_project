@@ -9,7 +9,8 @@
 {% endblock %}
 
 {% block sidebar_insert %}
-  <div class="well text-right">
+  <div class="panel panel-primary text-right">
+    <div class="panel-body">
     <h4><strong>Rechercher</strong></h4>
       <form action="" method="POST" class="form form-group">{% csrf_token %}
       <div class="input-group">
@@ -22,7 +23,7 @@
         <hr/>
     <h4><strong>Outils</strong></h4>
    <a class="btn btn-primary" href="{% url "notes:create-sujet" %}">
-    <span class="glyphicon glyphicon-plus"></span> Ajouter un sujet</a> </div>
+    <span class="glyphicon glyphicon-plus"></span> Ajouter un sujet</a> </div></div>
 {% endblock %}
 
 {% block search %}

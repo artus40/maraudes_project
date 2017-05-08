@@ -34,5 +34,5 @@ class Signalement(Note):
     source = models.ForeignKey("utilisateurs.Organisme")
 
     def note_labels(self): return [self.source, self.created_by]
-    def note_bg_colors(self): return ('warning', 'info')
+    def note_bg_colors(self): return ('danger', 'info')
 

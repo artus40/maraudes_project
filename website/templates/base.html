@@ -60,12 +60,12 @@
       </div>
       <!-- END: Navigation Bar -->
       <div class="row">
-        <div class="col-lg-3 col-md-4">
-            {% block sidebar %}{% endblock %}
-        </div>
-        <div class="col-lg-9 col-md-10">
+        <div class="col-lg-10 col-lg-push-2 col-md-9 col-md-push-3">
           {% bootstrap_messages %}
           {% block page_content %}{% endblock %}
+        </div>
+        <div class="col-lg-2 col-lg-pull-10 col-md-3 col-md-pull-9">
+            {% block sidebar %}{% endblock %}
         </div>
       </div>
     </div>
