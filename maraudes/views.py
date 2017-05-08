@@ -5,7 +5,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from django.utils import timezone
-from django.shortcuts import redirect
+from django.shortcuts import redirect, reverse
 from django.views import generic
 from django.core.mail import send_mail
 from django.forms import modelformset_factory
@@ -50,7 +50,7 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
                 'created_time': now.time()}
 
     def get_success_url(self):
-        return reverse('suivi:index')
+        return reverse('maraudes:index')
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -60,7 +60,7 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
         if self.request.user.is_superuser:
             context['missing_cr'] = CompteRendu.objects.get_queryset().filter(
                     heure_fin__isnull=True,
-                    date__lte = timezone.localtime(timezone.now()).date()
+                    date__lt = timezone.localtime(timezone.now()).date()
                 )
         return context
 

@@ -222,8 +222,8 @@ class CompteRendu(Maraude):
     """
 
 
-    def observation_count(self):
-        return self.rencontres.aggregate(Count("observations"))['observation__count']
+    def observations_count(self):
+        return self.rencontres.aggregate(Count("observations"))['observations__count']
 
     def get_observations(self, order="heure_debut", reverse=False):
         """ Returns list of all observations related to this instance """

@@ -1,4 +1,5 @@
 <table class="table table-condensed table-striped">
+  {% if header %}<tr><th colspan="{{ cols_number }}" class="text-center">{{ header }}</th></tr>{% endif %}
   {% for row in rows %}<tr>
       {% for object in row %}<td>
         {% if object %}{% include cell_template with object=object %}{%endif%}

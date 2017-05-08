@@ -6,5 +6,4 @@ class NotesConfig(AppConfig):
 
     def ready(self):
         Sujet = self.get_model("Sujet")
-        print("Registered SUjet")
         watson.register(Sujet, fields=('nom', 'prenom', 'surnom'))

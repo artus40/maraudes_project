@@ -1,4 +1,5 @@
 import logging
+import datetime
 
 from django.shortcuts import redirect, reverse
 from django.views import generic
@@ -66,7 +67,8 @@ class ListView(MaraudeurMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["filters"] = self._filters.values()
-        context["table_cell_template"] = self.cell_template
+        context["table_cell_template"] = getattr(self, 'cell_template', None)
+        context["table_header"] = getattr(self, 'table_header', None)
         return context
 
 
@@ -76,6 +78,9 @@ class MaraudeListView(ListView):
     model = CompteRendu
     template_name = "notes/liste_maraudes.html"
     cell_template = "notes/table_cell_maraudes.html"
+    table_header = "Liste des maraudes"
+
+    queryset = Maraude.objects.get_past()
 
     filters = [
         ("Ce mois-ci", lambda qs: qs.filter(date__month=timezone.now().date().month)),
@@ -123,6 +128,16 @@ class CompteRenduDetailsView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['notes'] = self.object.get_observations()
+        context['next_maraude'] = Maraude.objects.get_future(
+                                        date=self.object.date + datetime.timedelta(1)
+                                    ).filter(
+                                        heure_fin__isnull=False
+                                    ).first()
+        context['prev_maraude'] = Maraude.objects.get_past(
+                                        date=self.object.date
+                                    ).filter(
+                                        heure_fin__isnull=False
+                                    ).last()
         return context
 
 

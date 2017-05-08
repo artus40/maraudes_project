@@ -30,21 +30,27 @@ class MaraudeManager(Manager):
                             'date'
                         ).first()
 
-    def get_future(self):
+    def get_future(self, date=None):
         """ Retourne la liste des prochaines maraudes """
+        if not date: date = self.today
         return self.get_queryset().filter(
-                            date__gte=datetime.date.today()
+                            date__gte=date
                         ).order_by(
                             'date'
                         )
 
-    def get_past(self):
+    def get_past(self, date=None):
         """ Retourne la liste des maraudes passées """
+        if not date: date = self.today
         return self.get_queryset().filter(
-                            date__lt=datetime.date.today()
+                            date__lt=date
                         ).order_by(
                             'date'
                         )
+
+    @cached_property
+    def today(self):
+        return timezone.localtime(timezone.now()).date()
 
     @cached_property
     def next(self):

@@ -5,3 +5,37 @@
   <li><a href="{% url "notes:liste-maraude" %}">Maraudes</a></li>
   <li>{{ maraude }}</li>
 {% endblock %}
+
+{% block sidebar %}
+  <div class="well text-right">
+    <h4>Navigation</h4>
+    <nav aria-label="Maraudes navigation">
+    <ul class="pagination">
+    {% if prev_maraude %}<li>
+      <a href="{% url "notes:details-maraude" prev_maraude.pk %}" aria-label="Previous">
+        <strong><span aria-hidden="true">&laquo;</span> {{ prev_maraude.date }}</strong>
+      </a>
+    </li>{% endif %}
+    {% if next_maraude %}<li>
+      <a href="{% url "notes:details-maraude" next_maraude.pk %}" aria-label="Next">
+        <strong>{{ next_maraude.date }} <span aria-hidden="true">&raquo;</span></strong>
+      </a>
+    </li>{% endif %}
+    </ul>
+  </nav>
+  </div>
+{% endblock %}
+
+{% block right_column %}
+<div class="panel panel-default">
+  <div class="panel-heading" role="tab" id="notesSujetHeading">
+    <h3 class="panel-title">
+      Informations</h3>
+  </div>
+  <div class="panel-body">
+    <p><strong>Maraudeurs :</strong>&nbsp; {{ maraude.binome }} & {{ maraude.referent }}</p>
+    <p><strong>Nombre de rencontres</strong>&nbsp; {{ maraude.rencontres.count }}</p>
+    <p><strong>Nombre de personnes rencontrées</strong>&nbsp; {{ maraude.observations_count }}</p>
+  </div>
+</div>
+{% endblock %}
