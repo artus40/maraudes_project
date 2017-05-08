@@ -1,0 +1,22 @@
+<div id="sujet-content">
+<table class="table table-striped">
+  {% with "-" as none %}
+  <tr><th>Nom</th><th>Surnom</th><th>Prénom</th></tr>
+  <tr><td>{{ sujet.nom|default:none }}</td><td>{{ sujet.surnom|default:none}}</td><td>{{ sujet.prenom|default:none}}</td></tr>
+  <tr><th>Âge</th><th colspan="2">Première rencontre</th></tr>
+  <tr><td>{{ sujet.age|default_if_none:none }}</td><td colspan="2">{{ sujet.premiere_rencontre|default_if_none:none }}</td></tr>
+  {% endwith %}
+</table>
+<div class="panel-footer text-right" id="sujet-buttons">
+  <span class="text-right"><span class="btn btn-primary btn-sm" id="update-sujet">Mettre à jour</a></span>
+</div>
+</div>
+
+<script type="text/javascript">
+  $(function() {
+    $("#update-sujet").click(function() {
+      console.log("update !")
+      $("#sujet-content").load("{% url "notes:update-sujet" sujet.pk %}");
+    });
+  });
+</script>

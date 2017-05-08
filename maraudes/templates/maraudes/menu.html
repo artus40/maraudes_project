@@ -2,7 +2,7 @@
             <ul class="nav nav-pills nav-stacked text-right">
               <li role="presentation" {% active namespace="maraudes" viewname="index" %}>
                 <a href="{% url "maraudes:index" %}">Tableau de bord&nbsp;
-                  <span class="glyphicon glyphicon-home"></span>
+                  <span class="glyphicon glyphicon-dashboard"></span>
                 </a>
               </li>
               <li role="presentation" {% if not prochaine_maraude.date == date %} class="disabled">

@@ -167,16 +167,20 @@ class SuiviSujetView(NoteFormMixin, DetailView):
 
 class SujetDetailsView(generic.DetailView):
     #DetailView
-    template_name = "notes/sujet_details.html"
+    template_name = "notes/details_sujet_inner.html"
     model = Sujet
 
 
 
 class SujetUpdateView(generic.edit.UpdateView):
     #UpdateView
-    template_name = "notes/sujet_update.html"
+    template_name = "notes/details_sujet_update.html"
     model = Sujet
     fields = '__all__'
+
+    def get_success_url(self):
+        print("Update !", self.object)
+        return reverse("notes:details-sujet", kwargs={'pk': self.object.pk})
 
 
 

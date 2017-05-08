@@ -9,7 +9,9 @@
 {% endblock %}
 
 {% block sidebar %}
-  <div class="well text-center">
+  {{ block.super }}
+  <div class="panel panel-primary text-center">
+    <div class="panel-body">
     <label for="submit-form" class="btn btn-primary">{% bootstrap_icon "floppy-save" %} Enregistrer</label>
     <hr />
     <form action="" method="get" class="form-horizontal">
@@ -18,6 +20,7 @@
       {% bootstrap_button "Choisir" button_type="submit" button_class="btn btn-primary btn-sm" %}
     </form>
   </div>
+</div>
 {% endblock %}
 
 {% block page_content %}

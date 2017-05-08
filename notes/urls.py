@@ -12,6 +12,6 @@ urlpatterns = [
     url(r'maraudes/$', views.MaraudeListView.as_view(), name="liste-maraude"),
     url(r'maraudes/(?P<pk>[0-9]+)/$', views.CompteRenduDetailsView.as_view(), name="details-maraude"),
     # Manage Sujet
-    #url(r'sujet/(?P<pk>[0-9]+)/$', views.SujetDetailsView.as_view(), name="details-sujet"),
+    url(r'sujet/(?P<pk>[0-9]+)/$', views.SujetDetailsView.as_view(), name="sujet"),
 
 ]

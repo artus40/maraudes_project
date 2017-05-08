@@ -36,12 +36,24 @@
 
 {% block right_column %}
   <div class="panel panel-default">
-    <div class="panel-heading"><h4 class="panel-title">Informations</h4></div>
-    <div class="panel-body">
-      <p>Âge</p>
-      <p>Première rencontre</p>
+    <div class="panel-heading">
+      <h4 class="panel-title">Informations</h4>
+    </div>
+    {% include "notes/details_sujet_inner.html" %}
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-heading"><h4 class="panel-title">Statistiques</h4></div>
+    <div class="panel-body" id="stats-content">
+      <p>Si ceci apparaît, il y a eu une erreur !</p>
     </div>
   </div>
+
+<script type="text/javascript">
+  $(function() {
+  $("#stats-content").load("{% url "statistiques:details" sujet.pk %}")
+  });
+</script>
 {% endblock %}
 
 {% block sidebar %}
@@ -51,7 +63,7 @@
     <div class="panel panel-primary text-right"><div class="panel-heading"><h4 class="panel-title"><strong>Administration :</strong></h4></div>
     <div class="panel-body">
     <div class="btn-group" role="group" aria-label="...">
-      <a href="{% url 'admin:notes_note_changelist' %}?sujet__exact={{sujet.pk}}" class="btn btn-primary">Éditer les notes</a>
+      <a href="{% url 'admin:notes_note_changelist' %}?sujet__exact={{sujet.pk}}" class="btn btn-primary">{% bootstrap_icon "wrench" %} Éditer les notes</a>
       <a href="{% url 'notes:sujets-merge' pk=object.pk %}" class="btn btn-default">{% bootstrap_icon "paste" %} Fusionner</a>
     </div>
     </div>

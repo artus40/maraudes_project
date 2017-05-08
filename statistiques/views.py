@@ -5,6 +5,8 @@ from django.views import generic
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import flot
 
+from .models import FicheStatistique
+
 class IndexView(generic.TemplateView):
 
     template_name = "statistiques/index.html"
@@ -21,7 +23,14 @@ class IndexView(generic.TemplateView):
         context['chart'] = flot.LineChart(data_source)
         return context
 
+class StatistiquesDetailsView(generic.DetailView):
 
+    model = FicheStatistique
+    template_name = "statistiques/details.html"
 
+class StatistiquesUpdateView(generic.UpdateView):
 
+    model = FicheStatistique
+    template_name = "statistiques/update.html"
+    fields = "__all__"
 
