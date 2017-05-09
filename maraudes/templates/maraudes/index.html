@@ -30,7 +30,7 @@
       <div class="panel-heading">
         <h4 class="panel-title">Ces derniers temps...</h4>
       </div>
-      {% table derniers_sujets_rencontres cols=3 %}
+      {% table derniers_sujets_rencontres cols=3 cell_template="maraudes/table_cell_derniers_sujets.html" %}
     </div>
 {% endif %}
 {% if user.is_superuser and missing_cr %}

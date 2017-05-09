@@ -51,9 +51,14 @@ class Sujet(models.Model):
         return super().clean()
 
     def save(self, *args, **kwargs):
+        self.clean()
         if not self.id:
-            logger.warning("SHOULD CREATE FicheStatistique")
-        return super().save()
+            from statistiques.models import FicheStatistique
+            super().save(*args, **kwargs)
+            fiche = FicheStatistique.objects.create(sujet=self)
+            logger.warning("Autocreated %s for %s" % (fiche, self))
+        else:
+            return super().save(*args, **kwargs)
 
     class Meta:
         verbose_name = "Sujet"

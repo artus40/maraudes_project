@@ -6,8 +6,7 @@
     {% bootstrap_css %}{% bootstrap_javascript %}
     <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
     {% block extrastyle %}{% endblock %}
-    {% if stylesheets %}{% for stylesheet in stylesheets %}
-    <link rel="stylesheet" type="text/css" href="{% static stylesheet %}" />{% endfor %}{% endif %}
+    {% if stylesheets %}{% for stylesheet in stylesheets %}<link rel="stylesheet" type="text/css" href="{% static stylesheet %}" />{% endfor %}{% endif %}
   {% block extrahead %}{% endblock %}
   {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
   </head>
@@ -45,7 +44,7 @@
                 Menu <span class="glyphicon glyphicon-menu-hamburger"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <li><a href="#"><span class="glyphicon glyphicon-user"></span> {{ user }}</a></li>
+                  <li><a href="{% url "utilisateurs:index" %}"><span class="glyphicon glyphicon-user"></span> {{ user }}</a></li>
                   <li role="separator" class="divider"></li>
                   {% if user.is_superuser %}
                   <li><a href="/admin/"><span class="glyphicon glyphicon-wrench"></span> Administration</a></li>

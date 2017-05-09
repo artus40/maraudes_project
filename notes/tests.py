@@ -1,7 +1,25 @@
+from django.core.exceptions import ValidationError
 from django.test import TestCase
-from .models import Note
+from .models import Note, Sujet
 # Create your tests here.
 
+class SujetModelTestCase(TestCase):
+
+    def setUp(self):
+        pass
+
+    def test_statistiques_is_autocreated(self):
+        new_sujet = Sujet.objects.create(prenom="Astérix")
+        self.assertIsNotNone(new_sujet.statistiques)
+
+    def test_at_least_one_in_name_surname_firstname(self):
+        self.assertIsInstance(Sujet.objects.create(nom="DeGaulle"), Sujet)
+        self.assertIsInstance(Sujet.objects.create(surnom="Le Gaulois"), Sujet)
+        self.assertIsInstance(Sujet.objects.create(prenom="Astérix"), Sujet)
+
+    def test_raises_validation_error_if_no_name(self):
+        with self.assertRaises(ValidationError):
+            Sujet.objects.create(age=25)
 
 class NoteManagerTestCase(TestCase):
     """ managers.NoteManager Test Case """

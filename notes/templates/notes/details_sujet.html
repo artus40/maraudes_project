@@ -8,10 +8,19 @@
 {% endblock %}
 
 {% block pre_content %}
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+    <div id="collapseNotes" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="notesHeading">
 {% endblock %}
 
 {% block post_content %}
+    {% if notes.has_other_pages %}<div class="panel-footer text-center">
+      <ul class="pagination">
+      {% for num in notes.paginator.page_range %}
+        <li {% if notes.number == num %} class="active" {%endif%}><a href="?page={{num}}">{{num}}</a></li>
+      {%endfor%}
+      </ul>
+    </div>{% endif %}
+    </div>
+  </div>
   <div class="panel panel-default">
     <div class="panel-heading" role="tab" id="notesAjoutHeading">
       <h4 class="panel-title">
@@ -29,9 +38,7 @@
         {% bootstrap_button "Enregistrer" button_type="submit" %}
         </form>
       </div>
-    </div>
-  </div>
-</div>
+      </div>
 {% endblock %}
 
 {% block right_column %}

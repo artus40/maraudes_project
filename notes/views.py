@@ -5,6 +5,8 @@ from django.shortcuts import redirect, reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
+from django.http.response import HttpResponseNotAllowed
+from django.core.paginator import Paginator
 
 from utilisateurs.mixins import MaraudeurMixin
 from maraudes.models import Maraude, CompteRendu
@@ -16,8 +18,11 @@ from .actions import merge_two
 logger = logging.getLogger(__name__)
 # Create your views here.
 
+
+
 class IndexView(MaraudeurMixin, generic.TemplateView):
     template_name = "notes/index.html"
+
 
 
 class Filter:
@@ -84,7 +89,6 @@ class MaraudeListView(ListView):
 
     filters = [
         ("Ce mois-ci", lambda qs: qs.filter(date__month=timezone.now().date().month)),
-        ("Test", lambda qs: qs)
     ]
 
 
@@ -156,14 +160,24 @@ class SuiviSujetView(NoteFormMixin, DetailView):
     model = Sujet
     template_name = "notes/details_sujet.html"
     context_object_name = "sujet"
+    # Paginator
+    per_page = 5
+
+    def get(self, *args, **kwargs):
+        self.paginator = Paginator(
+                self.get_object().notes.by_date(reverse=True),
+                self.per_page
+            )
+        self.page = int(self.request.GET.get('page', 1))
+        return super().get(*args, **kwargs)
+
     def get_context_data(self, *args,  **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['notes'] = self.object.notes.by_date(reverse=True)
+        context['notes'] = self.paginator.page(self.page)
         return context
 
 
 ### Sujet Management Views
-from django.http.response import HttpResponseNotAllowed
 
 class SujetAjaxDetailsView(generic.DetailView):
     #DetailView
