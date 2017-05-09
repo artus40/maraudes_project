@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.shortcuts import reverse
 # Create your models here.
 
 NSP = "Ne sait pas"
@@ -47,7 +47,8 @@ class FicheStatistique(models.Model):
 
     sujet = models.OneToOneField('notes.Sujet',
                           on_delete=models.CASCADE,
-                          primary_key=True)
+                          primary_key=True,
+                          related_name="statistiques")
 
     lien_familial = models.NullBooleanField("Lien Familial")
     parcours_de_vie = models.CharField(max_length=64,
@@ -70,11 +71,11 @@ class FicheStatistique(models.Model):
     connu_siao = models.NullBooleanField("Connu du SIAO ?")
 
     def get_absolute_url(self):
-        return reverse('suivi:details', kwargs={'pk': self.id})
+        return reverse('notes:details-sujet', kwargs={'pk': self.sujet.pk})
 
     @property
     def info_completed(self):
-        observed = ('premiere_rencontre', 'age', 'prob_psychiatrie', 'prob_addiction',
+        observed = ('prob_psychiatrie', 'prob_addiction',
                     'prob_administratif', 'prob_somatique', 'habitation', 'ressources',
                     'connu_siao', 'lien_familial', 'parcours_de_vie')
         completed = 0

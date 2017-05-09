@@ -116,7 +116,6 @@ class SujetListView(ListView):
 
 
 class DetailView(MaraudeurMixin, generic.DetailView):
-
     template_name = "notes/details.html"
 
 class CompteRenduDetailsView(DetailView):
@@ -164,22 +163,28 @@ class SuiviSujetView(NoteFormMixin, DetailView):
 
 
 ### Sujet Management Views
+from django.http.response import HttpResponseNotAllowed
 
-class SujetDetailsView(generic.DetailView):
+class SujetAjaxDetailsView(generic.DetailView):
     #DetailView
     template_name = "notes/details_sujet_inner.html"
     model = Sujet
 
+    http_method_names = ["get"]
 
+    def get(self, *args, **kwargs):
+        """ Redirect to complete details view if request is not ajax """
+        if not self.request.is_ajax():
+            return redirect("notes:details-sujet", pk=self.get_object().pk)
+        return super().get(*args, **kwargs)
 
-class SujetUpdateView(generic.edit.UpdateView):
+class SujetAjaxUpdateView(generic.edit.UpdateView):
     #UpdateView
     template_name = "notes/details_sujet_update.html"
     model = Sujet
     fields = '__all__'
 
     def get_success_url(self):
-        print("Update !", self.object)
         return reverse("notes:details-sujet", kwargs={'pk': self.object.pk})
 
 
@@ -210,7 +215,8 @@ class MergeView(generic.DetailView, generic.FormView):
         master = form.cleaned_data['sujet']
         try:
             merge_two(master, slave)
-        except:
+        except Exception as e:
+            logger.error("Merge: ", e)
             messages.error(self.request, "La fusion vers %s a échoué !" % master)
             return redirect(slave)
         messages.success(self.request, "%s vient d'être fusionné" % slave)

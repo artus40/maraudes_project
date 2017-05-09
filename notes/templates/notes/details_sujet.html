@@ -44,14 +44,14 @@
 
   <div class="panel panel-default">
     <div class="panel-heading"><h4 class="panel-title">Statistiques</h4></div>
-    <div class="panel-body" id="stats-content">
+    <div id="stats-content">
       <p>Si ceci apparaît, il y a eu une erreur !</p>
     </div>
   </div>
 
 <script type="text/javascript">
   $(function() {
-  $("#stats-content").load("{% url "statistiques:details" sujet.pk %}")
+  $("#stats-content").load("{% url "statistiques:details" sujet.pk %}");
   });
 </script>
 {% endblock %}

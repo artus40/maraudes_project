@@ -1,1 +1,55 @@
-{{ form }}
+{% load bootstrap3 %}
+<form action="{% url "statistiques:update" form.instance.pk %}" method="post">{% csrf_token%}
+  <table class="table">
+    <tr>
+      <th colspan="4" class="active">Problématiques</th>
+    </tr>
+    <tr>
+      <th>Psychiatrique</th>
+      <td>{% bootstrap_field form.prob_psychiatrie show_label=False %}</td>
+      <th>Addiction</th>
+      <td>{% bootstrap_field form.prob_addiction show_label=False %}</td>
+    </tr>
+    <tr>
+      <th>Administratif</th>
+      <td>{% bootstrap_field form.prob_administratif show_label=False %}</td>
+      <th>Somatique</th>
+      <td>{% bootstrap_field form.prob_somatique show_label=False %}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Habitation</th>
+    </tr>
+    <tr>
+      <th>Type</th>
+      <td>{% bootstrap_field form.habitation show_label=False %}</td>
+      <th>Connu du SIAO</th>
+      <td>{% bootstrap_field form.connu_siao show_label=False %}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Ressources</th>
+    </tr>
+    <tr>
+      <td colspan="4">{% bootstrap_field form.ressources show_label=False %}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Parcours de vie</th>
+    </tr>
+    <tr>
+      <td colspan="2">{% bootstrap_field form.parcours_de_vie show_label=False %}</td>
+      <th>Lien familial</th>
+      <td>{% bootstrap_field form.lien_familial show_label=False %}</td>
+    </tr>
+  </table>
+<div class="panel-footer text-right">
+  <span class="text-right">{% bootstrap_button "Enregistrer" button_type="submit" %}
+  <span class="btn btn-primary btn-sm" id="cancel">Annuler</span></span>
+</div></form>
+
+<script type="text/javascript">
+  $(function() {
+    $("#cancel").click(function() {
+      console.log("update stats !")
+      $("#stats-content").load("{% url "statistiques:details" form.instance.pk %}");
+    });
+  });
+</script>
