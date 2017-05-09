@@ -6,7 +6,7 @@ from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
 from django.http.response import HttpResponseNotAllowed
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from utilisateurs.mixins import MaraudeurMixin
 from maraudes.models import Maraude, CompteRendu
@@ -168,12 +168,18 @@ class SuiviSujetView(NoteFormMixin, DetailView):
                 self.get_object().notes.by_date(reverse=True),
                 self.per_page
             )
-        self.page = int(self.request.GET.get('page', 1))
+        self.page = self.request.GET.get('page', 1)
         return super().get(*args, **kwargs)
 
     def get_context_data(self, *args,  **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['notes'] = self.paginator.page(self.page)
+        try:
+            notes = self.paginator.page(self.page)
+        except PageNotAnInteger:
+            notes = self.paginator.page(1)
+        except EmptyPage:
+            notes = self.paginator.page(self.paginator.num_pages)
+        context['notes'] = notes
         return context
 
 
