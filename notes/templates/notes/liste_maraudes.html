@@ -1,5 +1,9 @@
 {% extends "notes/liste.html" %}
 
+{% block title %}
+  {{ block.super }} Liste des maraudes
+{% endblock %}
+
 {% block breadcrumbs %}
   {{block.super}}
   <li><a href="{% url "notes:liste-maraude" %}">Maraudes</a></li>

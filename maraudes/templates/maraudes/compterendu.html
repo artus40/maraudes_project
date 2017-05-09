@@ -109,11 +109,13 @@
 </div>
 <script type="text/javascript" src="{% static 'scripts/bootstrap-modal.js' %}"></script>
 <script type="text/javascript">
+  $(function(){
   $.fn.openModalEvent('new-sujet',
   '{% url "notes:create-sujet" %}?next={% url "maraudes:create" pk=maraude.pk %}',
   'Nouveau sujet');
   $.fn.openModalEvent('new-lieu',
   '{% url "maraudes:lieu-create" %}?next={% url "maraudes:create" pk=maraude.pk %}',
   'Nouveau lieu');
+  });
 </script>
 {% endblock %}

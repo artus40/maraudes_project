@@ -1,6 +1,10 @@
 {% extends "notes/details.html" %}
 {% load bootstrap3 %}
 
+{% block title %}
+  {{ block.super }} {{ sujet }}
+{% endblock %}
+
 {% block breadcrumbs %}
   {{ block.super }}
   <li><a href="{% url "notes:liste-sujet" %}">Sujets</a></li>
