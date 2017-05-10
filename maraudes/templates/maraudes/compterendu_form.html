@@ -6,7 +6,8 @@
       <span class="input-group-btn">
         <button id="minus-5" class="btn btn-default btn-sm" type="button"><strong>-5</strong></button>
         <button id="plus-5" class="btn btn-default btn-sm" type="button"><strong>+5</strong></button>
-      </span></div>
+      </span>
+    </div>
     {% bootstrap_field form.duree layout="inline" size="small" %}
 </div>
 
@@ -24,5 +25,5 @@
     </div>
   {% endfor %}
 </div>
-
+{{ form.media.js }}{{ form.media.css }}
 <script type="text/javascript" src="{% static "scripts/update_time.js" %}"></script>

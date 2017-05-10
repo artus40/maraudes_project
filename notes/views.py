@@ -207,9 +207,9 @@ class SujetAjaxUpdateView(generic.edit.UpdateView):
     def get_success_url(self):
         return reverse("notes:details-sujet", kwargs={'pk': self.object.pk})
 
+from website.mixins import AjaxTemplateMixin
 
-
-class SujetCreateView(generic.edit.CreateView):
+class SujetCreateView(AjaxTemplateMixin, generic.edit.CreateView):
     #CreateView
     template_name = "notes/sujet_create.html"
     form_class = SujetCreateForm
