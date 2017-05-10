@@ -39,19 +39,4 @@
       <td>{{ object.lien_familial|as_icon }}</td>
     </tr>
   </table>
-</div>
-<div class="panel-footer text-right">
-  <span class="text-right">
-    <p>{% bootstrap_icon "tasks" %} {{ object.info_completed }}%&nbsp;
-    <span class="btn btn-primary btn-sm" id="update-stats">Mettre à jour</span></p>
-  </span>
-</div>
 
-<script type="text/javascript">
-  $(function() {
-    $("#update-stats").click(function() {
-      console.log("update stats !")
-      $("#stats-content").load("{% url "statistiques:update" object.pk %}");
-    });
-  });
-</script>

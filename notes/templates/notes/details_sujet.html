@@ -56,13 +56,33 @@
   <div class="panel panel-default">
     <div class="panel-heading"><h4 class="panel-title">Statistiques</h4></div>
     <div id="stats-content">
-      <p>Si ceci apparaît, il y a eu une erreur !</p>
+      {% include "statistiques/details.html" with object=sujet.statistiques %}
+    </div>
+    <div class="panel-footer text-right">
+      <span class="text-right" id="normal-buttons">
+        <p>{% bootstrap_icon "tasks" %} {{ sujet.statistiques.info_completed }}%&nbsp;
+        <span class="btn btn-primary btn-sm" id="update-stats">Mettre à jour</span></p>
+      </span>
+      <span class="text-right" id="update-buttons">
+        <label for="submit-form" class="btn btn-primary">{% bootstrap_icon "floppy-save" %} Enregistrer</label>
+        <span class="btn btn-primary btn-sm" id="cancel">Annuler</span>
+      </span>
+
     </div>
   </div>
-
 <script type="text/javascript">
   $(function() {
-  $("#stats-content").load("{% url "statistiques:details" sujet.pk %}");
+    $("#update-buttons").hide();
+    $("#update-stats").click(function() {
+      $("#stats-content").load("{% url "statistiques:update" sujet.pk %}");
+      $("#normal-buttons").hide();
+      $("#update-buttons").show();
+    });
+    $("#cancel").click(function() {
+      $("#stats-content").load("{% url "statistiques:details" sujet.pk %}");
+      $("#update-buttons").hide();
+      $("#normal-buttons").show();
+    });
   });
 </script>
 {% endblock %}

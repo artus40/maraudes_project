@@ -77,20 +77,37 @@
  {{ form.media.js }}{{ form.media.css }}
   </div>
   <div class="col-lg-6 col-md-12">
-    <div class="panel panel-default">
-      <div class="panel-heading"><h4 class="panel-title">Enregistrées</h4></div>
-      <table class="table">
+    <script type="text/javascript">
+      function UpdateStats(pk) {
+        console.log("Update stats for ", pk);
+        $("#fiche-stats").load("/statistiques/update/" + pk);
+        $("#saved-rencontres").hide();
+        $("#update-stats-btn").attr("pk", pk);
+        $("#update-stats").show();
+      };
+    </script>
+    <div id="saved-rencontres">
+    <h4 class="page-header">Enregistrées
+      <div class="pull-right"><a class="btn btn-danger btn-sm" href="{% url 'maraudes:create' maraude.pk %}?finalize=True">
+      {% bootstrap_icon "ok-circle" %} Finaliser</a></div></h4>
+      <table class="table table-bordered">
         {% for rencontre in rencontres %}<tr><th colspan="2" class="active">{{ rencontre }}</th></tr>
         {% for observation in rencontre.observations.all %}<tr>
-            <td>{{observation.sujet}}</td>
-            <td>{{observation.text}}</td>
+            <td><strong>{{observation.sujet}} </strong> &middot; <a class="btn btn-link btn-xs" nohref onclick="UpdateStats({{observation.sujet.pk}});return false;">
+      {% bootstrap_icon "stats" %} Mise à jour</a></td></tr>
+            <tr><td>{{observation.text}}</td>
         </tr>{% endfor %}{% endfor %}
       </table>
-      <div class="panel-footer text-right">
-        <a class="btn btn-danger btn-sm" href="{% url 'maraudes:create' maraude.pk %}?finalize=True">
-        {% bootstrap_icon "ok-circle" %} Finaliser</a>
+    </div>
+    <div id="update-stats">
+      <h4 class="page-header">Fiche statistiques <div class="pull-right" id="update-buttons">
+        <label for="submit-form" class="btn btn-primary" id="update-stats-btn" pk="">{% bootstrap_icon "floppy-save" %} Enregistrer</label>
+        <span class="btn btn-primary btn-sm" id="cancel">Annuler</span>
+      </div></h4>
+      <div id="fiche-stats">
       </div>
     </div>
+
   </div>
 </div>
 <!-- Modal and button linking -->
@@ -110,6 +127,21 @@
 <script type="text/javascript" src="{% static 'scripts/bootstrap-modal.js' %}"></script>
 <script type="text/javascript">
   $(function(){
+
+  $("#update-stats").hide();
+  $("#update-stats-btn").click(function(e) {
+    e.preventDefault();
+    var pk = $(this).attr("pk");
+    $.post("/statistiques/update/" + pk + "/", $("#update-stats-form").serialize());
+    $("#fiche-stats").html("");
+    $("#saved-rencontres").show();
+    $("#update-stats").hide();
+  });
+  $("#cancel").click(function() {
+        $("#fiche-stats").html("");
+        $("#saved-rencontres").show();
+        $("#update-stats").hide();
+  });
   $.fn.openModalEvent('new-sujet',
   '{% url "notes:create-sujet" %}?next={% url "maraudes:create" pk=maraude.pk %}',
   'Nouveau sujet');
