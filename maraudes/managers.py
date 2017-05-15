@@ -1,6 +1,7 @@
 from django.db.models import Manager
 
 import datetime
+
 from django.utils import timezone
 from django.utils.functional import cached_property
 
@@ -20,7 +21,7 @@ class MaraudeManager(Manager):
         if not maraudes_ref:
             return maraudes_bin
 
-        return sorted(maraudes_ref + maraudes_bin)
+        return maraudes_bin | maraudes_ref
 
     def get_next_of(self, maraudeur):
         """ Retourne la prochaine maraude de 'maraudeur' """

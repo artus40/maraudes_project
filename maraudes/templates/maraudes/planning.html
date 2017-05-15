@@ -35,7 +35,7 @@
   {% for week in weeks %}
   <tr>
     {% for day, form in week %}
-    <td style="min-width:5%;">{% if day %}{% if form %}
+    <td style="min-width:5%;" {% if form %}class="{% if form.instance.id %}success{%else%}warning{%endif%}"{% endif %}>{% if day %}{% if form %}
         <div class="row">
           <div class="col-lg-2">{% endif %}
             <strong>{{ day }}</strong>
