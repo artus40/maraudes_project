@@ -1,5 +1,14 @@
+{% extends "statistiques/base.html" %}
 {% load static %}
-<script type="text/javascript" src="{% static "scripts/jquery.flot.min.js" %}"></script>
 
-<h3>First graph</3>
+{% block title %}{{ block.super }} Index{% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li>Tableau de bord</li>
+{% endblock %}
+
+{% block page_content %}
+<h3>First graph</h3>
 {{ chart.as_html }}
+{% endblock %}
