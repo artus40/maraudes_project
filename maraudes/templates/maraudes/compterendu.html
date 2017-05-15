@@ -19,7 +19,7 @@
         </div>
         <hr />
         <h4>Finaliser</h4>
-        <div class="pull-right"><a class="btn btn-primary" href="{% url 'maraudes:create' maraude.pk %}?finalize=True">
+        <div class="pull-right"><a class="btn btn-primary" href="{% url 'maraudes:finalize' maraude.pk %}">
         {% bootstrap_icon "ok-circle" %} Finaliser</a></div>
       </div>
     </div>
@@ -65,7 +65,7 @@
 <div class="row">
   <div class="col-lg-7 col-md-12">
     {{ form.media.js }}{{ form.media.css }}
-    <form method="post" action="{% url 'maraudes:create' maraude.pk %}?finalize=False">
+    <form method="post" action="{% url 'maraudes:create' maraude.pk %}">
     {% csrf_token %}
       <div class="panel panel-primary panel-collapse">
         <div class="panel-heading">

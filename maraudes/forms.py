@@ -111,3 +111,9 @@ class SignalementForm(UserNoteForm):
         if commit:
             instance.save()
         return instance
+
+
+class SendMailForm(forms.Form):
+
+    subject = forms.CharField(label="Objet")
+    message = forms.CharField(widget=forms.Textarea, label="Contenu")

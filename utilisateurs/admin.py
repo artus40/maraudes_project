@@ -15,7 +15,7 @@ class MaraudeurAdmin(admin.ModelAdmin):
     ]
 
     list_display = ('username', 'is_active', 'est_referent')
-    actions = ['set_referent']
+    actions = ['set_referent', 'toggle_staff']
 
     def set_referent(self, request, queryset):
         if len(queryset) > 1:
@@ -30,6 +30,17 @@ class MaraudeurAdmin(admin.ModelAdmin):
                           level=messages.SUCCESS)
     set_referent.short_description = "Définir comme référent"
 
+    def toggle_staff(self, request, queryset):
+        try:
+            for m in queryset:
+                m.is_active = not m.is_active
+                m.save()
+            self.message_user(request,
+                              "%i maraudeurs ont été modifié(s)" % len(queryset),
+                              level=messages.SUCCESS)
+        except:
+            self.message_user(request, "Erreur lors de l'inversion", level=messages.WARNING)
+    toggle_staff.short_description = "Inverser le statut actif"
 
 @admin.register(Organisme)
 class OrganismeAdmin(admin.ModelAdmin):

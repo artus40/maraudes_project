@@ -5,7 +5,8 @@
                   <span class="glyphicon glyphicon-dashboard"></span>
                 </a>
               </li>
-              <li role="presentation" {% if not prochaine_maraude.date == date %} class="disabled">
+              <li role="presentation" {% active namespace="maraudes" viewname="create" %}
+                                    {% if not prochaine_maraude.date == date %} class="disabled">
                 <a href="#">Compte-rendu&nbsp;
                   <span class="glyphicon glyphicon-pencil"></span></a>
               </li> {% else %}>

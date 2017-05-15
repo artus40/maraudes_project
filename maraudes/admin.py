@@ -41,6 +41,7 @@ class MaraudeAdmin(admin.ModelAdmin):
     ]
     list_display = ('date', 'heure_debut', 'binome', 'est_passee', 'est_terminee')
     list_filter = ['date', 'binome']
+    ordering = ['-date']
 
 
 @admin.register(Planning)

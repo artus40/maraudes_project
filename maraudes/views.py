@@ -9,6 +9,7 @@ from django.shortcuts import redirect, reverse
 from django.views import generic
 from django.core.mail import send_mail
 from django.forms import modelformset_factory
+from django.contrib import messages
 
 from utilisateurs.mixins import MaraudeurMixin
 
@@ -20,7 +21,8 @@ from .models import (   Maraude, Maraudeur,
 from .forms import (    RencontreForm,
                         ObservationInlineFormSet,
                         MaraudeHiddenDateForm, MonthSelectForm,
-                        AppelForm, SignalementForm   )
+                        AppelForm, SignalementForm,
+                        SendMailForm   )
 from notes.mixins import NoteFormMixin
 
 
@@ -67,7 +69,6 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
 
 
 ## COMPTE-RENDU DE MARAUDE
-
 class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
     """ Vue pour la création d'un compte-rendu de maraude """
 
@@ -86,25 +87,6 @@ class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
                                     instance=self.form.instance
                                 )
 
-    def finalize(self):
-        print('finalize !')
-        maraude = self.get_object()
-        maraude.heure_fin = timezone.now()
-        maraude.save()
-        # Redirect to a new view to edit mail ??
-        # Add text to some mails ? Transmission, message à un référent, etc...
-        # Send mail to Maraudeurs
-        _from = maraude.referent.email
-        # Shall select only Maraudeur where 'is_active' is True !
-        recipients = [m for m in Maraudeur.objects.all() if m not in (maraude.referent, maraude.binome)]
-        objet = "Compte-rendu de maraude : %s" % maraude.date
-        message = "Sujets rencontrés : ..." #TODO: Mail content
-        send_mail(objet, message, _from, recipients)
-
-        return redirect("notes:details-maraude",
-                        pk=maraude.pk
-                        )
-
     def post(self, request, *args, **kwargs):
         self.get_forms(request.POST, request.FILES)
         if self.form.has_changed():
@@ -118,8 +100,6 @@ class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
         return redirect('maraudes:create', pk=self.get_object().pk)
 
     def get(self, request, new_form=True, *args, **kwargs):
-        if request.GET.get('finalize', False) == "True":
-            return self.finalize()
 
         def calculate_end_time(debut, duree):
             end_minute = debut.minute + duree
@@ -153,6 +133,77 @@ class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
         context['form'] = self.form
         context['inline_formset'] = self.inline_formset
         context['rencontres'] = self.get_object().rencontres.order_by("-heure_debut")
+        # Link there so that "Compte-rendu" menu item is not disabled
+        context['prochaine_maraude'] = self.object
+        return context
+
+
+
+class FinalizeView( MaraudeurMixin,
+                    generic.detail.SingleObjectMixin,
+                    generic.edit.FormView):
+
+    template_name = "maraudes/finalize.html"
+    model = Maraude
+    form_class = SendMailForm
+    success_url = "/maraudes/"
+
+    def get(self, *args, **kwargs):
+        print(self.request.GET)
+        if bool(self.request.GET.get("no_mail", False)) == True:
+            messages.warning(self.request, "Aucun compte-rendu n'a été envoyé !")
+            return self.finalize()
+        return super().get(*args, **kwargs)
+
+    def get_initial(self):
+        maraude = self.get_object()
+        objet = "%s - Compte-rendu de maraude" % maraude.date
+        sujets_rencontres = set()
+        for r in maraude.rencontres.all():
+            for s in r.get_sujets():
+                sujets_rencontres.add(s)
+        message = "Nous avons rencontré : " + ", ".join(map(str, sujets_rencontres)) + ".\n\n"
+        return {
+            "subject": objet,
+            "message": message
+        }
+
+    def finalize(self):
+        maraude = self.get_object()
+        maraude.heure_fin = timezone.localtime(timezone.now()).time()
+        maraude.save()
+        return redirect(self.get_success_url())
+
+    def form_valid(self, form):
+        # Send mail
+        maraude = self.get_object()
+        recipients = Maraudeur.objects.filter(
+                                                is_active=True
+                                            ).exclude(
+                                                pk__in=(maraude.referent.pk,
+                                                        maraude.binome.pk)
+                                            )
+        result = send_mail(
+            form.cleaned_data['subject'],
+            form.cleaned_data['message'],
+            maraude.referent.email,
+            [m.email for m in recipients],
+        )
+
+        if result == 1:
+            messages.success(self.request, "Le compte-rendu a été transmis à %s" % ", ".join(map(str, recipients)))
+        else:
+            messages.error(self.request, "Erreur lors de l'envoi du message !")
+        return self.finalize()
+
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
+        context = super().get_context_data(**kwargs)
+        if self.object.est_terminee is True:
+            context['form'] = None#Useless form
+            return context
+        # Link there so that "Compte-rendu" menu item is not disabled
+        context['prochaine_maraude'] = self.object
         return context
 
 
@@ -207,7 +258,7 @@ class PlanningView(MaraudeurMixin, generic.TemplateView):
                 form.save()
             else:
                 logger.info("Form was ignored ! (%s)" % (form.errors.as_data()))
-        return redirect('maraudes:index')
+        return redirect('maraudes:planning')
 
     def get(self, request):
         self.formset = self.get_formset()
