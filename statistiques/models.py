@@ -51,7 +51,8 @@ class FicheStatistique(models.Model):
                           related_name="statistiques")
 
     lien_familial = models.NullBooleanField("Lien Familial")
-    parcours_de_vie = models.CharField(max_length=64,
+    parcours_de_vie = models.CharField("Parcours de vie",
+                                       max_length=64,
                                        choices=PARCOURS_DE_VIE_CHOICES,
                                        default=NSP)
 

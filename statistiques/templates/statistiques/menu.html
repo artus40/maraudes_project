@@ -1,0 +1,13 @@
+{% load navbar %}
+  <ul class="nav nav-pills nav-stacked text-right">
+    <li role="presentation" {% active namespace="statistiques" viewname="index" %}>
+      <a href="{% url "statistiques:index" %}">Tableau de bord&nbsp;
+        <span class="glyphicon glyphicon-home"></span>
+      </a>
+    </li>
+    <li role="presentation" {% active namespace="statistiques" viewname="pies" %}>
+      <a href="{% url "statistiques:pies" %}">Camemberts
+        <span class="glyphicon glyphicon-adjust"></span>
+      </a>
+    </li>
+  </ul>

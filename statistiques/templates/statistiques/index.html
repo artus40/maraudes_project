@@ -3,6 +3,19 @@
 
 {% block title %}{{ block.super }} Index{% endblock %}
 
+
+{% block sidebar %}
+  {{ block.super }}
+  <div class="panel panel-primary">
+    <div class="panel-body text-right">
+      <h4>Période</h4>
+      <form action="" method="get">
+        {{ form }}
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
 {% block breadcrumbs %}
   {{ block.super }}
   <li>Tableau de bord</li>

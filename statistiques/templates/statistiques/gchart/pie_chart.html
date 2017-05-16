@@ -1,0 +1,13 @@
+ {% extends "graphos/gchart/base.html" %}
+
+{% block create_chart %}
+  var chart_data = data
+  var chart_div = document.getElementById('{{ chart.get_html_id }}');
+  var chart = new google.visualization.PieChart(chart_div);
+
+  // Wait for the chart to finish drawing before calling the getImageURI() method.
+  google.visualization.events.addListener(chart, 'ready', function () {
+        $("#image-{{ chart.get_html_id }}").attr("href", chart.getImageURI());
+        $("#wrapper-{{ chart.get_html_id}}").hide();
+  });
+{% endblock %}

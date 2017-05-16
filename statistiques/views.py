@@ -1,28 +1,62 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import generic
+from django.db.models import (Field, CharField, NullBooleanField,
+                              Count,
+                              )
 
 from graphos.sources.simple import SimpleDataSource
-from graphos.renderers import flot
+from graphos.renderers import gchart
 
 from .models import FicheStatistique
-from .forms import StatistiquesForm
+from .forms import StatistiquesForm, SelectRangeForm
+from .charts import PieWrapper
 
-class IndexView(generic.TemplateView):
+from maraudes.notes import Observation
 
+class FilterMixin(generic.edit.FormMixin):
+
+    form_class = SelectRangeForm
+
+    def get_initial(self):
+        return {'month': self.request.GET.get('month', 0), 'year': self.request.GET.get('year', 0) }
+
+    def get_queryset(self):
+        month = int(self.request.GET.get('month', 0))
+        year = int(self.request.GET.get('year', 0))
+        qs = FicheStatistique.objects.all()
+        if month and year:
+            qs = qs.filter(pk__in=Observation.objects.filter(created_date__year=year, created_date__month=month).values_list('sujet'))
+        elif year:
+            qs = qs.filter(pk__in=Observation.objects.filter(created_date__year=year).values_list('sujet'))
+        elif month:
+            qs = qs.filter(pk__in=Observation.objects.filter(created_date__month=month).values_list('sujet'))
+        return qs
+
+
+
+class DashboardView(generic.TemplateView):
     template_name = "statistiques/index.html"
+
+
+
+class PieChartView(FilterMixin, generic.TemplateView):
+    template_name = "statistiques/camemberts.html"
+
+    def get_graphs(self):
+        queryset = self.get_queryset()
+        for field in FicheStatistique._meta.fields:
+            if field.__class__ in (NullBooleanField, CharField):
+                yield "%s" % field.verbose_name, PieWrapper(
+                    queryset, field,
+                )
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
-        data_source = SimpleDataSource(data= [
-            ['Mois', 'Nbr de rencontres'],
-            [1, 12],
-            [2, 14],
-            [3, 9],
-        ])
-        context['chart'] = flot.LineChart(data_source)
+        context['graphs'] = [(title, graph) for title, graph in self.get_graphs()]
+        context['queryset'] = self.get_queryset()
         return context
+
 
 
 # AjaxMixin
@@ -36,6 +70,8 @@ class AjaxOrRedirectMixin:
         if not self.request.is_ajax():
             return redirect("notes:details-sujet", pk=self.get_object().pk)
         return super().get(*args, **kwargs)
+
+
 
 class StatistiquesDetailsView(AjaxOrRedirectMixin, generic.DetailView):
 
