@@ -10,7 +10,8 @@
   <div class="panel panel-primary">
     <div class="panel-body text-right">
       {% include "statistiques/filter_form.html" %}
-      <p>Total : {{ queryset.count }}</p>
+      <hr />
+      <p>Échantillon : {{ queryset.count }} sujets</p>
     </div>
   </div>
 {% endblock %}

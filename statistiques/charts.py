@@ -4,9 +4,12 @@ from django.db.models import (Field, CharField, NullBooleanField,
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import gchart
 
+
 class PieWrapper(gchart.PieChart):
-    """ A wrapper around gchart.PieChart that generates a graph from a
-        queryset and one model field.
+    """ A wrapper around gchart.PieChart that generates a graph from :
+
+        - a queryset and a model field (NullBooleanField or field with choices)
+        - a data object and title
     """
 
     height=400
@@ -15,33 +18,39 @@ class PieWrapper(gchart.PieChart):
         NullBooleanField: {True: "Oui", False: "Non", None:"Ne sait pas"},
     }
 
-    def __init__(self, queryset, field, null_values=[], **kwargs):
-        if not isinstance(field, Field):
-            raise TypeError(field, 'must be a child of django.models.db.fields.Field !')
+    def __init__(   self, queryset=None, field=None,
+                    data=None, title=None,
+                    null_values=[],**kwargs):
+        if not data:
+            if not isinstance(field, Field):
+                raise TypeError(field, 'must be a child of django.models.db.fields.Field !')
+            if not queryset:
+                raise TypeError("You must give either a queryset and field or data")
 
-        if field.__class__ in PieWrapper.labels:
-            labels = PieWrapper.labels[field.__class__]
-        elif field.choices:
-            labels = dict(field.choices)
-        else:
-            raise ValueError("Could not guess labels for", field)
+            if field.__class__ in PieWrapper.labels:
+                labels = PieWrapper.labels[field.__class__]
+            elif field.choices:
+                labels = dict(field.choices)
+            else:
+                raise ValueError("Could not guess labels for", field)
 
-        super().__init__(
-            SimpleDataSource(
-                data=[(field.name, 'count')] + # Headers
-                    [   (   labels[item[field.name]],
-                            item['nbr']
-                        ) for item in queryset.values(
+            data = ([(field.name, 'count')] + # Headers
+                [(labels[item[field.name]],
+                  item['nbr']) for item in queryset.values(
                                                     field.name
                                                 ).annotate(
                                                     nbr=Count('pk')
                                                 ).order_by()
-                        if (not null_values
-                            or item[field] not in null_values)
-                    ]
+                if (not null_values
+                    or item[field] not in null_values)
+                ])
+
+        super().__init__(
+            SimpleDataSource(
+                data=data
                 ),
             options={
-                'title': field.verbose_name or "Default title",
+                'title': getattr(field, 'verbose_name', title),
                 'is3D': True,
                 'pieSliceText': 'value',
                 'legend': {'position': 'labeled', 'maxLines': 3, 'textStyle': {'fontSize': 16,}},

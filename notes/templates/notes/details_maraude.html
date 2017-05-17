@@ -12,20 +12,20 @@
 
 {% block sidebar %}
 <div class="panel panel-primary text-right">
-  <div class="panel-heading"><h4 class="panel-title">Navigation</h4></div>
-  <div class="panel-body text-center">
+  <div class="panel-body text-right">
+    <h4 class="panel-title">Navigation</h4>
     <nav aria-label="Maraudes navigation">
     <ul class="pagination">
-    {% if prev_maraude %}<li>
-      <a href="{% url "notes:details-maraude" prev_maraude.pk %}" aria-label="Previous">
-        {{ prev_maraude.date }} &nbsp; <span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span>
+    <li {% if not prev_maraude %}class="disabled"{% endif %}>
+      <a href="{% if prev_maraude %}{% url "notes:details-maraude" prev_maraude.pk %}{% else %}#{% endif %}" aria-label="Previous">
+        &nbsp; <span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span>
       </a>
-    </li>{% endif %}
-    {% if next_maraude %}<li>
-      <a href="{% url "notes:details-maraude" next_maraude.pk %}" aria-label="Next">
-        <span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span> &nbsp; {{ next_maraude.date }}
+    </li>
+    <li {% if not next_maraude %}class="disabled"{% endif %}>
+      <a href="{% if next_maraude %}{% url "notes:details-maraude" next_maraude.pk %}{%else%}#{% endif %}" aria-label="Next">
+        <span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span> &nbsp;
       </a>
-    </li>{% endif %}
+    </li>
     </ul>
   </nav>
   </div>

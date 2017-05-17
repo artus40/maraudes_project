@@ -21,7 +21,8 @@ class Sujet(models.Model):
     """ Personne faisant l'objet d'un suivi par la maraude
     """
 
-    genre = models.CharField(max_length=3,
+    genre = models.CharField("Genre",
+                             max_length=3,
                              choices=GENRE_CHOICES,
                              default=HOMME)
     nom = models.CharField(max_length=32, blank=True)

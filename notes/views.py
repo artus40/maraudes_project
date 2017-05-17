@@ -23,7 +23,8 @@ logger = logging.getLogger(__name__)
 class IndexView(MaraudeurMixin, generic.TemplateView):
     template_name = "notes/index.html"
 
-
+    def get(self, *args, **kwargs):
+        return redirect("notes:liste-sujet")
 
 class Filter:
     def __init__(self, title, name, filter_func):
@@ -85,7 +86,7 @@ class MaraudeListView(ListView):
     cell_template = "notes/table_cell_maraudes.html"
     table_header = "Liste des maraudes"
 
-    queryset = Maraude.objects.get_past()
+    queryset = Maraude.objects.get_past().order_by("-date")
 
     filters = [
         ("Ce mois-ci", lambda qs: qs.filter(date__month=timezone.now().date().month)),

@@ -50,19 +50,7 @@ class FicheStatistique(models.Model):
                           primary_key=True,
                           related_name="statistiques")
 
-    lien_familial = models.NullBooleanField("Lien Familial")
-    parcours_de_vie = models.CharField("Parcours de vie",
-                                       max_length=64,
-                                       choices=PARCOURS_DE_VIE_CHOICES,
-                                       default=NSP)
-
-    # Problématiques
-    prob_psychiatrie = models.NullBooleanField("Psychiatrie")
-    prob_administratif = models.NullBooleanField("Administratif")
-    prob_addiction = models.NullBooleanField("Addiction")
-    prob_somatique = models.NullBooleanField("Somatique")
-
-    # Logement
+# Logement
     habitation = models.CharField("Type d'habitat", max_length=64,
                                   choices=HABITATION_CHOICES,
                                   default=NSP)
@@ -70,6 +58,18 @@ class FicheStatistique(models.Model):
                                   choices=RESSOURCES_CHOICES,
                                   default=NSP)
     connu_siao = models.NullBooleanField("Connu du SIAO ?")
+
+    # Problématiques
+    prob_psychiatrie = models.NullBooleanField("Psychiatrie")
+    prob_administratif = models.NullBooleanField("Administratif")
+    prob_addiction = models.NullBooleanField("Addiction")
+    prob_somatique = models.NullBooleanField("Somatique")
+
+    lien_familial = models.NullBooleanField("Lien Familial")
+    parcours_de_vie = models.CharField("Parcours de vie",
+                                       max_length=64,
+                                       choices=PARCOURS_DE_VIE_CHOICES,
+                                       default=NSP)
 
     def get_absolute_url(self):
         return reverse('notes:details-sujet', kwargs={'pk': self.sujet.pk})
