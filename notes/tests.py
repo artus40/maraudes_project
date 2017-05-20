@@ -3,6 +3,9 @@ from django.test import TestCase
 from .models import Note, Sujet
 # Create your tests here.
 
+# TODO: test 'actions.py'
+
+
 class SujetModelTestCase(TestCase):
 
     def setUp(self):

@@ -1,7 +1,5 @@
-from django.shortcuts import redirect
 from django.urls import reverse
 from django import views
-from .mixins import WebsiteTemplateMixin
 
 from django.contrib.auth import login, authenticate
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
