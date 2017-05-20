@@ -12,7 +12,7 @@
   <div class="panel panel-primary text-right">
     <div class="panel-body">
     <h4><strong>Rechercher</strong></h4>
-      <form action="" method="POST" class="form form-group">{% csrf_token %}
+      <form action="{% url "notes:liste-sujet" %}" method="POST" class="form form-group">{% csrf_token %}
       <div class="input-group">
       <input type="text" name="q" class="form-control" placeholder="Chercher un sujet" aria-describedby="basic-addon1">
       <span class="input-group-btn">

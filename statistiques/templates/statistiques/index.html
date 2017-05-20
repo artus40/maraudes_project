@@ -1,27 +1,60 @@
 {% extends "statistiques/base.html" %}
 {% load static %}
 
-{% block title %}{{ block.super }} Index{% endblock %}
+{% block title %}{{ block.super }} Maraudes{% endblock %}
 
 
 {% block sidebar %}
   {{ block.super }}
   <div class="panel panel-primary">
     <div class="panel-body text-right">
-      <h4>Période</h4>
-      <form action="" method="get">
-        {{ form }}
-      </form>
+      {% include "statistiques/filter_form.html" %}
     </div>
   </div>
 {% endblock %}
 
 {% block breadcrumbs %}
   {{ block.super }}
-  <li>Tableau de bord</li>
+  <li>Maraudes</li>
 {% endblock %}
 
 {% block page_content %}
-<h3>First graph</h3>
-{{ chart.as_html }}
+
+<div class="alert alert-info alert-dismissible">
+<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+<p>Voici les données permettant une analyse statistiques des maraudes.</p>
+<p>Vous pouvez sélectionner une période particulière ou l'ensemble des données</p>
+<p>Les données sont réparties en trois catégories, accessibles par le menu sur la gauche</p>
+</div>
+<div class="col-lg-4">
+  <h3 class="page-header">Données générales</h3>
+  <ul class="list-group">
+  <li class="list-group-item list-group-item-danger">
+    <span class="badge">{{ nbr_maraudes }}</span>
+    Nombre de maraudes
+  </li>
+  <li class="list-group-item">
+    <span class="badge">{{ nbr_maraudes_jour }}</span>
+    dont, Maraudes de journée
+  </li>
+  <li class="list-group-item list-group-item-danger">
+    <span class="badge">{{ nbr_rencontres }}</span>
+    Nombre total de rencontres
+  </li>
+  <li class="list-group-item">
+    <span class="badge">{{ moy_rencontres }}</span>
+    soit, en <strong>moyenne</strong> par maraude
+  </li>
+  <li class="list-group-item list-group-item-danger">
+    <span class="badge">{{ nbr_sujets_rencontres }}</span>
+    Nombre de sujets rencontrés
+  </li>
+</ul>
+</div>
+{% if rencontres_par_mois %}
+<div class="col-lg-8">
+  <h3 class="page-header">Rencontres par mois</h3>
+  {{ rencontres_par_mois.as_html }}
+</div>
+{% endif %}
 {% endblock %}

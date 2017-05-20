@@ -63,3 +63,8 @@ class PieWrapper(gchart.PieChart):
 
     def get_html_template(self):
         return "statistiques/gchart/html.html"
+
+
+class ColumnWrapper(gchart.ColumnChart):
+
+    pass

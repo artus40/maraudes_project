@@ -12,6 +12,8 @@ class Index(views.generic.TemplateView):
     app_menu = None
     header = ('La Maraude ALSA', 'accueil')
 
+    http_method_names = ['get',]
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["next"] = self.request.GET.get("next", "")

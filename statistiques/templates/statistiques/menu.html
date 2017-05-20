@@ -1,13 +1,14 @@
 {% load navbar %}
   <ul class="nav nav-pills nav-stacked text-right">
     <li role="presentation" {% active namespace="statistiques" viewname="index" %}>
-      <a href="{% url "statistiques:index" %}">Tableau de bord&nbsp;
-        <span class="glyphicon glyphicon-home"></span>
+      <a href="{% url "statistiques:index" %}?year={{year|default:0}}{% if month %}&month={{month}}{% endif %}">Maraudes&nbsp;
+        <span class="glyphicon glyphicon-road"></span>
       </a>
     </li>
     <li role="presentation" {% active namespace="statistiques" viewname="pies" %}>
-      <a href="{% url "statistiques:pies" %}">Camemberts
+      <a href="{% url "statistiques:pies" %}?year={{year|default:0}}{% if month %}&month={{month}}{% endif %}">Typologie du public&nbsp;
         <span class="glyphicon glyphicon-adjust"></span>
       </a>
     </li>
   </ul>
+  <hr />
