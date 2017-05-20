@@ -50,11 +50,11 @@
                 </a>
                 <ul class="dropdown-menu">
                   <li><a href="{% url "statistiques:index" %}"><span class="glyphicon glyphicon-stats"></span> Statistiques</a></li>
-                  <li role="separator" class="divider"></li>
-                  <li><a href="{% url "utilisateurs:index" %}"><span class="glyphicon glyphicon-user"></span> {{ user }}</a></li>
                   {% if user.is_superuser %}
                   <li><a href="/admin/"><span class="glyphicon glyphicon-wrench"></span> Administration</a></li>
                   {% endif %}
+                  <li role="separator" class="divider"></li>
+                  <li><a href="{% url "utilisateurs:index" %}"><span class="glyphicon glyphicon-user"></span> {{ user }}</a></li>
                   <li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a></li>
                 </ul>
               </li>
