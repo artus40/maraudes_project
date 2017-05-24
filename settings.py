@@ -45,4 +45,11 @@ AUTHENTICATION_BACKENDS = [
     'utilisateurs.backends.CustomUserAuthentication'
     ]
 
+MARAUDEURS = {
+    'password': "test",
+    'organisme': {
+        'nom': "ALSA",
+        'email': "direction@alsa68.org"
+    },
+}
 

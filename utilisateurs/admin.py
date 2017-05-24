@@ -9,13 +9,19 @@ admin.register(Organisme)
 @admin.register(Maraudeur)
 class MaraudeurAdmin(admin.ModelAdmin):
     fieldsets = [
-        ('Informations', {'fields': [('first_name', 'last_name'),('email',)]}),
-        ('Organisme', {'fields': [('organisme',)]}),
+        ('Identité', {'fields': [('first_name', 'last_name'),]}),
+        ('Contact', {'fields': [('organisme','email',)]}),
         ('Statut', {'fields': [('is_active',)]}),
     ]
 
     list_display = ('username', 'is_active', 'est_referent')
     actions = ['set_referent', 'toggle_staff']
+    ordering = ['-is_active', 'username']
+
+    def get_changeform_initial_data(self, request):
+        return {'organisme': Maraudeur.get_organisme(),
+                'is_active': True,
+                }
 
     def set_referent(self, request, queryset):
         if len(queryset) > 1:
@@ -45,3 +51,5 @@ class MaraudeurAdmin(admin.ModelAdmin):
 @admin.register(Organisme)
 class OrganismeAdmin(admin.ModelAdmin):
     pass
+
+

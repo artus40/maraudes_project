@@ -64,7 +64,6 @@
 
 <div class="row">
   <div class="col-lg-7 col-md-12">
-    {{ form.media.js }}{{ form.media.css }}
     <form method="post" action="{% url 'maraudes:create' maraude.pk %}">
     {% csrf_token %}
       <div class="panel panel-primary panel-collapse">
@@ -79,19 +78,9 @@
         </div>
       </div>
     </form>
+    {{ form.media.js }}{{ form.media.css }}
   </div>
   <div class="col-lg-5 col-md-12">
-    <script type="text/javascript">
-      function UpdateStats(pk) {
-        var name = $("#sujet-name-" + pk).text();
-        console.log("Update stats for ", pk, ":", name);
-        $("#fiche-stats").load("/statistiques/update/" + pk);
-        $("#sujet-name").text(name);
-        $("#saved-rencontres").hide();
-        $("#update-stats-btn").attr("pk", pk);
-        $("#update-stats").show();
-      };
-    </script>
     <div id="saved-rencontres">
       <h4 class="page-header">Enregistrées</h4>
       <table class="table table-bordered">
@@ -99,18 +88,19 @@
         {% for observation in rencontre.observations.all %}<tr>
             <td>
               <a href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
-              <a class="btn btn-link btn-xs" nohref onclick="UpdateStats({{observation.sujet.pk}});return false;">
+              <a class="btn btn-link btn-xs show-stats-btn" href="#" value="{{observation.sujet.pk}}">
               {% bootstrap_icon "stats" %} Mise à jour</a>
             </td></tr>
             <tr><td>{{observation.text}}</td></tr>{% endfor %}{% endfor %}
       </table>
     </div>
     <div id="update-stats">
-      <h4 class="page-header">Fiche statistiques <small id="sujet-name"></small><div class="pull-right" id="update-buttons">
+      <h4 class="page-header"><span id="sujet-name"></span> <small>Fiche statistiques</small>
+        <div class="pull-right" id="update-buttons">
         <label for="submit-form" class="btn btn-primary" id="update-stats-btn" pk="">{% bootstrap_icon "floppy-save" %} Enregistrer</label>
         <span class="btn btn-primary btn-sm" id="cancel">{% bootstrap_icon "remove" %}Annuler</span>
       </div></h4>
-      <div id="fiche-stats">
+      <div id="fiche-stats" class="well well-sm">
       </div>
     </div>
 
@@ -134,7 +124,22 @@
 <script type="text/javascript">
   $(function(){
 
+  function UpdateStats(pk) {
+      var name = $("#sujet-name-" + pk).text();
+      console.log("Update stats for ", pk, ":", name);
+      $("#fiche-stats").load("/statistiques/update/" + pk);
+      $("#sujet-name").text(name);
+      $("#saved-rencontres").hide();
+      $("#update-stats-btn").attr("pk", pk);
+      $("#update-stats").show();
+    };
+
   $("#update-stats").hide();
+
+  $(".show-stats-btn").click(function(e) {
+    var value = $(this).attr("value");
+    UpdateStats(value);
+  });
 
   $("#update-stats-btn").click(function(e) {
     e.preventDefault();
@@ -144,14 +149,17 @@
     $("#saved-rencontres").show();
     $("#update-stats").hide();
   });
+
   $("#cancel").click(function() {
         $("#fiche-stats").html("");
         $("#saved-rencontres").show();
         $("#update-stats").hide();
   });
+
   $.fn.openModalEvent('new-sujet',
   '{% url "notes:create-sujet" %}?next={% url "maraudes:create" pk=maraude.pk %}',
   'Nouveau sujet');
+
   $.fn.openModalEvent('new-lieu',
   '{% url "maraudes:lieu-create" %}?next={% url "maraudes:create" pk=maraude.pk %}',
   'Nouveau lieu');

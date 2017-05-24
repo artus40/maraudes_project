@@ -1,8 +1,41 @@
 from django.test import TestCase
 
-from .models import Maraudeur, Professionnel
+from utilisateurs.models import Maraudeur, Professionnel
 # Create your tests here.
+def generate_names():
+    i = 0
+    while True:
+        yield {'first_name': 'name%i' % i, 'last_name': 'family%i' % i}
+        i += 1
 
+class ProfessionelTestCase(TestCase):
+    pass
+
+
+class MaraudeurTestCase(TestCase):
+
+    maraudeurs = generate_names()
+
+    def create(self):
+        return Maraudeur.objects.create(**next(self.maraudeurs))
+
+    def test_email_set_on_creation(self):
+        m = self.create()
+        self.assertIsNotNone(m.email)
+
+    def test_username_set_on_creation(self):
+        m = self.create()
+        self.assertEqual(m.username, Maraudeur.make_username(m))
+
+    def test_maraudeurs_is_staff(self):
+        m = self.create()
+        self.assertEqual(m.is_staff, True)
+
+    def test_username_set_on_update(self):
+        m = self.create()
+        m.last_name = "test01"
+        m.save()
+        self.assertEqual(m.username, "%s.test01" % (m.first_name[0]))
 
 class MaraudeurManagerTestCase(TestCase):
 

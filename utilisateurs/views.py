@@ -1,8 +1,9 @@
 from django.views import generic
 
 from .models import Professionnel
+from .mixins import MaraudeurMixin
 
-class UtilisateurView(generic.DetailView):
+class UtilisateurView(MaraudeurMixin, generic.DetailView):
 
     template_name = "utilisateurs/details.html"
     model = Professionnel
