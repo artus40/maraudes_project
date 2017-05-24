@@ -61,12 +61,13 @@ class PlanningTestCase(TestCase):
             self.assertEqual(test['test'], list(Planning.get_maraudes_days_for_month(test['year'], test['month'])))
 
 
-# TODO: Make some actual tests !!
 class MaraudeManagerTestCase(TestCase):
+
+    maraudeurs = [{"first_name": "Astérix", "last_name": "Le Gaulois"}, {"first_name": "Obélix", "last_name": "et Idéfix"}]
 
     def setUp(self):
         first = True
-        for maraudeur in [{"first_name": "Astérix", "last_name": "Le Gaulois"}, {"first_name": "Obélix", "last_name": "et Idéfix"}]:
+        for maraudeur in self.maraudeurs:
             if first:
                 first = False
                 self.referent = Maraudeur.objects.set_referent(*list(maraudeur.values()))
@@ -88,6 +89,15 @@ class MaraudeManagerTestCase(TestCase):
 
     def retrieve_date(self, maraude):
         return maraude.date
+
+    def test_all_of(self):
+        _all = set([self.today, ] + self.past_dates + self.future_dates)
+        for maraudeur in self.maraudeurs:
+            maraudeur = Maraudeur.objects.get(**maraudeur)
+            self.assertEqual(
+                set(map(self.retrieve_date, Maraude.objects.all_of(maraudeur))),
+                _all
+                )
 
     def test_future_maraudes_no_args(self):
         """ La liste des futures maraudes """

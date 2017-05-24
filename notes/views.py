@@ -100,8 +100,18 @@ class SujetListView(ListView):
     cell_template = "notes/table_cell_sujets.html"
     table_header = "Liste des sujets"
 
+
+    def info_completed_filter(qs):
+        excluded_set = set()
+        for sujet in qs:
+            if sujet.statistiques.info_completed >= 50:
+                excluded_set.add(sujet.pk)
+
+        return qs.exclude(pk__in=excluded_set)
+
     filters = [
         ("Rencontré(e)s cette année", lambda qs: qs.filter(premiere_rencontre__year=timezone.now().date().year)),
+        ("Statistiques incomplètes", info_completed_filter),
     ]
 
     def post(self, request, **kwargs):

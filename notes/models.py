@@ -57,7 +57,6 @@ class Sujet(models.Model):
             from statistiques.models import FicheStatistique
             super().save(*args, **kwargs)
             fiche = FicheStatistique.objects.create(sujet=self)
-            logger.warning("Autocreated %s for %s" % (fiche, self))
         else:
             return super().save(*args, **kwargs)
 

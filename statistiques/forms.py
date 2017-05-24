@@ -16,7 +16,10 @@ def get_year_range():
             )
     year = lambda f: f.sujet.premiere_rencontre.year
 
-    return range(year(qs.first()), year(qs.last()) + 1)
+    if qs.exists():
+        return range(year(qs.first()), year(qs.last()) + 1)
+    else:
+        return ()
 
 class SelectRangeForm(forms.Form):
 
