@@ -16,7 +16,6 @@ class RestrictedAccessAnonymousUserTestCase(TestCase):
             response = self.client.get(url)
             self.assertEqual(response.status_code, 302)
             self.assertEqual(response.url, "/?next=%s" % url)
-            print(response)
 
 
 class RestrictedAccessConnectedMaraudeurTestCase(TestCase):
@@ -30,12 +29,11 @@ class RestrictedAccessConnectedMaraudeurTestCase(TestCase):
         for mod in self.modules:
             url = "/%s/" % mod
             response = self.client.get(url)
-            print(response)
             self.assertEqual(response.status_code, 200)
 
 class NonRestrictedAccessTestCase(TestCase):
 
-    urls = ["/statistiques/"]
+    urls = ["/statistiques/", "/"]
 
     def setUp(self):
         self.client = Client()

@@ -2,6 +2,7 @@ from django.urls import reverse
 from django import views
 
 from django.contrib.auth import login, authenticate
+from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
 class Index(views.generic.TemplateView):
@@ -21,6 +22,8 @@ class Index(views.generic.TemplateView):
 
 def _get_entry_point(user):
     from utilisateurs.models import Maraudeur
+    from utilisateurs.backends import CustomUserAuthentication
+
     print("Entry point for ", user, user.__class__)
     if isinstance(user, Maraudeur):
         return reverse('maraudes:index')
@@ -39,6 +42,9 @@ def login_view(request):
             next = request.POST.get('next', None)
             if not next:
                 next = _get_entry_point(user)
+            messages.success(request, "%s, vous êtes connecté !" % user)
             return HttpResponseRedirect(next)
         else:
+            messages.error(request, "Le nom d'utilisateur et/ou le mot de passe sont incorrects !")
             return HttpResponseRedirect('/')
+            
