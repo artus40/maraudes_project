@@ -2,6 +2,12 @@
 from .base_settings import *
 
 # Added settings
+TEMPLATES[0]['OPTIONS']['context_processors'] += [
+    "website.context_processors.website_processor"
+    ]
+
+LOGIN_URL = 'index'
+
 
 INSTALLED_APPS += [
     # Design
@@ -11,6 +17,8 @@ INSTALLED_APPS += [
     'watson',
     # Graph package
     'graphos',
+    # Tests
+    'django_nose',
     # Project apps
     'website',
     'maraudes',
@@ -19,11 +27,12 @@ INSTALLED_APPS += [
     'statistiques',
 ]
 
-TEMPLATES[0]['OPTIONS']['context_processors'] += [
-    "website.context_processors.website_processor"
-    ]
+TEST_RUNNER = "django_nose.NoseTestSuiteRunner"
 
-LOGIN_URL = 'index'
+NOSE_ARGS = [
+    "--with-coverage",
+    "--cover-package=website,maraudes,notes,utilisateurs",
+]
 
 BOOTSTRAP3 = {
     # The URL to the jQuery JavaScript file
