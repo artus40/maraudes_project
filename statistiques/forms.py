@@ -15,8 +15,15 @@ def get_year_range():
                 'sujet__premiere_rencontre'
             )
     year = lambda f: f.sujet.premiere_rencontre.year
-
-    if qs.exists():
+    
+    # Need to call exists() in a try block
+    # to avoid raising exception on first migration
+    try:
+        qs_is_not_empty = qs.exists()
+    except:
+        qs_is_not_empty = False
+        
+    if qs_is_not_empty:
         return range(year(qs.first()), year(qs.last()) + 1)
     else:
         return ()
