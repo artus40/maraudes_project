@@ -1,4 +1,6 @@
 from django import forms
+from django.db.utils import OperationalError
+
 from .models import FicheStatistique
 
 class StatistiquesForm(forms.ModelForm):
@@ -20,7 +22,7 @@ def get_year_range():
     # to avoid raising exception on first migration
     try:
         qs_is_not_empty = qs.exists()
-    except:
+    except OperationalError:
         qs_is_not_empty = False
         
     if qs_is_not_empty:
