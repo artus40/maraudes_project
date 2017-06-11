@@ -1,0 +1,46 @@
+{% extends "maraudes/base.html" %}
+{% load bootstrap3 %}
+{% block title %} {{ block.super }} Compte-rendu du {{ object.date }} {% endblock %}
+
+{% block breadcrumbs %}
+  <li><a href="{% url "maraudes:index" %}">{{ object.date }}</a></li>
+  <li>Transmission</li>
+{% endblock %}
+
+
+{% block page_content %}
+{% if object.est_terminee %}<div class="alert alert-warning"><p>Ce compte-rendu a déjà été finalisé !</p></div>
+{% else %}
+<div class="col-md-12 col-lg-7">
+<form method="post" action="{% url 'maraudes:finalize' maraude.pk %}">
+    {% csrf_token %}
+      <div class="panel panel-primary panel-collapse">
+        <div class="panel-heading">
+          <h4 class="panel-title">Envoyer un message</h4>
+        </div>
+        <div class="panel-body">
+          {% bootstrap_form form %}
+        </div>
+        <div class="panel-footer text-right">
+          {% bootstrap_button "Pas de message" icon="remove" button_type="link" href="?no_mail=True" button_class="btn btn-danger btn-sm" %}
+          {% bootstrap_button "Envoyer" icon="send" button_type="submit" button_class="btn btn-success btn-sm" %}
+        </div>
+      </div>
+    </form>
+</div>
+  <div class="col-md-12 col-lg-5">
+      <h4 class="page-header">Rencontres</h4>
+      <table class="table table-bordered">
+        {% for rencontre in object.rencontres.all %}<tr><th colspan="2" class="active">{{ rencontre }}</th></tr>
+        {% for observation in rencontre.observations.all %}<tr>
+            <td>
+              <a href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
+              <a class="btn btn-link btn-xs" nohref onclick="UpdateStats({{observation.sujet.pk}});return false;">
+              {% bootstrap_icon "stats" %} Mise à jour</a>
+            </td></tr>
+            <tr><td>{{observation.text}}</td></tr>{% endfor %}{% endfor %}
+      </table>
+  </div>
+{% endif %}
+
+{% endblock %}

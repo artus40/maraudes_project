@@ -1,0 +1,61 @@
+{% extends "maraudes/base.html" %}
+{% load bootstrap3 %}
+
+{% block title %} {{ block.super }} Planning {% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li>Planning</li>
+{% endblock %}
+
+{% block sidebar %}
+  {{ block.super }}
+  <div class="panel panel-primary text-center">
+    <div class="panel-body">
+    <label for="submit-form" class="btn btn-primary">{% bootstrap_icon "floppy-save" %} Enregistrer</label>
+    <hr />
+    <form action="" method="get" class="form-horizontal">
+      <strong>{% bootstrap_icon "calendar" %} Choisir une autre période : </strong>
+      {% bootstrap_form select_form layout='horizontal' %}
+      {% bootstrap_button "Choisir" button_type="submit" button_class="btn btn-primary btn-sm" %}
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block page_content %}
+<form method="post" action="{% url 'maraudes:planning' %}?month={{month}}&year={{year}}">
+  <input type="submit" id="submit-form" class="hidden" />
+  {% csrf_token %}
+  {{ formset.management_form }}
+<table class="table table-bordered">
+  <tr class="active">
+    {% for weekday in weekdays %}<th>{{weekday}}</th>{% endfor %}
+  </tr>
+  {% for week in weeks %}
+  <tr>
+    {% for day, form in week %}
+    <td style="min-width:5%;" {% if form %}class="{% if form.instance.id %}success{%else%}warning{%endif%}"{% endif %}>{% if day %}{% if form %}
+        <div class="row">
+          <div class="col-lg-2">{% endif %}
+            <strong>{{ day }}</strong>
+          {% if form %}</div>
+          <div class="col-lg-10">
+            {% bootstrap_field form.id %}
+            {% bootstrap_field form.date %}
+            {% bootstrap_field form.heure_debut layout="inline" size="small" %}
+          </div>
+        </div>
+        <div class="form-horizontal">
+          {% bootstrap_field form.binome layout="horizontal" size="small" show_label=False %}
+          {% bootstrap_field form.referent layout="horizontal" size="small" show_label=False %}
+        </div>
+        {% endif %}
+      {% endif %}
+    </td>
+    {% endfor %}
+  </tr>
+  {% endfor %}
+</table>
+</form>
+{% endblock %}

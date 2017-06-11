@@ -1,0 +1,34 @@
+{% extends "notes/base.html" %}
+{% load tables %}
+
+{% block sidebar %}
+{{ block.super }}
+{% block sidebar_insert %}{% endblock %}
+{% if filters %}
+<div class="well">
+  <h4 class="text-right"><span class="glyphicon glyphicon-filter"></span> <strong>Filtres</strong></h4>
+  <ul class="nav nav-pills nav-stacked text-right">
+  {% for filter in filters %}
+    <li role="presentation" {% if filter.active %} class="active" {% endif %}>
+        <a href="?filter={{filter.parameter_name}}">{{ filter.title }}</a>
+    </li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+{% endblock %}
+
+{% block page_content %}
+  {% block search %}{% endblock %}
+  <!-- Table -->
+  {% table object_list cols=3 cell_template=table_cell_template header=table_header %}
+  {% if is_paginated %}
+    <div class="text-center">
+      <ul class="pagination">{% with request.GET.filter as filter %}
+      {% for num in page_obj.paginator.page_range %}
+        <li {% if page_obj.number == num %} class="active" {%endif%}><a href="?{% if filter %}filter={{ filter }}&{%endif%}page={{num}}">{{num}}</a></li>
+      {%endfor%}{% endwith %}
+      </ul>
+    </div>
+  {% endif %}
+{% endblock %}

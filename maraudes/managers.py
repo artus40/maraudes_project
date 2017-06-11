@@ -1,10 +1,11 @@
 from django.db.models import Manager
 
 import datetime
+
 from django.utils import timezone
 from django.utils.functional import cached_property
 
-
+# TODO: What is really useful in there ??
 class MaraudeManager(Manager):
     """ Manager for Maraude objects """
 
@@ -20,24 +21,7 @@ class MaraudeManager(Manager):
         if not maraudes_ref:
             return maraudes_bin
 
-        cursor = 0
-        complete_list = []
-        for i, m in enumerate(maraudes_bin):
-            if cursor >= 0 and maraudes_ref[cursor].date < m.date:
-                complete_list.append(maraudes_ref[cursor])
-                complete_list.append(m)
-                if cursor < len(maraudes_ref) - 1:
-                    cursor += 1
-                else:
-                    cursor = -1
-            else:
-                complete_list.append(m)
-        # Don't lose remaining items of maraudes_ref
-        if cursor >= 0:
-            complete_list += maraudes_ref[cursor:]
-
-        return complete_list
-
+        return maraudes_bin | maraudes_ref
 
     def get_next_of(self, maraudeur):
         """ Retourne la prochaine maraude de 'maraudeur' """
@@ -47,21 +31,27 @@ class MaraudeManager(Manager):
                             'date'
                         ).first()
 
-    def get_future(self):
+    def get_future(self, date=None):
         """ Retourne la liste des prochaines maraudes """
+        if not date: date = self.today
         return self.get_queryset().filter(
-                            date__gte=datetime.date.today()
+                            date__gte=date
                         ).order_by(
                             'date'
                         )
 
-    def get_past(self):
+    def get_past(self, date=None):
         """ Retourne la liste des maraudes passées """
+        if not date: date = self.today
         return self.get_queryset().filter(
-                            date__lt=datetime.date.today()
+                            date__lt=date
                         ).order_by(
                             'date'
                         )
+
+    @cached_property
+    def today(self):
+        return timezone.localtime(timezone.now()).date()
 
     @cached_property
     def next(self):

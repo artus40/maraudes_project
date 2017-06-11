@@ -1,0 +1,12 @@
+<div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="signalementHeading">
+      <h4 class="panel-title">
+        <a role="button" data-toggle="collapse" data-parent="#accordion" href="#signalementCollapse" aria-expanded="true" aria-controls="collapseOne">
+      <span class="glyphicon glyphicon-warning-sign"></span> Signalement</a></h4>
+    </div>
+    <div id="signalementCollapse" class="panel-collapse collapse" role="tabpanel" aria-labelledby="signalementHeading">
+      <div class="panel-body">
+        {% include "notes/form_signalement_inner.html" %}
+      </div>
+    </div>
+  </div>

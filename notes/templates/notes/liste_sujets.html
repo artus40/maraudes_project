@@ -1,0 +1,39 @@
+{% extends "notes/liste.html" %}
+
+{% block title %}{{block.super}} Liste des sujets {% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li><a href="{% url "notes:liste-sujet" %}">Sujets</a></li>
+  {% if query_text %}<li>'{{query_text}}'</li>{% endif %}
+{% endblock %}
+
+{% block sidebar_insert %}
+  <div class="panel panel-primary text-right">
+    <div class="panel-body">
+    <h4><strong>Rechercher</strong></h4>
+      <form action="{% url "notes:liste-sujet" %}" method="POST" class="form form-group">{% csrf_token %}
+      <div class="input-group">
+      <input type="text" name="q" class="form-control" placeholder="Chercher un sujet" aria-describedby="basic-addon1">
+      <span class="input-group-btn">
+        <button type="submit" class="btn btn-primary"><span class=" glyphicon glyphicon-search"></span> </button>
+      </span>
+      </div>
+      </form>
+        <hr/>
+    <h4><strong>Outils</strong></h4>
+   <a class="btn btn-primary" href="{% url "notes:create-sujet" %}">
+    <span class="glyphicon glyphicon-plus"></span> Ajouter un sujet</a> </div></div>
+{% endblock %}
+
+{% block search %}
+  {% if query_text %}<div class="well well-sm text-center">
+      <h4><span class="label label-primary">'{{query_text}}'</span>
+      <span class="label label-danger">
+        {% if not object_list %}Aucun résultat
+        {% else %} {{ object_list.count }} résultats
+        {% endif %}
+      </span></h4>
+  </div>{% endif %}
+{% endblock %}
+

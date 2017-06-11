@@ -1,0 +1,9 @@
+<a href="{% url 'notes:details-sujet' object.pk %}" class="btn btn-link">{{object}}</a>
+<div class="pull-right" style="padding-right: 20px;">
+ <span class="label label-info">{{ object.notes.count }} notes</span>
+ {% with object.statistiques.info_completed as completed %}
+ <span class="label label-{% if completed <= 80 %}warning{%else%}success{%endif%}">{{ completed }} %</span>
+ {% endwith %}
+</div>
+
+

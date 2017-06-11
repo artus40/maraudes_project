@@ -1,0 +1,42 @@
+{% load boolean_icons bootstrap3 %}
+  <table class="table">
+    <tr>
+      <th colspan="4" class="active">Problématiques</th>
+    </tr>
+    <tr>
+      <th>Psychiatrique</th>
+      <td>{{ object.prob_psychiatrie|as_icon }}</td>
+      <th>Addiction</th>
+      <td>{{ object.prob_addiction|as_icon }}</td>
+    </tr>
+    <tr>
+      <th>Administratif</th>
+      <td>{{ object.prob_administratif|as_icon }}</td>
+      <th>Somatique</th>
+      <td>{{ object.prob_somatique|as_icon }}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Habitation</th>
+    </tr>
+    <tr>
+      <th>Type</th>
+      <td>{{ object.habitation }}</td>
+      <th>Connu du SIAO</th>
+      <td>{{ object.connu_siao|as_icon }}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Ressources</th>
+    </tr>
+    <tr>
+      <td colspan="4">{{ object.ressources }}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Parcours de vie</th>
+    </tr>
+    <tr>
+      <td colspan="2">{{ object.parcours_de_vie }}</td>
+      <th>Lien familial</th>
+      <td>{{ object.lien_familial|as_icon }}</td>
+    </tr>
+  </table>
+

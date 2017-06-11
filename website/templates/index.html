@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load bootstrap3 %}
+
+{% block sidebar %}
+  {% include "login.html" %}
+{% endblock %}
+
+{% block page_content %}
+<div class="jumbotron">
+          <h2>Objectifs</h2>
+          <p>Description de la maraude à destination des visiteurs, partenaires, etc...</p>
+          <h2>Nous rencontrer</h2>
+
+          <p>Les maraudeurs arpentent les rues de Mulhouse les <b>lundis</b>, <b>mardis</b> et <b>jeudis</b> en soirée,
+            et les <b>vendredis</b> en fin d'après-midi.
+          </p>
+          <p>Ils sont reconnaissables à leur vestes oranges, n'hésitez pas à les interpeller.</p>
+</div>
+{% endblock %}

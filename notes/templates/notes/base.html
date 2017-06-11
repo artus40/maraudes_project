@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Notes >{% endblock %}
+
+{% block breadcrumbs %}
+  <li>Notes</li>
+{% endblock %}
+
+{% block sidebar %}
+<div class="panel panel-default">
+  <div class="panel-body">
+    {% include "notes/menu.html" %}
+  </div>
+</div>{% endblock %}

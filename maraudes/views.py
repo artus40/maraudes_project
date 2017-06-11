@@ -1,115 +1,83 @@
 import datetime
 import calendar
-from django.utils import timezone
-from django.contrib import messages
-from django.shortcuts import render, redirect
-# Views
-from django.views import generic
+import logging
 
-# Models
+logger = logging.getLogger(__name__)
+
+from django.utils import timezone
+from django.shortcuts import redirect, reverse
+from django.views import generic
+from django.core.mail import send_mail
+from django.forms import modelformset_factory
+from django.contrib import messages
+
+from utilisateurs.mixins import MaraudeurMixin
+
 from .models import (   Maraude, Maraudeur,
+                        CompteRendu,
                         Rencontre, Lieu,
                         Planning,   )
-from .compte_rendu import CompteRendu
-from notes.models import Note
 # Forms
-from django import forms
-from django.forms import inlineformset_factory, modelformset_factory, modelform_factory
-from django.forms.extras import widgets
-from django_select2.forms import Select2Widget
-from .forms import (    RencontreForm, RencontreInlineFormSet,
-                        ObservationInlineFormSet, ObservationInlineFormSetNoExtra,
-                        MaraudeAutoDateForm, MonthSelectForm,   )
-
-from django.core.mail import send_mail
-
-from .apps import maraudes
+from .forms import (    RencontreForm,
+                        ObservationInlineFormSet,
+                        MaraudeHiddenDateForm, MonthSelectForm,
+                        AppelForm, SignalementForm,
+                        SendMailForm   )
+from notes.mixins import NoteFormMixin
 
 
-@maraudes.using(title=('La Maraude', 'Tableau de bord'))
-class IndexView(generic.TemplateView):
+def derniers_sujets_rencontres():
+    """ Renvoie le 'set' des sujets rencontrés dans les deux dernières maraudes """
+    sujets = set()
+    for cr in list(CompteRendu.objects.filter(heure_fin__isnull=False))[-2:]:
+        for obs in cr.get_observations():
+            sujets.add(obs.sujet)
+    return list(sujets)
+
+
+
+class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
 
     template_name = "maraudes/index.html"
 
+    #NoteFormMixin
+    forms = {
+        'appel': AppelForm,
+        'signalement': SignalementForm,
+    }
+
+    def get_initial(self):
+        now = timezone.localtime(timezone.now())
+        return {'created_date': now.date(),
+                'created_time': now.time()}
+
+    def get_success_url(self):
+        return reverse('maraudes:index')
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['prochaine_maraude_abs'] = self.get_prochaine_maraude()
-        context['prochaine_maraude'] = self.get_prochaine_maraude_for_user()
+        context['prochaine_maraude'] = Maraude.objects.get_next_of(self.request.user)
+        context['derniers_sujets_rencontres'] = derniers_sujets_rencontres()
+
         if self.request.user.is_superuser:
             context['missing_cr'] = CompteRendu.objects.get_queryset().filter(
                     heure_fin__isnull=True,
-                    date__lte = timezone.localtime(timezone.now()).date()
+                    date__lt = timezone.localtime(timezone.now()).date()
                 )
         return context
 
-    def get_prochaine_maraude_for_user(self):
-        """ Retourne le prochain objet Maraude auquel
-            l'utilisateur participe, ou None """
-        try: #TODO: Clean up this ugly thing
-            self.maraudeur = Maraudeur.objects.get(username=self.request.user.username)
-        except:
-            self.maraudeur = None
-
-        if self.maraudeur:
-            return Maraude.objects.get_next_of(self.maraudeur)
-        return None
-
-    def get_prochaine_maraude(self):
-        return Maraude.objects.next
-
-## MARAUDES
-@maraudes.using(title=('{{maraude.date}}', 'compte-rendu'))
-class MaraudeDetailsView(generic.DetailView):
-    """ Vue détaillé d'un compte-rendu de maraude """
-
-    model = CompteRendu
-    context_object_name = "maraude"
-    template_name = "maraudes/details.html"
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['notes'] = self.object.get_observations()
-        return context
-
-
-@maraudes.using(title=('Liste des maraudes',))
-class MaraudeListView(generic.ListView):
-    """ Vue de la liste des compte-rendus de maraude """
-
-    model = CompteRendu
-    template_name = "maraudes/liste.html"
-    paginate_by = 30
-
-    def get_queryset(self):
-        current_date = timezone.localtime(timezone.now()).date()
-        qs = super().get_queryset().filter(
-                                        date__lte=current_date
-                                    ).order_by('-date')
-
-        filtre = self.request.GET.get('filter', None)
-        if filtre == "month-only":
-            return qs.filter(date__month=current_date.month)
-        #Other cases...
-        else:
-            return qs
 
 
 ## COMPTE-RENDU DE MARAUDE
-@maraudes.using(title=('{{maraude.date}}', 'rédaction'))
-class CompteRenduCreateView(generic.DetailView):
+class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
     """ Vue pour la création d'un compte-rendu de maraude """
 
     model = CompteRendu
-    template_name = "compte_rendu/compterendu_create.html"
+    template_name = "maraudes/compterendu.html"
     context_object_name = "maraude"
 
     form = None
     inline_formset = None
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        #WARNING: Overrides app_menu and replace it
-        self._user_menu = ["compte_rendu/menu/creation.html"]
 
     def get_forms(self, *args, initial=None):
         self.form = RencontreForm(*args,
@@ -118,25 +86,6 @@ class CompteRenduCreateView(generic.DetailView):
                                     *args,
                                     instance=self.form.instance
                                 )
-
-    def finalize(self):
-        print('finalize !')
-        maraude = self.get_object()
-        maraude.heure_fin = timezone.now()
-        maraude.save()
-        # Redirect to a new view to edit mail ??
-        # Add text to some mails ? Transmission, message à un référent, etc...
-        # Send mail to Maraudeurs
-        _from = maraude.referent.email
-        # Shall select only Maraudeur where 'is_active' is True !
-        recipients = [m for m in Maraudeur.objects.all() if m not in (maraude.referent, maraude.binome)]
-        objet = "Compte-rendu de maraude : %s" % maraude.date
-        message = "Sujets rencontrés : ..." #TODO: Mail content
-        send_mail(objet, message, _from, recipients)
-
-        return redirect("maraudes:details",
-                        pk=maraude.pk
-                        )
 
     def post(self, request, *args, **kwargs):
         self.get_forms(request.POST, request.FILES)
@@ -151,8 +100,6 @@ class CompteRenduCreateView(generic.DetailView):
         return redirect('maraudes:create', pk=self.get_object().pk)
 
     def get(self, request, new_form=True, *args, **kwargs):
-        if request.GET.get('finalize', False) == "True":
-            return self.finalize()
 
         def calculate_end_time(debut, duree):
             end_minute = debut.minute + duree
@@ -186,76 +133,85 @@ class CompteRenduCreateView(generic.DetailView):
         context['form'] = self.form
         context['inline_formset'] = self.inline_formset
         context['rencontres'] = self.get_object().rencontres.order_by("-heure_debut")
+        # Link there so that "Compte-rendu" menu item is not disabled
+        context['prochaine_maraude'] = self.object
         return context
 
 
 
-@maraudes.using(title=('{{maraude.date}}', 'mise à jour'))
-class CompteRenduUpdateView(generic.DetailView):
-    """ Vue pour mettre à jour le compte-rendu de la maraude """
+class FinalizeView( MaraudeurMixin,
+                    generic.detail.SingleObjectMixin,
+                    generic.edit.FormView):
 
-    model = CompteRendu
-    context_object_name = "maraude"
-    template_name = "compte_rendu/compterendu_update.html"
+    template_name = "maraudes/finalize.html"
+    model = Maraude
+    form_class = SendMailForm
+    success_url = "/maraudes/"
 
-    base_formset = None
-    inline_formsets = []
-    rencontres_queryset = None
-    forms = None
+    def get(self, *args, **kwargs):
+        print(self.request.GET)
+        if bool(self.request.GET.get("no_mail", False)) == True:
+            messages.warning(self.request, "Aucun compte-rendu n'a été envoyé !")
+            return self.finalize()
+        return super().get(*args, **kwargs)
 
-    def get_forms_with_inline(self, *args):
-        self.base_formset = RencontreInlineFormSet(
-                                    *args,
-                                    instance=self.get_object(),
-                                    prefix="rencontres"
-                                    )
+    def get_initial(self):
+        maraude = self.get_object()
+        objet = "%s - Compte-rendu de maraude" % maraude.date
+        sujets_rencontres = set()
+        for r in maraude.rencontres.all():
+            for s in r.get_sujets():
+                sujets_rencontres.add(s)
+        message = "Nous avons rencontré : " + ", ".join(map(str, sujets_rencontres)) + ".\n\n"
+        return {
+            "subject": objet,
+            "message": message
+        }
 
-        self.inline_formsets = []
-        for i, instance in enumerate(self.get_object()):
-            inline_formset = ObservationInlineFormSetNoExtra(
-                    *args,
-                    instance = instance,
-                    prefix = "observation-%i" % i
-                    )
-            self.inline_formsets.append(inline_formset)
+    def finalize(self):
+        maraude = self.get_object()
+        maraude.heure_fin = timezone.localtime(timezone.now()).time()
+        maraude.save()
+        return redirect(self.get_success_url())
 
-        # Aucun nouveau formulaire de 'Rencontre' n'est inclus.
-        self.forms = [(self.base_formset[i], self.inline_formsets[i]) for i in range(len(self.inline_formsets))]
+    def form_valid(self, form):
+        # Send mail
+        maraude = self.get_object()
+        recipients = Maraudeur.objects.filter(
+                                                is_active=True
+                                            ).exclude(
+                                                pk__in=(maraude.referent.pk,
+                                                        maraude.binome.pk)
+                                            )
+        result = send_mail(
+            form.cleaned_data['subject'],
+            form.cleaned_data['message'],
+            maraude.referent.email,
+            [m.email for m in recipients],
+        )
 
-    def post(self, request, *args, **kwargs):
-        self.get_forms_with_inline(request.POST, request.FILES)
-        self.errors = False
-
-        if self.base_formset.is_valid():
-            for inline_formset in self.inline_formsets:
-                if inline_formset.is_valid():
-                    inline_formset.save()
-            self.base_formset.save()
+        if result == 1:
+            messages.success(self.request, "Le compte-rendu a été transmis à %s" % ", ".join(map(str, recipients)))
         else:
-            self.errors = True
+            messages.error(self.request, "Erreur lors de l'envoi du message !")
+        return self.finalize()
 
-        if self.errors or request.GET['continue'] == "False": # Load page to display errors
-            return self.get(request, *args, **kwargs)
-
-        return redirect('maraudes:details', pk=self.get_object().pk)
-
-    def get(self, request, *args, **kwargs):
-        self.get_forms_with_inline()
-        return super().get(request, *args, **kwargs)
-
-    def get_context_data(self, *args, **kwargs):
+    def get_context_data(self, **kwargs):
+        self.object = self.get_object()
         context = super().get_context_data(**kwargs)
-        context['base_formset'] = self.base_formset
-        context['forms'] = self.forms
+        if self.object.est_terminee is True:
+            context['form'] = None#Useless form
+            return context
+        # Link there so that "Compte-rendu" menu item is not disabled
+        context['prochaine_maraude'] = self.object
         return context
 
 
-## PLANNING
-@maraudes.using(title=('Planning',))
-class PlanningView(generic.TemplateView):
-    """ Display and edit the planning of next Maraudes """
 
-    template_name = "planning/planning.html"
+class PlanningView(MaraudeurMixin, generic.TemplateView):
+    """ Vue d'édition du planning des maraudes """
+
+    template_name = "maraudes/planning.html"
 
     def _parse_request(self):
         self.current_date = datetime.date.today()
@@ -287,7 +243,7 @@ class PlanningView(generic.TemplateView):
         self._calculate_initials()
         return modelformset_factory(
                             Maraude,
-                            form = MaraudeAutoDateForm,
+                            form = MaraudeHiddenDateForm,
                             extra = len(self.initials),
                         )(
                             *args,
@@ -300,24 +256,54 @@ class PlanningView(generic.TemplateView):
         for form in self.formset.forms:
             if form.is_valid():
                 form.save()
-        return redirect('maraudes:index')
+            else:
+                logger.info("Form was ignored ! (%s)" % (form.errors.as_data()))
+        return redirect('maraudes:planning')
 
     def get(self, request):
         self.formset = self.get_formset()
         return super().get(request)
 
+    def get_weeks(self):
+        """ List of (day, form) tuples, split by weeks """
+
+        def form_generator(forms):
+            """ Yields None until the generator receives the day of
+                next form.
+            """
+            forms = iter(sorted(forms, key=lambda f: f.initial['date']))
+            day = yield
+            for form in forms:
+                while day != form.initial['date'].day:
+                    day = yield None
+                day = yield form
+
+            while True: # Avoid StopIteration
+                day = yield None
+
+        form_or_none = form_generator(self.formset)
+        form_or_none.send(None)
+
+        return [
+                [(day, form_or_none.send(day)) for day in week]
+                for week in calendar.monthcalendar(self.year, self.month)
+            ]
+
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
+        context['weekdays'] = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
+        context['weeks'] = self.get_weeks()
+
         context['formset'] = self.formset
         context['select_form'] = MonthSelectForm(month=self.month, year=self.year)
         context['month'], context['year'] = self.month, self.year
         return context
 
 
-## LIEU
 
-@maraudes.using(ajax=True)
 class LieuCreateView(generic.edit.CreateView):
+    """ Vue de création d'un lieu """
+
     model = Lieu
     template_name = "maraudes/lieu_create.html"
     fields = "__all__"

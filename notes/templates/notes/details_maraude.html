@@ -1,0 +1,47 @@
+{% extends "notes/details.html" %}
+
+{% block title %}
+  {{ block.super }} {{ maraude }}
+{% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li><a href="{% url "notes:liste-maraude" %}">Maraudes</a></li>
+  <li>{{ maraude }}</li>
+{% endblock %}
+
+{% block sidebar %}
+<div class="panel panel-primary text-right">
+  <div class="panel-body text-right">
+    <h4 class="panel-title">Navigation</h4>
+    <nav aria-label="Maraudes navigation">
+    <ul class="pagination">
+    <li {% if not prev_maraude %}class="disabled"{% endif %}>
+      <a href="{% if prev_maraude %}{% url "notes:details-maraude" prev_maraude.pk %}{% else %}#{% endif %}" aria-label="Previous">
+        &nbsp; <span aria-hidden="true" class="glyphicon glyphicon-chevron-left"></span>
+      </a>
+    </li>
+    <li {% if not next_maraude %}class="disabled"{% endif %}>
+      <a href="{% if next_maraude %}{% url "notes:details-maraude" next_maraude.pk %}{%else%}#{% endif %}" aria-label="Next">
+        <span aria-hidden="true" class="glyphicon glyphicon-chevron-right"></span> &nbsp;
+      </a>
+    </li>
+    </ul>
+  </nav>
+  </div>
+</div>
+{% endblock %}
+
+{% block right_column %}
+<div class="panel panel-default">
+  <div class="panel-heading" role="tab" id="notesSujetHeading">
+    <h3 class="panel-title">
+      Informations</h3>
+  </div>
+  <div class="panel-body">
+    <p><strong>Maraudeurs :</strong>&nbsp; {{ maraude.binome }} & {{ maraude.referent }}</p>
+    <p><strong>Nombre de rencontres</strong>&nbsp; {{ maraude.rencontres.count }}</p>
+    <p><strong>Nombre de personnes rencontrées</strong>&nbsp; {{ maraude.observations_count }}</p>
+  </div>
+</div>
+{% endblock %}

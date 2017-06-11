@@ -1,13 +1,15 @@
 import calendar
 import datetime
-from django.utils import timezone
+from collections import OrderedDict
 
+from django.utils import timezone
 from django.db import models
+from django.db.models import Count
 from django.core.urlresolvers import reverse
 
 from utilisateurs.models import Maraudeur
-
 from . import managers
+
 
 ## Fonctions utiles
 
@@ -15,13 +17,57 @@ def get_referent_maraude():
     """ Retourne l'administrateur et référent de la Maraude """
     return Maraudeur.objects.get_referent()
 
+def split_by_12h_blocks(iterable):
+    """ Move object with given 'field' time under 12:00 to the end of stream.
+        Apart from this, order is untouched.
+    """
+    to_end = []
+    for note in iterable:
+        if getattr(note, "created_time") <= datetime.time(12):
+            to_end.append(note)
+        else:
+            yield note
+
+    for note in to_end:
+        yield note
+
+## Constantes
+
+# Jours de la semaine
+WEEKDAYS = [
+        (0, "Lundi"),
+        (1, "Mardi"),
+        (2, "Mercredi"),
+        (3, "Jeudi"),
+        (4, "Vendredi"),
+        (5, "Samedi"),
+        (6, "Dimanche")
+    ]
+
+# Horaires
+HORAIRES_APRESMIDI = datetime.time(16, 0)
+HORAIRES_SOIREE = datetime.time(20, 0)
+HORAIRES_CHOICES = (
+    (HORAIRES_APRESMIDI, 'Après-midi'),
+    (HORAIRES_SOIREE, 'Soirée')
+)
+
+# Durées
+DUREE_CHOICES = (
+    (5, '5 min'),
+    (10, '10 min'),
+    (15, '15 min'),
+    (20, '20 min'),
+    (30, '30 min'),
+    (45, '45 min'),
+    (60, '1 heure'),
+)
 
 ## Modèles
 
 
 class Lieu(models.Model):
     """ Lieu de rencontre """
-
     nom = models.CharField(max_length=128)
 
     def __str__(self):
@@ -29,9 +75,6 @@ class Lieu(models.Model):
 
     class Meta:
         verbose_name = "Lieu de rencontre"
-
-
-
 
 
 
@@ -53,13 +96,7 @@ class Maraude(models.Model):
                         "Date",
                         unique=True
                     )
-    # Horaires
-    HORAIRES_APRESMIDI = datetime.time(16, 0)
-    HORAIRES_SOIREE = datetime.time(20, 0)
-    HORAIRES_CHOICES = (
-        (HORAIRES_APRESMIDI, 'Après-midi'),
-        (HORAIRES_SOIREE, 'Soirée')
-    )
+
     heure_debut = models.TimeField(
                         "Horaire",
                         choices=HORAIRES_CHOICES,
@@ -98,13 +135,10 @@ class Maraude(models.Model):
             ('view_maraudes', "Accès à l'application 'maraudes'"),
         )
 
-    # TODO: A remplacer !
-    JOURS = ["Lundi", "Mardi", "Mercredi", "Jeudi",
-             "Vendredi", "Samedi", "Dimanche"]
     MOIS = ["Jan.", "Fév.", "Mars", "Avr.", "Mai", "Juin",
             "Juil.", "Août", "Sept.", "Oct.", "Nov.", "Déc."]
     def __str__(self):
-        return '%s %i %s' % (self.JOURS[self.date.weekday()],
+        return '%s %i %s' % (WEEKDAYS[self.date.weekday()][1], # Retrieve text inside tuple
                                         self.date.day,
                                         self.MOIS[self.date.month - 1])
 
@@ -123,27 +157,14 @@ class Maraude(models.Model):
     est_passee.boolean = True
     est_passee.short_description = 'Passée ?'
 
-    def get_observations(self):
-        raise Warning("Deprecated ! Should use CompteRendu proxy object")
-
     def get_absolute_url(self):
-        return reverse('maraudes:details', kwargs={'pk': self.id})
+        return reverse('notes:details-maraude', kwargs={'pk': self.id})
 
 
 
 class Rencontre(models.Model):
     """ Une Rencontre dans le cadre d'une maraude
     """
-    # Choices
-    DUREE_CHOICES = (
-        (5, '5 min'),
-        (10, '10 min'),
-        (15, '15 min'),
-        (20, '20 min'),
-        (30, '30 min'),
-        (45, '45 min'),
-        (60, '1 heure'),
-    )
 
     # Fields
     maraude = models.ForeignKey(
@@ -195,14 +216,44 @@ class Rencontre(models.Model):
         return [o.sujet for o in self.observations.all()]
 
 
-WEEKDAYS = [
-        (0, "Lundi"),
-        (1, "Mardi"),
-        (2, "Mercredi"),
-        (3, "Jeudi"),
-        (4, "Vendredi"),
-        (5, "Samedi"),
-    ]
+class CompteRendu(Maraude):
+    """ Proxy for Maraude objects.
+        Gives access to related Observation and Rencontre
+    """
+
+    def observations_count(self):
+        return self.rencontres.aggregate(Count("observations"))['observations__count']
+
+    def get_observations(self, order="heure_debut", reverse=False):
+        """ Returns list of all observations related to this instance """
+        observations = []
+        for r in self._iter(order=order, reverse=reverse):
+            observations += r.observations.get_queryset()
+        return list(split_by_12h_blocks(observations))
+
+    def __iter__(self):
+        """ Iterates on related 'rencontres' objects using default ordering """
+        return self._iter()
+
+    def reversed(self, order="heure_debut"):
+        return self._iter(order=order, reverse=True)
+
+    def _iter(self, order="heure_debut", reverse=False):
+        """ Iterator on related 'rencontre' queryset.
+
+            Optionnal :
+            - order : order by this field, default: 'heure_debut'
+            - reversed : reversed ordering, default: False
+        """
+        if reverse:
+            order = "-" + order
+        for rencontre in self.rencontres.get_queryset().order_by(order):
+            yield rencontre
+
+    class Meta:
+        proxy = True
+
+
 
 class FoyerAccueil(Lieu):
     """ Foyer d'hébergement partenaire """
@@ -220,11 +271,12 @@ class Planning(models.Model):
     """
 
     week_day = models.IntegerField(
+                        primary_key=True,
                         choices=WEEKDAYS,
                         )
     horaire = models.TimeField(
                         "Horaire",
-                        choices=Maraude.HORAIRES_CHOICES,
+                        choices=HORAIRES_CHOICES,
                     )
 
     class Meta:

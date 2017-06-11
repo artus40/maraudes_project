@@ -22,7 +22,8 @@
                      }
                  },
                  error: function (xhr, ajaxOptions, thrownError) {
-                     // handle response errors here
+                     console.log("Error with ajax request : ");
+                     console.log(thrownError);
                    }
              });
           });

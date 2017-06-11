@@ -1,0 +1,44 @@
+{% load bootstrap3 %}
+<form action="{% url "statistiques:update" form.instance.pk %}" method="post" id="update-stats-form">{% csrf_token%}
+  <table class="table">
+    <tr>
+      <th colspan="4" class="active">Problématiques</th>
+    </tr>
+    <tr>
+      <th>Psychiatrique</th>
+      <td>{% bootstrap_field form.prob_psychiatrie show_label=False size="small" %}</td>
+      <th>Addiction</th>
+      <td>{% bootstrap_field form.prob_addiction show_label=False size="small" %}</td>
+    </tr>
+    <tr>
+      <th>Administratif</th>
+      <td>{% bootstrap_field form.prob_administratif show_label=False size="small" %}</td>
+      <th>Somatique</th>
+      <td>{% bootstrap_field form.prob_somatique show_label=False size="small" %}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Habitation</th>
+    </tr>
+    <tr>
+      <th>Type</th>
+      <td>{% bootstrap_field form.habitation show_label=False size="small" %}</td>
+      <th>Connu du SIAO</th>
+      <td>{% bootstrap_field form.connu_siao show_label=False size="small" %}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Ressources</th>
+    </tr>
+    <tr>
+      <td colspan="4">{% bootstrap_field form.ressources show_label=False size="small" %}</td>
+    </tr>
+    <tr>
+      <th colspan="4" class="active">Parcours de vie</th>
+    </tr>
+    <tr>
+      <td colspan="2">{% bootstrap_field form.parcours_de_vie show_label=False size="small" %}</td>
+      <th>Lien familial</th>
+      <td>{% bootstrap_field form.lien_familial show_label=False size="small" %}</td>
+    </tr>
+  </table>
+  <input type="submit" id="submit-form" class="hidden"></input>
+</form>

@@ -1,7 +1,0 @@
-{% if maraude.est_terminee %}
-  {% include "compte_rendu/compterendu.html" %}
-{% else %}
-  {% if perms.maraudes.can_add_compterendu %}<a class="btn btn-primary" href="{% url 'maraudes:create' maraude.pk %}">Écrire le compte-rendu</a>
-  {% else %} <p class="alert alert-info">Le compte-rendu n'a pas encore été écrit</p>{% endif %}
-{% endif %}
-

@@ -1,0 +1,12 @@
+{% extends "notes/base.html" %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li><a href="{% url "notes:liste-sujet" %}">Sujets</a></li>
+  <li><a href="{% url "notes:details-sujet" object.pk %}">{{ object }}</a></li>
+  <li>Fusionner vers...</li>
+{% endblock %}
+
+{% block page_content %}
+{% include 'notes/sujet_merge_inner.html' %}
+{% endblock %}
