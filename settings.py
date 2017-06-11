@@ -44,7 +44,7 @@ TEMPLATES[0]['OPTIONS']['context_processors'] += [
     "website.context_processors.website_processor",
     ]
 # Template directories
-TEMPLATES[0]['DIR'] += [
+TEMPLATES[0]['DIRS'] += [
     os.path.join(BASE_DIR, "templates"), # Custom admin templates
     ]
 
