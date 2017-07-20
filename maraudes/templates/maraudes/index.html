@@ -15,24 +15,19 @@
         <h4 class="panel-title">Votre prochaine maraude</h4>
       </div>
       <div class="panel-body">
-      {% if prochaine_maraude %}<p>
-        <span class="glyphicon glyphicon-calendar"></span>
-        <strong>{{ prochaine_maraude.date }} à {{ prochaine_maraude.heure_debut }}
-          avec {% if user.is_superuser %}{{prochaine_maraude.binome}}{%else%}{{prochaine_maraude.referent}}{%endif%}.
-        </strong></p>
-        <hr />
+	    <p>{% if prochaine_maraude %}
+	        <span class="glyphicon glyphicon-calendar"></span>
+	        <strong>{{ prochaine_maraude.date }} à {{ prochaine_maraude.heure_debut }}
+	        avec {% if user == prochaine_maraude.referent %}{{prochaine_maraude.binome}}
+	        	 {% else %}{{prochaine_maraude.referent}}{% endif %}.
+	        </strong>
+	      {% else %}Aucune maraude prévue.{% endif %}</p>
+      </div>
+        {% if derniers_sujets_rencontres %}
+		{% table derniers_sujets_rencontres cols=3 cell_template="maraudes/table_cell_derniers_sujets.html" header="Ces derniers temps..." %}
+        {% endif %}
+    </div>
 
-      {% else %}<p>Aucune maraude prévue.</p>{% endif %}
-      </div>
-    </div>
-{% if derniers_sujets_rencontres %}
-    <div class="panel panel-warning">
-      <div class="panel-heading">
-        <h4 class="panel-title">Ces derniers temps...</h4>
-      </div>
-      {% table derniers_sujets_rencontres cols=3 cell_template="maraudes/table_cell_derniers_sujets.html" %}
-    </div>
-{% endif %}
 {% if user.is_superuser and missing_cr %}
     <div class="panel panel-warning">
       <div class="panel-heading">
