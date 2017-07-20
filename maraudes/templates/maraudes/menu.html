@@ -1,25 +1,31 @@
 {% load navbar %}
-            <ul class="nav nav-pills nav-stacked text-right">
+            <ul class="dropdown-menu">
               <li role="presentation" {% active namespace="maraudes" viewname="index" %}>
-                <a href="{% url "maraudes:index" %}">Tableau de bord&nbsp;
-                  <span class="glyphicon glyphicon-dashboard"></span>
+                <a href="{% url "maraudes:index" %}">
+                  <span class="glyphicon glyphicon-dashboard"></span>&nbsp;
+                  Tableau de bord
                 </a>
               </li>
               <li role="presentation" {% active namespace="maraudes" viewname="create" %}
                                     {% if not prochaine_maraude.date == date %} class="disabled">
-                <a href="#">Compte-rendu&nbsp;
-                  <span class="glyphicon glyphicon-pencil"></span></a>
+                <a href="#">
+                  <span class="glyphicon glyphicon-pencil"></span>&nbsp;
+                  Compte-rendu
+                </a>
               </li> {% else %}>
                 <a href="{% if prochaine_maraude.est_terminee %}
                             {% url 'notes:details-maraude' pk=prochaine_maraude.pk %}
                           {%else%}
                             {% url 'maraudes:create' pk=prochaine_maraude.pk %}
-                          {% endif %}">Compte-rendu&nbsp;
-                  <span class="glyphicon glyphicon-pencil"></span></a>
+                          {% endif %}">
+                  <span class="glyphicon glyphicon-pencil"></span>&nbsp;
+                  Compte-rendu
+                </a>
               </li> {% endif %}
               <li role="presentation" {% active namespace="maraudes" viewname="planning" %}>
-                <a href="{% url "maraudes:planning" %}">Planning&nbsp;
-                  <span class="glyphicon glyphicon-calendar"></span>
+                <a href="{% url "maraudes:planning" %}">
+                  <span class="glyphicon glyphicon-calendar"></span>&nbsp;
+                  Planning
                 </a>
               </li>
             </ul>

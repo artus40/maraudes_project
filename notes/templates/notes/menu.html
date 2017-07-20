@@ -1,13 +1,15 @@
 {% load navbar %}
-                <ul class="nav nav-pills nav-stacked text-right">
-              <li role="presentation" {% active namespace="notes" viewname="liste-sujet" %}>
-                <a href="{% url "notes:liste-sujet" %}">Par sujet&nbsp;
-                  <span class="glyphicon glyphicon-user"></span>
+            <ul class="dropdown-menu">
+              <li {% active namespace="notes" viewname="liste-sujet" %}>
+                <a href="{% url "notes:liste-sujet" %}">
+                  <span class="glyphicon glyphicon-user"></span>&nbsp;
+                  Par sujet
                 </a>
               </li>
-              <li role="presentation" {% active namespace="notes" viewname="liste-maraude" %}>
-                <a href="{% url "notes:liste-maraude" %}">Par maraude&nbsp;
-                  <span class="glyphicon glyphicon-road"></span>
+              <li {% active namespace="notes" viewname="liste-maraude" %}>
+                <a href="{% url "notes:liste-maraude" %}">
+                  <span class="glyphicon glyphicon-road"></span> &nbsp;
+                  Par maraude
                 </a>
               </li>
             </ul>
