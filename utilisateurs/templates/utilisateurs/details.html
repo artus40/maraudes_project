@@ -1,8 +1,22 @@
 {% extends "base.html" %}
-
+{% load bootstrap3 %}
 {% block page_content %}
-<h4 class="page-header">Profil</h4>
-{{ user.first_name }}, {{ user.last_name }}
-
+<div class="col-md-12 col-lg-6">
+<h4 class="page-header">Profil de {{ user.first_name }} {{ user.last_name }}</h4>
+<p>Vous avez participé à {{nbr_maraudes}} maraudes, dont {{nbr_maraudes_annee}} cette année.</p>
+</div>
+<div class="col-md-12 col-lg-6">
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h4 class="panel-header"> Modifier le mot de passe </h4>
+		</div>
+		<table class="table">
+		<form method="POST">
+			{% csrf_token %}
+			{{ password_change_form.as_table }}
+			<tr><td colspan="2" class="text-right"><input type="submit" value="Changer le mot de passe" class="btn btn-primary"></input></td></tr>
+		</form>
+		</table>
+	</div>
+</div>
 {% endblock %}
-
