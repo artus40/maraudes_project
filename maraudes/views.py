@@ -73,7 +73,8 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
 def redirect_to_current_compterendu(request):
     prochaine_maraude = Maraude.objects.get_next_of(request.user)
     current_date = timezone.localtime(timezone.now()).date()
-    if not prochaine_maraude.date == current_date:
+    if (not prochaine_maraude or 
+        not prochaine_maraude.date == current_date):
         return redirect("maraudes:index")
 
     kwargs = {'pk': prochaine_maraude.pk}
