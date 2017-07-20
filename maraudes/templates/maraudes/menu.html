@@ -6,22 +6,12 @@
                   Tableau de bord
                 </a>
               </li>
-              <li role="presentation" {% active namespace="maraudes" viewname="create" %}
-                                    {% if not prochaine_maraude.date == date %} class="disabled">
-                <a href="#">
+              <li role="presentation" {% active namespace="maraudes" viewname="create" %}>
+                <a href="{% url "maraudes:cr-link" %}">
                   <span class="glyphicon glyphicon-pencil"></span>&nbsp;
                   Compte-rendu
                 </a>
-              </li> {% else %}>
-                <a href="{% if prochaine_maraude.est_terminee %}
-                            {% url 'notes:details-maraude' pk=prochaine_maraude.pk %}
-                          {%else%}
-                            {% url 'maraudes:create' pk=prochaine_maraude.pk %}
-                          {% endif %}">
-                  <span class="glyphicon glyphicon-pencil"></span>&nbsp;
-                  Compte-rendu
-                </a>
-              </li> {% endif %}
+              </li>
               <li role="presentation" {% active namespace="maraudes" viewname="planning" %}>
                 <a href="{% url "maraudes:planning" %}">
                   <span class="glyphicon glyphicon-calendar"></span>&nbsp;

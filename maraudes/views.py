@@ -67,8 +67,22 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
         return context
 
 
-
 ## COMPTE-RENDU DE MARAUDE
+
+
+def redirect_to_current_compterendu(request):
+    prochaine_maraude = Maraude.objects.get_next_of(request.user)
+    current_date = timezone.localtime(timezone.now()).date()
+    if not prochaine_maraude.date == current_date:
+        return redirect("maraudes:index")
+
+    kwargs = {'pk': prochaine_maraude.pk}
+    if not prochaine_maraude.est_terminee():
+        return redirect("maraudes:create", **kwargs)
+    else:
+        return redirect("notes:details-maraude", **kwargs)
+
+
 class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
     """ Vue pour la création d'un compte-rendu de maraude """
 
