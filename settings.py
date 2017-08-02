@@ -32,7 +32,7 @@ LOGIN_URL = 'index'
 if DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 else: #TODO: configure a real backend
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
 AUTHENTICATION_BACKENDS = [
     'utilisateurs.backends.CustomUserAuthentication'

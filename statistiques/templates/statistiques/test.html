@@ -1,0 +1,25 @@
+{% extends "statistiques/base.html" %}
+{% load static %}
+
+{% block title %}{{ block.super }} Maraudes{% endblock %}
+
+
+{% block sidebar %}
+  {{ block.super }}
+  <div class="panel panel-primary">
+    <div class="panel-body text-right">
+      {% include "statistiques/filter_form.html" %}
+    </div>
+  </div>
+{% endblock %}
+
+{% block breadcrumbs %}
+  {{ block.super }}
+  <li>Tests</li>
+{% endblock %}
+
+{% block page_content %}
+  {{ par_heure.as_html }}
+  <hr />
+  {{ par_heure_continu.as_html }}
+{% endblock %}

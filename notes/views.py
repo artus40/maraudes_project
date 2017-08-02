@@ -102,9 +102,11 @@ class SujetListView(ListView):
 
 
     def info_completed_filter(qs):
+        COMPLETED_RATIO = 70 # % of total fields completed
+
         excluded_set = set()
         for sujet in qs:
-            if sujet.statistiques.info_completed >= 50:
+            if sujet.statistiques.info_completed >= COMPLETED_RATIO:
                 excluded_set.add(sujet.pk)
 
         return qs.exclude(pk__in=excluded_set)

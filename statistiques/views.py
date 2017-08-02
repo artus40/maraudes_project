@@ -175,6 +175,60 @@ class PieChartView(FilterMixin, generic.TemplateView):
         return context
 
 
+import collections
+
+
+def get_data_table(observations, continuous=False):
+    return_zero = lambda: 0
+    data_table = collections.defaultdict(return_zero)
+
+    for o in observations:
+        heure_debut = datetime.datetime.strptime("%s" % o.rencontre.heure_debut, "%H:%M:%S")
+        if continuous:
+            heure_fin = heure_debut + datetime.timedelta(0, o.rencontre.duree * 60)
+        else:
+            heure_fin = heure_debut
+
+        for heure in range(heure_debut.hour, heure_fin.hour + 1):
+            data_table[heure] += 1
+
+    return data_table
+
+
+
+
+class TestStatsView(FilterMixin, generic.TemplateView):
+    template_name = "statistiques/test.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        observations = self.get_observations_queryset()
+
+        par_heure = get_data_table(observations)
+        context['par_heure'] = gchart.LineChart(
+                SimpleDataSource(
+                    [("Heure", "Nbr de rencontres")] +
+                    [(heure, par_heure[heure]) for heure in sorted(par_heure.keys())]
+                ),
+                options = {
+                    "title": "Nombre de rencontres par heure (démarrée)"
+                }
+            )
+
+        en_continu = get_data_table(observations, continuous=True)
+        context['par_heure_continu'] = gchart.LineChart(
+                SimpleDataSource(
+                    [("Heure", "Nbr de rencontres")] +
+                    [(heure, en_continu[heure]) for heure in sorted(en_continu.keys())]
+                ),
+                options = {
+                    "title": "Nombre de rencontres par heure (en cumulé)"
+                }
+            )
+
+        return context
+
 
 # AjaxMixin
 
