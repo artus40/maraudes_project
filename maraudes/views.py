@@ -17,6 +17,7 @@ from .models import (   Maraude, Maraudeur,
                         CompteRendu,
                         Rencontre, Lieu,
                         Planning,   )
+from .notes import Signalement
 # Forms
 from .forms import (    RencontreForm,
                         ObservationInlineFormSet,
@@ -34,6 +35,31 @@ def derniers_sujets_rencontres():
             sujets.add(obs.sujet)
     return list(sujets)
 
+
+def derniers_sujets_signales():
+    def recent_filter(qs):
+        NUMBER_OF_MONTH_BACKWARDS = 1 # Must be lower than 12 !
+
+        current_date = timezone.localtime(timezone.now()).date()
+        recent_dates = [(current_date.month, current_date.year)]
+
+        for i in range(1, NUMBER_OF_MONTH_BACKWARDS + 1):
+            prev_month, prev_year = current_date.month - i, current_date.year
+            if prev_month <= 0:
+                prev_month += 12
+                prev_year -= 1
+            recent_dates.append(
+                (prev_month, prev_year)
+                )
+
+        # Select recent ones
+        filtered = []
+        for month, year in recent_dates:
+            filtered += list(qs.filter(created_date__year=year, created_date__month=month))
+
+        return filtered
+
+    return recent_filter(Signalement.objects.all())
 
 
 class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
@@ -58,6 +84,7 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
         context = super().get_context_data(**kwargs)
         context['prochaine_maraude'] = Maraude.objects.get_next_of(self.request.user)
         context['derniers_sujets_rencontres'] = derniers_sujets_rencontres()
+        context['derniers_sujets_signales'] = derniers_sujets_signales()
 
         if self.request.user.is_superuser:
             context['missing_cr'] = CompteRendu.objects.get_queryset().filter(

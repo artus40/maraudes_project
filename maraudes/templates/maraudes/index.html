@@ -26,6 +26,9 @@
         {% if derniers_sujets_rencontres %}
 		{% table derniers_sujets_rencontres cols=3 cell_template="maraudes/table_cell_derniers_sujets.html" header="Ces derniers temps..." %}
         {% endif %}
+        {% if derniers_sujets_signales %}
+        {% table derniers_sujets_signales cols=3 cell_template="maraudes/table_cell_derniers_signalements.html" header="Signalements récents" %}
+        {% endif %}
     </div>
 
 {% if user.is_superuser and missing_cr %}
