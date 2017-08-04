@@ -50,9 +50,10 @@
 {% endblock %}
 
 {% block sidebar %}
-<div id="content-related">
-    <div class="module" id="recent-actions-module">
-        <h2>{% trans 'Recent actions' %}</h2>
+<div class="panel panel-default" id="content-related">
+    <div class="panel-heading"><h2 class="panel-title">{% trans 'Recent actions' %}</h2></div>
+
+    <div class="module panel-body" id="recent-actions-module">
         <h3>{% trans 'My actions' %}</h3>
             {% load log %}
             {% get_admin_log 10 as admin_log for_user user %}
