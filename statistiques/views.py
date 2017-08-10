@@ -175,58 +175,86 @@ class PieChartView(FilterMixin, generic.TemplateView):
         return context
 
 
-import collections
 
+class FrequentationStatsView(FilterMixin, generic.TemplateView):
+    template_name = "statistiques/frequentation.html"
 
-def get_data_table(observations, continuous=False):
-    return_zero = lambda: 0
-    data_table = collections.defaultdict(return_zero)
+    @staticmethod
+    def calculer_frequentation_par_quart_heure(observations, continu=False):
+        """ Calcule le nombre d'observations, de 16h à 24h, par tranche de 15min.
+            L'algorithme est *très peu* efficace mais simple à comprendre : on calcule pour
+            chaque tranche les observations qui y sont contenues.
+            On peut calculer seulement les observations démarrées (continu = False) ou considérer
+            que l'observation est contenue dans un intervalle sur toute sa durée (continu = True).
 
-    for o in observations:
-        heure_debut = datetime.datetime.strptime("%s" % o.rencontre.heure_debut, "%H:%M:%S")
-        if continuous:
-            heure_fin = heure_debut + datetime.timedelta(0, o.rencontre.duree * 60)
-        else:
-            heure_fin = heure_debut
+        """
+        data = dict()
 
-        for heure in range(heure_debut.hour, heure_fin.hour + 1):
-            data_table[heure] += 1
+        def genere_filtre_pour(heure, indice):
+            """ Renvoie une fonction qui renvoie True si l'intervalle donné contient l'observation, c'est-à-dire :
+            1. Elle démarre/finit dans l'intervalle.
+            2. Elle démarre avant et fini après l'intervalle.
+            """
+            debut_intervalle = indice * 15
+            fin_intervalle = debut_intervalle + 15
+            rng = range(debut_intervalle, fin_intervalle)
 
-    return data_table
+            def est_contenue(observation):
+                """ Vérifie l'observation est contenue dans l'intervalle """
+                debut = datetime.datetime.strptime(
+                        "%s" % observation.rencontre.heure_debut, 
+                        "%H:%M:%S"
+                        )
+                fin = debut + datetime.timedelta(0, observation.rencontre.duree * 60)
 
+                # L'observation démarre dans l'intervalle
+                if (debut.hour == heure and debut.minute in rng):
+                    return True
+                # L'observation finit dans l'intervalle, seulement si continu est True
+                elif continu and (fin.hour == heure and fin.minute in rng):
+                    return True
+                # L'observation démarre avant ET finit après l'intervalle,
+                # seulement si continu est True
+                elif (  continu 
+                    and (debut.hour <= heure and debut.minute <= debut_intervalle) 
+                    and (fin.hour >= heure and fin.minute >= fin_intervalle)):
+                    return True
+                
+                else:
+                    return False
 
+            return est_contenue
 
+        for h in range(16, 24):
+            for i in range(4):
 
-class TestStatsView(FilterMixin, generic.TemplateView):
-    template_name = "statistiques/test.html"
+                filtre = genere_filtre_pour(heure=h, indice=i)
+                contenus = list(filter(filtre, observations))
+
+                key = datetime.time(h, i * 15)
+                print("Resultat", h, ":", i*15, len(contenus))
+                data[key] = len(contenus)
+
+        return data
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         observations = self.get_observations_queryset()
 
-        par_heure = get_data_table(observations)
-        context['par_heure'] = gchart.LineChart(
+        par_heure = self.calculer_frequentation_par_quart_heure(observations, continu=False)
+        en_continu = self.calculer_frequentation_par_quart_heure(observations, continu=True)
+
+        context['par_heure'] = gchart.AreaChart(
                 SimpleDataSource(
-                    [("Heure", "Nbr de rencontres")] +
-                    [(heure, par_heure[heure]) for heure in sorted(par_heure.keys())]
+                    [("Heure", "Rencontres démarrées", "Au total (démarré + en cours)")] +
+                    [(heure, par_heure[heure], en_continu[heure]) for heure in sorted(par_heure.keys())]
                 ),
                 options = {
-                    "title": "Nombre de rencontres par heure (démarrée)"
+                    "title": "Fréquentation de la maraude en fonction de l'heure (par quart d'heure)"
                 }
             )
-
-        en_continu = get_data_table(observations, continuous=True)
-        context['par_heure_continu'] = gchart.LineChart(
-                SimpleDataSource(
-                    [("Heure", "Nbr de rencontres")] +
-                    [(heure, en_continu[heure]) for heure in sorted(en_continu.keys())]
-                ),
-                options = {
-                    "title": "Nombre de rencontres par heure (en cumulé)"
-                }
-            )
-
         return context
 
 

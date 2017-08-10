@@ -15,11 +15,9 @@
 
 {% block breadcrumbs %}
   {{ block.super }}
-  <li>Tests</li>
+  <li>Fréquentation</li>
 {% endblock %}
 
 {% block page_content %}
   {{ par_heure.as_html }}
-  <hr />
-  {{ par_heure_continu.as_html }}
 {% endblock %}

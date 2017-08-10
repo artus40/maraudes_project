@@ -10,5 +10,10 @@
         <span class="glyphicon glyphicon-adjust"></span>
       </a>
     </li>
+    <li role="presentation" {% active namespace="statistiques" viewname="frequentation" %}>
+      <a href="{% url "statistiques:frequentation" %}?year={{year|default:0}}{% if month %}&month={{month}}{% endif %}">Fréquentation&nbsp;
+        <span class="glyphicon glyphicon-adjust"></span>
+      </a>
+    </li>
   </ul>
   <hr />
