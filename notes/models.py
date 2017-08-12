@@ -1,7 +1,6 @@
 import logging
 
 from django.utils import timezone
-from django.utils.html import format_html
 from django.core.exceptions import ValidationError
 from django.urls import reverse
 
@@ -37,8 +36,6 @@ class Sujet(models.Model):
                                 blank=True, null=True
                                 )
 
-    # referent = models.ForeignKey("utilisateurs.Professionnel", related_name="suivis")
-
     def __str__(self):
         string = '%s ' % self.genre
         if self.nom:    string += '%s ' % self.nom
@@ -56,7 +53,7 @@ class Sujet(models.Model):
         if not self.id:
             from statistiques.models import FicheStatistique
             super().save(*args, **kwargs)
-            fiche = FicheStatistique.objects.create(sujet=self)
+            FicheStatistique.objects.create(sujet=self)
         else:
             return super().save(*args, **kwargs)
 
@@ -65,8 +62,7 @@ class Sujet(models.Model):
         ordering = ('surnom', 'nom', 'prenom')
 
     def get_absolute_url(self):
-        return reverse("notes:details-sujet", kwargs={"pk": self.pk })
-
+        return reverse("notes:details-sujet", kwargs={"pk": self.pk})
 
 
 class Note(models.Model):
@@ -108,7 +104,7 @@ class Note(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return "<%s: %s>" % (self.child_class.__qualname__, self.sujet)
+        return "<%s: %s>" % (self.child_class, self.sujet)
 
     @classmethod
     def __str__(cls):
@@ -143,7 +139,7 @@ class Note(models.Model):
         """
         self._child_instance = self
         self._child_class = self.__class__
-        if self._meta.get_parent_list(): # If self is actually child instance
+        if self._meta.get_parent_list():  # If self is actually child instance
             return
         for f in self._meta.get_fields():
             if f.is_relation and f.one_to_one:

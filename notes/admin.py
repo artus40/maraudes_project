@@ -3,6 +3,7 @@ from django.contrib import admin
 from .models import *
 # Register your models here.
 
+
 @admin.register(Sujet)
 class SujetAdmin(admin.ModelAdmin):
 
@@ -16,12 +17,11 @@ class SujetAdmin(admin.ModelAdmin):
 class NoteAdmin(admin.ModelAdmin):
 
     fieldsets = [
-        ('Contexte',
-            {'fields': ['created_by', ('created_date', 'created_time')]
-             }
-         ),
-         ('Note',
-          {'fields': ['sujet', 'text']})
+        ('Contexte', {
+                        'fields': ['created_by', ('created_date', 'created_time')]
+                        }),
+        ('Note', {
+                        'fields': ['sujet', 'text']}),
     ]
 
     list_display = ['created_date', 'sujet', 'child_class', 'text']

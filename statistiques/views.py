@@ -232,7 +232,6 @@ class FrequentationStatsView(FilterMixin, generic.TemplateView):
                 contenus = list(filter(filtre, observations))
 
                 key = datetime.time(h, i * 15)
-                print("Resultat", h, ":", i*15, len(contenus))
                 data[key] = len(contenus)
 
         return data

@@ -13,7 +13,7 @@ PARCOURS_DE_VIE_CHOICES = (
     (PARCOURS_INSTITUTIONNEL, "Parcours institutionnel"),
     )
 
-#Item: Type d'habitation
+# Item: Type d'habitation
 HABITATION_SANS = "Sans Abri"
 HABITATION_LOGEMENT = "Logement"
 HABITATION_TIERS = "Hébergement"
@@ -26,7 +26,7 @@ HABITATION_CHOICES = (
     (HABITATION_MAL_LOGEMENT, "Mal logé"),
     )
 
-#Item: Ressources
+# Item: Ressources
 RESSOURCES_RSA = "RSA"
 RESSOURCES_AAH = "AAH"
 RESSOURCES_POLE_EMPLOI = "Pôle Emploi"
@@ -42,15 +42,14 @@ RESSOURCES_CHOICES = (
     )
 
 
-
 class FicheStatistique(models.Model):
 
     sujet = models.OneToOneField('notes.Sujet',
-                          on_delete=models.CASCADE,
-                          primary_key=True,
-                          related_name="statistiques")
+                                 on_delete=models.CASCADE,
+                                 primary_key=True,
+                                 related_name="statistiques")
 
-# Logement
+    # Logement
     habitation = models.CharField("Type d'habitat", max_length=64,
                                   choices=HABITATION_CHOICES,
                                   default=NSP)
@@ -81,8 +80,7 @@ class FicheStatistique(models.Model):
                     'connu_siao', 'lien_familial', 'parcours_de_vie')
         completed = 0
         for f in observed:
-            if getattr(self, f) == None or getattr(self, f) == NSP:
-                continue
-            else:
+            if getattr(self, f) not in (None, NSP):
                 completed += 1
-        return int(completed / len(observed) * 100)
+        percentage = int(completed / len(observed) * 100)
+        return percentage
