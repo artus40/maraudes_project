@@ -15,7 +15,7 @@ from .forms import StatistiquesForm, SelectRangeForm
 from .charts import PieWrapper, ColumnWrapper
 
 from maraudes.notes import Observation
-from maraudes.models import Maraude
+from maraudes.models import Maraude, HORAIRES_APRESMIDI, HORAIRES_SOIREE
 from notes.models import Sujet
 
 ###
@@ -62,8 +62,10 @@ class FilterMixin(generic.edit.FormMixin):
     def get_fichestatistiques_queryset(self):
         return FicheStatistique.objects.filter(pk__in=self.get_observations_queryset().values_list('sujet'))
 
-    def get_sujets_queryset(self):
-        return Sujet.objects.filter(pk__in=self.get_observations_queryset().values_list('sujet'))
+    def get_sujets_queryset(self, selection=None):
+        if not selection:
+            selection = self.get_observations_queryset()
+        return Sujet.objects.filter(pk__in=selection.values_list('sujet'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -85,50 +87,36 @@ class DashboardView(FilterMixin, generic.TemplateView):
 
         context['nbr_maraudes'] = maraudes.count() or NO_DATA
         context['nbr_maraudes_jour'] = maraudes.filter(
-                                                    heure_debut=datetime.time(16,00)
+                                                    heure_debut=HORAIRES_APRESMIDI
                                                 ).count() or NO_DATA
+        context['nbr_maraudes_nuit'] = maraudes.filter(
+                                                    heure_debut=HORAIRES_SOIREE
+                                                ).count() or NO_DATA
+
         context['nbr_rencontres'] = rencontres.count() or NO_DATA
-        try:
-            context['moy_rencontres'] = int(context['nbr_rencontres'] / context['nbr_maraudes'])
-        except (ZeroDivisionError, TypeError):
-            context['moy_rencontres'] = NO_DATA
-
-        if self.year and not self.month: #Show rencontres_par_mois graph
-            par_mois = rencontres.order_by().annotate(
-                                            mois=ExtractMonth('created_date')
-                                        ).values(
-                                            'mois'
-                                        ).annotate(
-                                            nbr=Count('pk')
+        rencontres_jour = rencontres.filter(
+                                        rencontre__maraude__heure_debut=HORAIRES_APRESMIDI
                                         )
-            context['rencontres_par_mois'] = ColumnWrapper(
-                SimpleDataSource(
-                    [("Mois", "Rencontres")] +
-                    [(nom_mois[item['mois']], item['nbr']) for item in par_mois]
-                ),
-                options = {
-                    "title": "Nombre de rencontres par mois"
-                }
-            )
+        rencontres_nuit = rencontres.filter(
+                                        rencontre__maraude__heure_debut=HORAIRES_SOIREE
+                                        )
+        context['nbr_rencontres_jour'] = rencontres_jour.count() or NO_DATA
+        context['nbr_rencontres_nuit'] = rencontres_nuit.count() or NO_DATA
 
-        # Graph: Fréquence de rencontres par sujet
+        for r, m in [
+                ('nbr_rencontres', 'nbr_maraudes'),
+                ('nbr_rencontres_nuit', 'nbr_maraudes_nuit'),
+                ('nbr_rencontres_jour', 'nbr_maraudes_jour'),
+        ]:
+            try:
+                context['%s_moyenne' % r] = int(context[r] / context[m])
+            except (ZeroDivisionError, TypeError):
+                context['%s_moyenne' % r] = NO_DATA
 
-        nbr_rencontres = rencontres.values('sujet').annotate(nbr=Count('pk')).order_by()
-        context['nbr_sujets_rencontres'] = nbr_rencontres.count()
+        context['nbr_sujets'] = self.get_sujets_queryset(selection=rencontres).count()
+        context['nbr_sujets_jour'] = self.get_sujets_queryset(selection=rencontres_jour).count()
+        context['nbr_sujets_nuit'] = self.get_sujets_queryset(selection=rencontres_nuit).count()
 
-
-        categories = (
-            ('Rencontre unique', (1,)),
-            ('Entre 2 et 5 rencontres', range(2,6)),
-            ('Entre 6 et 20 rencontres', range(6,20)),
-            ('Plus de 20 rencontres', range(20,999)),
-        )
-        get_count_for_range = lambda rg: nbr_rencontres.filter(nbr__in=rg).count()
-        context['graph_rencontres'] = PieWrapper(
-                data= [('Type de rencontre', 'Nombre de sujets')] +
-                      [(label, get_count_for_range(rg)) for label, rg in categories],
-                title= 'Fréquence de rencontres'
-            )
         return context
 
 
@@ -245,7 +233,7 @@ class FrequentationStatsView(FilterMixin, generic.TemplateView):
         par_heure = self.calculer_frequentation_par_quart_heure(observations, continu=False)
         en_continu = self.calculer_frequentation_par_quart_heure(observations, continu=True)
 
-        context['par_heure'] = gchart.AreaChart(
+        context['rencontres_par_heure'] = gchart.AreaChart(
                 SimpleDataSource(
                     [("Heure", "Rencontres démarrées", "Au total (démarré + en cours)")] +
                     [(heure, par_heure[heure], en_continu[heure]) for heure in sorted(par_heure.keys())]
@@ -254,6 +242,41 @@ class FrequentationStatsView(FilterMixin, generic.TemplateView):
                     "title": "Fréquentation de la maraude en fonction de l'heure (par quart d'heure)"
                 }
             )
+
+        par_mois = observations.order_by().annotate(
+            mois=ExtractMonth('created_date')
+        ).values(
+            'mois'
+        ).annotate(
+            nbr=Count('pk')
+        )
+        context['rencontres_par_mois'] = ColumnWrapper(
+            SimpleDataSource(
+                [("Mois", "Rencontres")] +
+                [(nom_mois[item['mois']], item['nbr']) for item in par_mois]
+            ),
+            options = {
+                "title": "Nombre de rencontres par mois"
+            }
+        )
+
+        # Graph: Fréquence de rencontres par sujet
+        nbr_rencontres = observations.values('sujet').annotate(nbr=Count('pk')).order_by()
+        context['rencontres_par_sujet'] = nbr_rencontres.count()
+
+        categories = (
+            ('Rencontre unique', (1,)),
+            ('Entre 2 et 5 rencontres', range(2,6)),
+            ('Entre 6 et 20 rencontres', range(6,20)),
+            ('Plus de 20 rencontres', range(20,999)),
+        )
+        get_count_for_range = lambda rg: nbr_rencontres.filter(nbr__in=rg).count()
+        context['rencontres_par_sujet'] = PieWrapper(
+                data= [('Type de rencontre', 'Nombre de sujets')] +
+                      [(label, get_count_for_range(rg)) for label, rg in categories],
+                title= 'Fréquence de rencontres'
+            )
+
         return context
 
 

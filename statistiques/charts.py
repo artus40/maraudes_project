@@ -34,15 +34,15 @@ class PieWrapper(gchart.PieChart):
             else:
                 raise ValueError("Could not guess labels for", field)
 
-            data = ([(field.name, 'count')] + # Headers
+            data = ([(field.name, 'count')] +  # Headers
                 [(labels[item[field.name]],
                   item['nbr']) for item in queryset.values(
-                                                    field.name
-                                                ).annotate(
-                                                    nbr=Count('pk')
-                                                ).order_by()
-                if (not null_values
-                    or item[field] not in null_values)
+                                                            field.name
+                                                        ).annotate(
+                                                            nbr=Count('pk')
+                                                        ).order_by()
+                    if (not null_values
+                        or item[field] not in null_values)
                 ])
 
         super().__init__(

@@ -19,5 +19,9 @@
 {% endblock %}
 
 {% block page_content %}
-  {{ par_heure.as_html }}
+  {{ rencontres_par_heure.as_html }}
+  {{ rencontres_par_mois.as_html }}
+  <hr />
+  {{ rencontres_par_sujet.as_html }}
+
 {% endblock %}

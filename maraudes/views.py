@@ -2,8 +2,6 @@ import datetime
 import calendar
 import logging
 
-logger = logging.getLogger(__name__)
-
 from django.utils import timezone
 from django.shortcuts import redirect, reverse
 from django.views import generic
@@ -13,18 +11,20 @@ from django.contrib import messages
 
 from utilisateurs.mixins import MaraudeurMixin
 
-from .models import (   Maraude, Maraudeur,
-                        CompteRendu,
-                        Rencontre, Lieu,
-                        Planning,   )
+from .models import (Maraude, Maraudeur,
+                     CompteRendu,
+                     Rencontre, Lieu,
+                     Planning,)
 from .notes import Signalement
 # Forms
-from .forms import (    RencontreForm,
-                        ObservationInlineFormSet,
-                        MaraudeHiddenDateForm, MonthSelectForm,
-                        AppelForm, SignalementForm,
-                        SendMailForm   )
+from .forms import (RencontreForm,
+                    ObservationInlineFormSet,
+                    MaraudeHiddenDateForm, MonthSelectForm,
+                    AppelForm, SignalementForm,
+                    SendMailForm)
 from notes.mixins import NoteFormMixin
+
+logger = logging.getLogger(__name__)
 
 
 def derniers_sujets_rencontres():
