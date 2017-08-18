@@ -6,13 +6,13 @@
       </a>
     </li>
     <li role="presentation" {% active namespace="statistiques" viewname="pies" %}>
-      <a href="{% url "statistiques:pies" %}?year={{year|default:0}}{% if month %}&month={{month}}{% endif %}">Typologie du public&nbsp;
-        <span class="glyphicon glyphicon-adjust"></span>
+      <a href="{% url "statistiques:pies" %}?year={{year|default:0}}{% if month %}&month={{month}}{% endif %}">Typologie&nbsp;
+        <span class="glyphicon glyphicon-user"></span>
       </a>
     </li>
     <li role="presentation" {% active namespace="statistiques" viewname="frequentation" %}>
       <a href="{% url "statistiques:frequentation" %}?year={{year|default:0}}{% if month %}&month={{month}}{% endif %}">Fréquentation&nbsp;
-        <span class="glyphicon glyphicon-adjust"></span>
+        <span class="glyphicon glyphicon-stats"></span>
       </a>
     </li>
   </ul>

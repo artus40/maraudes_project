@@ -1,9 +1,8 @@
 import datetime
 
-from django.shortcuts import render, redirect
-from django.contrib import messages
+from django.shortcuts import redirect
 from django.views import generic
-from django.db.models import (Field, CharField, NullBooleanField,
+from django.db.models import (CharField, NullBooleanField,
                               Count,
                               )
 from django.db.models.functions.datetime import ExtractMonth
@@ -20,8 +19,8 @@ from notes.models import Sujet
 
 ###
 
-
-nom_mois = {
+NO_DATA = "Aucune donnée"
+NOM_MOIS = {
     1: "Janvier",
     2: "Février",
     3: "Mars",
@@ -40,13 +39,22 @@ nom_mois = {
 class FilterMixin(generic.edit.FormMixin):
 
     form_class = SelectRangeForm
+    request = None
+    year = None
+    month = None
 
     def get_initial(self):
-        return {'month': self.request.GET.get('month', 0), 'year': self.request.GET.get('year', 0) }
+        return {
+                'month': self.request.GET.get('month', 0),
+                'year': self.request.GET.get('year', 0),
+                }
 
-    def get(self, *args, **kwargs):
-        self.year = int(self.request.GET.get('year', 0))
-        self.month = int(self.request.GET.get('month', 0))
+    def parse_args(self, request):
+        self.year = int(request.GET.get('year', 0))
+        self.month = int(request.GET.get('month', 0))
+
+    def get(self, request, *args, **kwargs):
+        self.parse_args(request)
         return super().get(self, *args, **kwargs)
 
     def _filters(self, prefix):
@@ -74,7 +82,27 @@ class FilterMixin(generic.edit.FormMixin):
         return context
 
 
-NO_DATA = "Aucune donnée"
+class MultipleChartsView(FilterMixin, generic.TemplateView):
+
+    template_name = "statistiques/multiple_charts.html"
+    page_title = None
+
+    def get_queryset(self):
+        raise NotImplementedError("Subclass must implement this method")
+
+    def get_graphs(self, queryset):
+        raise NotImplementedError("Subclasses must implement this method.")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        queryset = self.get_queryset()
+        context['page_title'] = str(self.page_title)
+        context['queryset_count'] = queryset.count()
+        context['graphs'] = [
+            (title, graph) for title, graph in self.get_graphs(queryset)
+        ]
+        return context
+
 
 class DashboardView(FilterMixin, generic.TemplateView):
     template_name = "statistiques/index.html"
@@ -120,11 +148,13 @@ class DashboardView(FilterMixin, generic.TemplateView):
         return context
 
 
+class PieChartView(MultipleChartsView):
+    page_title = "Typologie"
 
-class PieChartView(FilterMixin, generic.TemplateView):
-    template_name = "statistiques/typologie.html"
+    def get_queryset(self):
+        return self.get_fichestatistiques_queryset()
 
-    def get_graphs(self):
+    def get_graphs(self, queryset):
         sujets = self.get_sujets_queryset()
         # Insertion des champs 'âge' et 'genre' du modèle notes.Sujet
         for field in Sujet._meta.fields:
@@ -150,22 +180,13 @@ class PieChartView(FilterMixin, generic.TemplateView):
 
         # Puis des champs du modèle statistiques.FicheStatistique
         # dans leur ordre de déclaration
-        queryset = self.get_fichestatistiques_queryset()
         for field in FicheStatistique._meta.fields:
             if field.__class__ in (NullBooleanField, CharField):
                 yield str(field.verbose_name), PieWrapper(queryset, field)
 
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['graphs'] = [(title, graph) for title, graph in self.get_graphs()]
-        context['queryset'] = self.get_fichestatistiques_queryset()
-        return context
-
-
-
-class FrequentationStatsView(FilterMixin, generic.TemplateView):
-    template_name = "statistiques/frequentation.html"
+class FrequentationStatsView(MultipleChartsView):
+    page_title = "Fréquentation"
 
     @staticmethod
     def calculer_frequentation_par_quart_heure(observations, continu=False):
@@ -207,7 +228,6 @@ class FrequentationStatsView(FilterMixin, generic.TemplateView):
                     and (debut.hour <= heure and debut.minute <= debut_intervalle) 
                     and (fin.hour >= heure and fin.minute >= fin_intervalle)):
                     return True
-                
                 else:
                     return False
 
@@ -224,64 +244,64 @@ class FrequentationStatsView(FilterMixin, generic.TemplateView):
 
         return data
 
+    def get_queryset(self):
+        return self.get_observations_queryset()
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
+    def get_graphs(self, queryset):
+        graphs = []
+        # Nombre de rencontres en fonction de l'heure
+        par_heure = self.calculer_frequentation_par_quart_heure(queryset, continu=False)
+        en_continu = self.calculer_frequentation_par_quart_heure(queryset, continu=True)
+        graphs.append(("Par heure", gchart.AreaChart(
+            SimpleDataSource(
+                [("Heure", "Rencontres démarrées", "Au total (démarré + en cours)")] +
+                [(heure, par_heure[heure], en_continu[heure]) for heure in sorted(par_heure.keys())]
+            ),
+            options={
+                "title": "Fréquentation de la maraude en fonction de l'heure (par quart d'heure)"
+            }
+        )))
 
-        observations = self.get_observations_queryset()
-
-        par_heure = self.calculer_frequentation_par_quart_heure(observations, continu=False)
-        en_continu = self.calculer_frequentation_par_quart_heure(observations, continu=True)
-
-        context['rencontres_par_heure'] = gchart.AreaChart(
-                SimpleDataSource(
-                    [("Heure", "Rencontres démarrées", "Au total (démarré + en cours)")] +
-                    [(heure, par_heure[heure], en_continu[heure]) for heure in sorted(par_heure.keys())]
-                ),
-                options = {
-                    "title": "Fréquentation de la maraude en fonction de l'heure (par quart d'heure)"
-                }
-            )
-
-        par_mois = observations.order_by().annotate(
-            mois=ExtractMonth('created_date')
-        ).values(
-            'mois'
-        ).annotate(
-            nbr=Count('pk')
-        )
-        context['rencontres_par_mois'] = ColumnWrapper(
+        # Nombre de rencontres en fonction du mois
+        par_mois = queryset.annotate(
+                        mois=ExtractMonth('created_date')
+                    ).values(
+                        'mois'
+                    ).annotate(
+                        nbr=Count('pk')
+                    ).order_by()
+        graphs.append(("Par mois", ColumnWrapper(
             SimpleDataSource(
                 [("Mois", "Rencontres")] +
-                [(nom_mois[item['mois']], item['nbr']) for item in par_mois]
+                [(NOM_MOIS[item['mois']], item['nbr']) for item in par_mois]
             ),
-            options = {
+            options={
                 "title": "Nombre de rencontres par mois"
             }
-        )
+        )))
 
         # Graph: Fréquence de rencontres par sujet
-        nbr_rencontres = observations.values('sujet').annotate(nbr=Count('pk')).order_by()
-        context['rencontres_par_sujet'] = nbr_rencontres.count()
-
+        nbr_rencontres = queryset.values('sujet').annotate(nbr=Count('pk')).order_by()
         categories = (
             ('Rencontre unique', (1,)),
-            ('Entre 2 et 5 rencontres', range(2,6)),
-            ('Entre 6 et 20 rencontres', range(6,20)),
-            ('Plus de 20 rencontres', range(20,999)),
+            ('Entre 2 et 5 rencontres', range(2, 6)),
+            ('Entre 6 et 20 rencontres', range(6, 20)),
+            ('Plus de 20 rencontres', range(20, 999)),
         )
         get_count_for_range = lambda rg: nbr_rencontres.filter(nbr__in=rg).count()
-        context['rencontres_par_sujet'] = PieWrapper(
-                data= [('Type de rencontre', 'Nombre de sujets')] +
-                      [(label, get_count_for_range(rg)) for label, rg in categories],
-                title= 'Fréquence de rencontres'
-            )
+        graphs.append(("Par sujet", PieWrapper(
+            data=[('Type de rencontre', 'Nombre de sujets')] +
+                 [(label, get_count_for_range(rg)) for label, rg in categories],
+            title='Fréquence de rencontres'
+        )))
 
-        return context
+        # Rencontres par lieu
+        # TODO: More customizable way of categorizing "Lieu"
+
+        return graphs
 
 
 # AjaxMixin
-
 class AjaxOrRedirectMixin:
     """ For view that should be retrieved by Ajax only. If not,
         redirects to the primary view where these are displayed """
@@ -293,12 +313,10 @@ class AjaxOrRedirectMixin:
         return super().get(*args, **kwargs)
 
 
-
 class StatistiquesDetailsView(AjaxOrRedirectMixin, generic.DetailView):
 
     model = FicheStatistique
     template_name = "statistiques/fiche_stats_details.html"
-
 
 
 class StatistiquesUpdateView(AjaxOrRedirectMixin, generic.UpdateView):

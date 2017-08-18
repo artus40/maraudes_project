@@ -1,0 +1,43 @@
+{% extends "statistiques/base.html" %}
+
+{% block title %}{{block.super}} {{page_title}}{% endblock %}
+
+{% block breadcrumbs %}{{block.super}}<li>{{page_title}}</li>{% endblock %}
+
+{% block sidebar %}
+  {{ block.super }}
+  <div class="panel panel-primary">
+    <div class="panel-body text-right">
+      {% include "statistiques/filter_form.html" %}
+      <hr />
+      <p>Échantillon : {{ queryset_count }} objets</p>
+    </div>
+  </div>
+{% endblock %}
+
+{% block page_content %}
+  <script type="text/javascript">
+    function hideAll() {
+      {% for _, graph in graphs %}{% with graph.get_html_id as id %}
+      $("#tab-{{id}}").attr("class", "");
+      $("#wrapper-{{id}}").hide();
+      {% endwith %}{% endfor %}
+    }
+
+    function showGraph(id) {
+      hideAll();
+      $("#tab-" + id).attr("class", "active");
+      $("#wrapper-" + id).show();
+    }
+  </script>
+ <ul class="nav nav-tabs">
+  {% for title, graph in graphs %}<li role="presentation" id="tab-{{graph.get_html_id}}"><a href="#" onclick="showGraph('{{graph.get_html_id}}');">{{ title }}</a></li>{% endfor %}
+ </ul>
+
+  {% for title, graph in graphs %}
+    <div class="row text-center" id="wrapper-{{ graph.get_html_id}}">
+    {{ graph.as_html }}
+    </div>
+  {% endfor %}
+
+{% endblock %}
