@@ -6,6 +6,7 @@
 
 {% block sidebar %}
   {{ block.super }}
+  <hr />
   <div class="panel panel-primary">
     <div class="panel-body text-right">
       {% include "statistiques/filter_form.html" %}
@@ -19,22 +20,5 @@
 {% endblock %}
 
 {% block page_content %}
-
-
-<div class="col-lg-8 text-right">
-  <h3 class="page-header">Données générales</h3>
-  <table class="table table-bordered">
-    <tr><th>...</th><th>Maraudes</th><th>Nombre de rencontres <span class="badge">moyenne par maraude</span></th><th>Personnes</th></tr>
-    <tr><th>Total</th><td>{{nbr_maraudes}}</td><td>{{nbr_rencontres}} <span class="badge">{{nbr_rencontres_moyenne }}</span></td><td>{{nbr_sujets}}</td></tr>
-    <tr><th>Soirée</th><td>{{nbr_maraudes_nuit}}</td><td>{{nbr_rencontres_nuit}} <span class="badge">{{nbr_rencontres_nuit_moyenne }}</span></td><td>{{nbr_sujets_nuit}}</td></tr>
-    <tr><th>Journée</th><td>{{nbr_maraudes_jour}}</td><td>{{nbr_rencontres_jour}} <span class="badge">{{nbr_rencontres_jour_moyenne }}</span></td><td>{{nbr_sujets_jour}}</td></tr>
-  </table>
-</div>
-<div class="col-lg-4">
-  <div class="alert alert-info">
-    <p>Voici les données permettant une analyse statistiques des maraudes.</p>
-    <p>Vous pouvez sélectionner une période particulière ou l'ensemble des données</p>
-    <p>Les données sont réparties en trois catégories, accessibles par le menu sur la gauche</p>
-  </div>
-</div>
+  {{ chart.as_html }}
 {% endblock %}

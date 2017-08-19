@@ -3,5 +3,6 @@
 <h4>Période</h4>
   <form action="" method="get">
     {% bootstrap_form form layout="inline" %}
+    <input type="hidden" name="graph" value="{{active}}" />
     {% bootstrap_button "Ok" button_type="submit" %}
   </form>

@@ -32,11 +32,4 @@ def get_year_range():
 
 class SelectRangeForm(forms.Form):
 
-    year = forms.ChoiceField(label="Année", choices=[(0, 'Toutes')] + [(i, str(i)) for i in get_year_range()])
-    month = forms.ChoiceField(label="Mois",
-                    choices=[(0, 'Tous'),
-                        (1, 'Janvier'), (2, 'Février'), (3, 'Mars'), (4, 'Avril'),
-                        (5, 'Mai'), (6, 'Juin'), (7, 'Juillet'), (8, 'Août'),
-                        (9, 'Septembre'),(10, 'Octobre'),(11, 'Novembre'),(12, 'Décembre')
-                    ],
-                )
+    period = forms.ChoiceField(label="Année", choices=[(0, 'Tout')] + [(i, str(i)) for i in get_year_range()])
