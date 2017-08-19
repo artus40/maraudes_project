@@ -148,7 +148,7 @@ class FrequentationChartsView(MultipleChartsView):
 
 
 # AjaxMixin
-class AjaxOrRedirectMixin(generic.DetailView):
+class AjaxOrRedirectMixin(object):
     """ For view that should be retrieved by Ajax only. If not,
         redirects to the primary view where these are displayed """
 
@@ -159,13 +159,13 @@ class AjaxOrRedirectMixin(generic.DetailView):
         return super().get(*args, **kwargs)
 
 
-class StatistiquesDetailsView(AjaxOrRedirectMixin):
+class StatistiquesDetailsView(AjaxOrRedirectMixin, generic.DetailView):
 
     model = FicheStatistique
     template_name = "statistiques/fiche_stats_details.html"
 
 
-class StatistiquesUpdateView(AjaxOrRedirectMixin):
+class StatistiquesUpdateView(AjaxOrRedirectMixin, generic.UpdateView):
 
     model = FicheStatistique
     form_class = StatistiquesForm
