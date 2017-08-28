@@ -1,11 +1,11 @@
 {% load i18n admin_urls bootstrap3 %}
 <div class="submit-row well">
-{% if show_save %}<input type="submit" value="{% trans 'Save' %}" class="default" name="_save" />{% endif %}
+{% if show_save %}<button type="submit" class="btn btn-primary" name="_save">{% bootstrap_icon "save" %} {% trans 'Save' %}</button>{% endif %}
 {% if show_delete_link %}
     {% url opts|admin_urlname:'delete' original.pk|admin_urlquote as delete_url %}
-    <p class="deletelink-box"><a href="{% add_preserved_filters delete_url %}" class="btn btn-danger">{% bootstrap_icon "remove" %}{% trans "Delete" %}</a></p>
+    <p class="deletelink-box"><a href="{% add_preserved_filters delete_url %}" class="btn btn-warning">{% bootstrap_icon "remove" %}{% trans "Delete" %}</a></p>
 {% endif %}
-{% if show_save_as_new %}<input type="submit" value="{% trans 'Save as new' %}" name="_saveasnew" />{% endif %}
-{% if show_save_and_add_another %}<input type="submit" value="{% trans 'Save and add another' %}" name="_addanother" />{% endif %}
-{% if show_save_and_continue %}<input type="submit" value="{% trans 'Save and continue editing' %}" name="_continue" />{% endif %}
+{% if show_save_as_new %}<button type="submit" class="btn btn-default" value="{% trans 'Save as new' %}" name="_saveasnew" />{% endif %}
+{% if show_save_and_add_another %}<button type="submit" class="btn btn-default" name="_addanother">{% bootstrap_icon "plus" %} {% trans 'Save and add another' %}</button>{% endif %}
+    {% if show_save_and_continue %}<button type="submit" class="btn btn-default" name="_continue">{% bootstrap_icon "floppy-save" %} {% trans 'Save and continue editing' %}</button>{% endif %}
 </div>
