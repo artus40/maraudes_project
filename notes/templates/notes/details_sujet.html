@@ -89,13 +89,13 @@
 
 {% block sidebar %}
 {{ block.super }}
-<hr />
 {% if user.is_superuser %}
+    <hr />
     <div class="panel panel-primary text-right"><div class="panel-heading"><h4 class="panel-title"><strong>Administration :</strong></h4></div>
-    <div class="panel-body">
-    <div class="btn-group" role="group" aria-label="...">
-      <a href="{% url 'admin:notes_note_changelist' %}?sujet__exact={{sujet.pk}}" class="btn btn-primary">{% bootstrap_icon "wrench" %} Éditer les notes</a>
-      <a href="{% url 'notes:sujets-merge' pk=object.pk %}" class="btn btn-default">{% bootstrap_icon "paste" %} Fusionner</a>
+    <div class="panel-body text-center">
+    <div class="btn-group-vertical" role="group" aria-label="...">
+      <a href="{% url 'admin:notes_note_changelist' %}?sujet__exact={{sujet.pk}}" class="btn btn-primary">{% bootstrap_icon "pencil" %} Éditer les notes</a>
+      <a href="{% url 'notes:sujets-merge' pk=object.pk %}" class="btn btn-danger">{% bootstrap_icon "paste" %} Fusionner</a>
     </div>
     </div>
     </div>

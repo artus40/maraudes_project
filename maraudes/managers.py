@@ -63,10 +63,9 @@ class MaraudeManager(Manager):
         """ Dernière maraude """
         return self.get_past().last()
 
-    @cached_property
-    def in_progress(self):
+    def get_in_progress(self):
         """ Retourne la maraude en cours, ou None """
-        d, t = timezone.now().date(), timezone.now().time()
+        d, t = self.today, timezone.localtime(timezone.now()).time()
 
         # Prendre le jour précédent s'il est entre minuit et 2h du matin
         depassement = False
@@ -74,12 +73,16 @@ class MaraudeManager(Manager):
             d = d - datetime.timedelta(days=1)
             depassement = True
 
-        maraude_du_jour = self.get(date=d)
-
-        if maraude_du_jour:
+        try:
+            maraude_du_jour = self.get(date=d)
             if depassement or t >= maraude_du_jour.heure_debut:
                 return maraude_du_jour
-        return None
+            else:
+                return None
+        except self.model.DoesNotExist:
+            return None
+
+
 
 
 

@@ -104,11 +104,7 @@ class Note(models.Model):
         return super().save(*args, **kwargs)
 
     def __str__(self):
-        return "<%s: %s>" % (self.child_class, self.sujet)
-
-    @classmethod
-    def __str__(cls):
-        return "<%s>" % cls.__qualname__
+        return str(self.sujet)
 
     def note_author(self):
         return None
@@ -147,6 +143,8 @@ class Note(models.Model):
                     self._child_instance = getattr(self, f.name)
                     self._child_class = self._child_instance.__class__
                     return
+
+
 
     @property
     def child_class(self):
