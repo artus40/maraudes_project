@@ -1,16 +1,25 @@
 from django.contrib import admin
 
 from .models import *
+from statistiques.models import FicheStatistique
 # Register your models here.
+
+
+class FicheStatistiqueInline(admin.StackedInline):
+    model = FicheStatistique
+    can_delete = False
 
 
 @admin.register(Sujet)
 class SujetAdmin(admin.ModelAdmin):
 
     fieldsets = [
-            ('Identité', {'fields': [('nom', 'prenom'), 'genre']}),
-            ('Informations', {'fields': ['age', ]}),
+            ('Identité', {'fields': [('nom', 'surnom', 'prenom', ), ('genre', 'age')]}),
         ]
+
+    inlines = [
+        FicheStatistiqueInline,
+    ]
 
 
 @admin.register(Note)

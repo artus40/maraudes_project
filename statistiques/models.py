@@ -84,3 +84,9 @@ class FicheStatistique(models.Model):
                 completed += 1
         percentage = int(completed / len(observed) * 100)
         return percentage
+
+    def __str__(self):
+        return "<Statistiques: %s>" % self.sujet
+
+    class Meta:
+        verbose_name = "Fiche statistique"

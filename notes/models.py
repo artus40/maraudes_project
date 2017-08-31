@@ -2,7 +2,7 @@ import logging
 
 from django.utils import timezone
 from django.core.exceptions import ValidationError
-from django.urls import reverse
+from django.shortcuts import reverse
 
 from django.db import models
 from . import managers
@@ -176,3 +176,6 @@ class Note(models.Model):
         return getter
     bg_colors = property(cached_attr('bg_colors'), doc="background color of header")
     labels = property(cached_attr('labels'), doc="list of string to display as labels")
+
+    def get_absolute_url(self):
+        return reverse("notes:details-sujet", kwargs={"pk": self.sujet.pk})
