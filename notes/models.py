@@ -145,6 +145,9 @@ class Note(models.Model):
                     return
 
 
+    @property
+    def type_name(self):
+        return self.child_class.__qualname__
 
     @property
     def child_class(self):

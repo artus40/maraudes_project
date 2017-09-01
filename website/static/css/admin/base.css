@@ -522,6 +522,7 @@ input[type=button][disabled].default {
     font-size: 13px;
     text-align: left;
     background: #2f2f2f;
+    border-bottom: 1px solid #d9230f;
     color: #fff;
 }
 
@@ -730,7 +731,7 @@ a.deletelink:focus, a.deletelink:hover {
 }
 
 .object-tools a:focus, .object-tools a:hover {
-    background-color: #417690;
+    background-color: #91170a;
 }
 
 .object-tools a:focus{

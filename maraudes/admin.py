@@ -16,13 +16,14 @@ admin.site.register(Lieu)
 class ObservationInline(admin.StackedInline):
     model = Observation
     extra = 0
+    exclude = ('created_date', 'created_time', 'created_by')
 
 
 @admin.register(Rencontre)
 class RencontreAdmin(admin.ModelAdmin):
 
     fieldsets = [
-        ('Contexte', {'fields': ['maraude', ('heure_debut', 'duree'), 'lieu']})
+        ('Contexte', {'fields': ['maraude', 'lieu', ('heure_debut', 'duree')]})
     ]
 
     inlines = [ObservationInline]
@@ -36,8 +37,13 @@ class RencontreAdmin(admin.ModelAdmin):
 class MaraudeAdmin(admin.ModelAdmin):
 
     fieldsets = [
-        ('Planning', {'fields': [('date', 'heure_debut'), ('referent', 'binome')]}),
-        (None, {'fields': ['heure_fin']}),
+        ('Plannification', {
+            'fields': [('date', 'heure_debut'),
+                       ('referent', 'binome')]
+            }),
+        ('Gestion', {
+            'fields': ['heure_fin'],
+            }),
     ]
     list_display = ('date', 'heure_debut', 'binome', 'est_passee', 'est_terminee')
     list_filter = ['date', 'binome']
@@ -46,4 +52,5 @@ class MaraudeAdmin(admin.ModelAdmin):
 
 @admin.register(Planning)
 class PlanningAdmin(admin.ModelAdmin):
+    fieldsets = [(None, {'fields': [('week_day', 'horaire')]})]
     list_display = ('week_day', 'horaire')

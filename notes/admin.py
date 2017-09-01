@@ -33,5 +33,5 @@ class NoteAdmin(admin.ModelAdmin):
                         'fields': ['sujet', 'text']}),
     ]
 
-    list_display = ['created_date', 'sujet', 'cast', 'text']
+    list_display = ['created_date', 'sujet', 'type_name', 'text']
     list_filter = ('created_date', 'created_by')

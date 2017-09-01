@@ -122,7 +122,7 @@
 #changelist-filter {
     position: absolute;
     width: 240px;
-    background: #f8f8f8;
+    /*background: #f8f8f8;
     /*top: 0;
     right: 0;
     z-index: 1000;
@@ -134,9 +134,9 @@
     font-size: 14px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: 5px 15px;
+    /*padding: 5px 15px;
     margin-bottom: 12px;
-    border-bottom: none;
+    border-bottom: none;*/
 }
 
 #changelist-filter h3 {
@@ -165,25 +165,18 @@
 
 #changelist-filter a {
     display: block;
-    color: #999;
     text-overflow: ellipsis;
     overflow-x: hidden;
 }
 
 #changelist-filter li.selected {
-    border-left: 5px solid #eaeaea;
+    border-left: 5px solid #91170a;
     padding-left: 10px;
     margin-left: -15px;
 }
 
 #changelist-filter li.selected a {
-    color: #5b80b2;
-}
-
-#changelist-filter a:focus, #changelist-filter a:hover,
-#changelist-filter li.selected a:focus,
-#changelist-filter li.selected a:hover {
-    color: #036;
+    color: #91170a;
 }
 
 /* DATE DRILLDOWN */
