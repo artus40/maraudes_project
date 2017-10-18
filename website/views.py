@@ -22,9 +22,6 @@ class Index(views.generic.TemplateView):
 
 def _get_entry_point(user):
     from utilisateurs.models import Maraudeur
-    from utilisateurs.backends import CustomUserAuthentication
-
-    print("Entry point for ", user, user.__class__)
     if isinstance(user, Maraudeur):
         return reverse('maraudes:index')
     else:

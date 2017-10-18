@@ -10,13 +10,13 @@
 		<div class="panel-heading">
 			<h4 class="panel-header"> Modifier le mot de passe </h4>
 		</div>
-		<table class="table">
-		<form method="POST">
+		<div class="panel-body">
+			<form method="POST">
 			{% csrf_token %}
-			{{ password_change_form.as_table }}
-			<tr><td colspan="2" class="text-right"><input type="submit" value="Changer le mot de passe" class="btn btn-primary"></input></td></tr>
-		</form>
-		</table>
+			{% bootstrap_form password_change_form %}
+			<span class="text-right"><input type="submit" value="Changer le mot de passe" class="btn btn-primary"></input></td></tr>
+			</form>
+		</div>
 	</div>
 </div>
 {% endblock %}

@@ -1,4 +1,5 @@
 from django.views import generic
+from django.contrib import messages
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.utils import timezone
@@ -22,10 +23,10 @@ class UtilisateurView(MaraudeurMixin, generic.DetailView):
         if form.is_valid():
             user = form.save()
             update_session_auth_hash(request, user)  # Important!
-            messages.success(request, 'Your password was successfully updated!')
+            messages.success(request, 'Votre mot de passe a été mis à jour!')
         else:
             self.form = form
-            messages.error(request, 'Please correct the error below.')
+            messages.error(request, 'Veuillez corriger les erreurs ci-dessous')
         
         return self.get(request, **kwargs)
 
