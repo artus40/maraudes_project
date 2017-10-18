@@ -23,10 +23,11 @@
         </div>
         <div class="panel-footer text-right">
           {% bootstrap_button "Pas de message" icon="remove" button_type="link" href="?no_mail=True" button_class="btn btn-danger btn-sm" %}
-          {% bootstrap_button "Envoyer" icon="send" button_type="submit" button_class="btn btn-success btn-sm" %}
+          <button class="btn btn-success btn-sm" id="send-button" data-loading-text="Envoi en cours..." type="submit"><span class="glyphicon glyphicon-send"></span> Envoyer</button>
         </div>
       </div>
     </form>
+    <script>$('#send-button').on('click', function () {$(this).button('loading')})</script>
 </div>
   <div class="col-md-12 col-lg-5">
       <h4 class="page-header">Rencontres</h4>
