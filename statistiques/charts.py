@@ -1,4 +1,5 @@
 import datetime
+import collections
 
 from django.db.models.functions.datetime import ExtractMonth
 from django.db.models import (Field, NullBooleanField,
@@ -27,6 +28,7 @@ NOM_MOIS = {
 LABELS = {
         NullBooleanField: {True: "Oui", False: "Non", None: "Ne sait pas"},
     }
+
 
 # TODO: Retrieve charts data from cache to avoid recalculating on each request
 class CachedDataSource:
@@ -136,7 +138,7 @@ class DonneeGeneraleChart(gchart.BarChart):
 
     def __init__(self, maraudes=None, rencontres=None, sujets=None):
 
-        data = [("...", "Soirée", "Journée", { 'role': 'annotation'})]
+        data = [("...", "Soirée", "Journée", {'role': 'annotation'})]
 
         data += [("Maraudes", maraudes[2].count(), maraudes[1].count(), maraudes[0].count())]
         data += [("Rencontres", rencontres[2].count(), rencontres[1].count(), rencontres[0].count())]
@@ -144,6 +146,7 @@ class DonneeGeneraleChart(gchart.BarChart):
             data += [("Nouvelles rencontres", sujets[2].count(), sujets[1].count(), sujets[0].count())]
 
         super().__init__(SimpleDataSource(data), options={'title': 'Données générales', 'isStacked': 'percent'})
+
 
 def generate_piechart_for_field(field):
     """ Returns a PieWrapper subclass working with a fixed field """
@@ -217,7 +220,7 @@ class RencontreParMoisChart(gchart.ColumnChart):
                             ).order_by()
             data += [(NOM_MOIS[item['mois']], item['nbr']) for item in par_mois]
         else:
-            data += [("Mois",0)]
+            data += [("Mois", 0)]
         super().__init__(SimpleDataSource(data),
                          options={
                             "title": "Nombre de rencontres par mois"
@@ -229,8 +232,8 @@ class RencontreParHeureChart(gchart.AreaChart):
     def __init__(self, queryset):
         data = [("Heure", "Rencontres démarrées", "Au total (démarré + en cours)")]
         if queryset:
-            par_heure = self.calculer_frequentation_par_quart_heure(queryset, continu=False)
-            en_continu = self.calculer_frequentation_par_quart_heure(queryset, continu=True)
+            par_heure = self.calculer_frequentation(queryset, continu=False)
+            en_continu = self.calculer_frequentation(queryset, continu=True)
             data += [(heure, par_heure[heure], en_continu[heure]) for heure in sorted(par_heure.keys())]
         else:
             data += [("Heure", 0, 0)]
@@ -241,56 +244,33 @@ class RencontreParHeureChart(gchart.AreaChart):
                          )
 
     @staticmethod
-    def calculer_frequentation_par_quart_heure(observations, continu=False):
-        """ Calcule le nombre d'observations, de 16h à 24h, par tranche de 15min.
-            L'algorithme est *très peu* efficace mais simple à comprendre : on calcule pour
-            chaque tranche les observations qui y sont contenues.
-            On peut calculer seulement les observations démarrées (continu = False) ou considérer
-            que l'observation est contenue dans un intervalle sur toute sa durée (continu = True).
+    def calculer_frequentation(observations, step=15, continu=False):
 
-        """
-        data = dict()
+        def find_intervalle(temps):
+            return datetime.time(temps.hour, temps.minute // step * step)
 
-        def genere_filtre_pour(heure, indice):
-            """ Renvoie une fonction qui renvoie True si l'intervalle donné contient l'observation, c'est-à-dire :
-            1. Elle démarre/finit dans l'intervalle.
-            2. Elle démarre avant et fini après l'intervalle.
-            """
-            debut_intervalle = indice * 15
-            fin_intervalle = debut_intervalle + 15
-            rng = range(debut_intervalle, fin_intervalle)
+        def range_over_intervalles(rencontre):
+            """ Génère tous les intervalles contenus entre le début et la fin de la rencontre """
+            curseur = find_intervalle(rencontre.heure_debut)
+            # Convertir en objet datetime
+            curseur = datetime.datetime.now().replace(hour=curseur.hour,
+                                                      minute=curseur.minute)
+            debut = datetime.datetime.now().replace(hour=rencontre.heure_debut.hour,
+                                                    minute=rencontre.heure_debut.minute)
+            fin = debut + datetime.timedelta(0, rencontre.duree * 60)
+            delta = datetime.timedelta(0, step * 60)
 
-            def est_contenue(observation):
-                """ Vérifie l'observation est contenue dans l'intervalle """
-                debut = datetime.datetime.strptime(
-                    "%s" % observation.rencontre.heure_debut,
-                    "%H:%M:%S"
-                )
-                fin = debut + datetime.timedelta(0, observation.rencontre.duree * 60)
+            while curseur < fin:
+                yield datetime.time(curseur.hour, curseur.minute)
+                curseur += delta
 
-                # L'observation démarre dans l'intervalle
-                if debut.hour == heure and debut.minute in rng:
-                    return True
-                # L'observation finit dans l'intervalle, seulement si continu est True
-                elif continu and (fin.hour == heure and fin.minute in rng):
-                    return True
-                # L'observation démarre avant ET finit après l'intervalle,
-                # seulement si continu est True
-                elif (continu
-                      and (debut.hour <= heure and debut.minute <= debut_intervalle)
-                      and (fin.hour >= heure and fin.minute >= fin_intervalle)):
-                    return True
-                else:
-                    return False
+        data = collections.defaultdict(lambda: 0)
 
-            return est_contenue
-
-        for h in range(16, 24):
-            for i in range(4):
-                filtre = genere_filtre_pour(heure=h, indice=i)
-                contenus = list(filter(filtre, observations))
-
-                key = datetime.time(h, i * 15)
-                data[key] = len(contenus)
+        for rencontre in map(lambda o: o.rencontre, observations):
+            if not continu:
+                data[find_intervalle(rencontre.heure_debut)] += 1
+            else:
+                for intervalle in range_over_intervalles(rencontre):
+                    data[intervalle] += 1
 
         return data

@@ -8,9 +8,7 @@ from .models import (
     Maraude, Maraudeur, Planning,
     WEEKDAYS, HORAIRES_SOIREE,
     )
-# Create your tests here.
 
-from maraudes_project.base_data import MARAUDEURS
 
 MARAUDE_DAYS = [
     True, True, False, True, True, False, False
