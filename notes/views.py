@@ -10,7 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from utilisateurs.mixins import MaraudeurMixin
 from maraudes.models import Maraude, CompteRendu
-from maraudes.notes import Observation
+from maraudes.notes import Observation, Signalement
 from .models import Sujet, Note
 from .forms import SujetCreateForm, AutoNoteForm, SelectSujetForm
 from .mixins import NoteFormMixin
@@ -134,6 +134,7 @@ class SujetListView(ListView):
          ),
         ("Rencontré(e)s dans le mois", rencontre_dans_le_mois),
         ("Statistiques incomplètes", info_completed_filter),
+        ("Signalements", lambda qs: qs.filter(pk__in=Signalement.objects.all().values_list('sujet'))),
     ]
 
     def post(self, request, **kwargs):
