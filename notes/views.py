@@ -10,6 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from utilisateurs.mixins import MaraudeurMixin
 from maraudes.models import Maraude, CompteRendu
+from maraudes.notes import Observation
 from .models import Sujet, Note
 from .forms import SujetCreateForm, AutoNoteForm, SelectSujetForm
 from .mixins import NoteFormMixin
@@ -111,8 +112,27 @@ class SujetListView(ListView):
 
         return qs.exclude(pk__in=excluded_set)
 
+    def rencontre_dans_le_mois(qs):
+        """ Renvoie les sujets du queryset pour lesquelles une observation a été enregistrée
+        au cours des 30 derniers jours """
+        DAYS_NUMBER = 30
+        LIMIT_DATE = timezone.now().date() - datetime.timedelta(DAYS_NUMBER)
+
+        included_set = set()
+        for sujet in qs:
+            # Try to find an observation in the range
+            most_recent_obs = Observation.objects.filter(sujet=sujet).order_by("-created_date").first()
+            if most_recent_obs and most_recent_obs.created_date >= LIMIT_DATE:
+                included_set.add(sujet.pk)
+        return qs.filter(pk__in=included_set)
+
+
     filters = [
-        ("Rencontré(e)s cette année", lambda qs: qs.filter(premiere_rencontre__year=timezone.now().date().year)),
+        ("Connu(e)s cette année",
+         lambda qs: qs.filter(
+             premiere_rencontre__year=timezone.now().date().year)
+         ),
+        ("Rencontré(e)s dans le mois", rencontre_dans_le_mois),
         ("Statistiques incomplètes", info_completed_filter),
     ]
 
