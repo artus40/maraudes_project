@@ -23,14 +23,14 @@ class Observation(Note):
 
     def note_labels(self): return [self.rencontre.lieu, self.rencontre.heure_debut]
 
-    def note_bg_colors(self): return ("info", "info")
+    def note_bg_colors(self): return "info", "info"
 
 class Appel(Note):
 
     entrant = models.BooleanField( "Appel entrant ?")
 
     def note_labels(self):      return ["Reçu" if self.entrant else "Émis", self.created_by]
-    def note_bg_colors(self):   return ("warning", "info")
+    def note_bg_colors(self):   return "warning", "info"
 
 
 class Signalement(Note):
@@ -38,5 +38,5 @@ class Signalement(Note):
     source = models.ForeignKey("utilisateurs.Organisme")
 
     def note_labels(self): return [self.source, self.created_by]
-    def note_bg_colors(self): return ('danger', 'info')
+    def note_bg_colors(self): return 'danger', 'info'
 

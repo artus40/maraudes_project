@@ -141,6 +141,7 @@ class FrequentationChartsView(MultipleChartsView):
         ('Par mois', charts.RencontreParMoisChart),
         ('Par heure', charts.RencontreParHeureChart),
         ('Par sujet', charts.RencontreParSujetChart),
+        ('Par lieu', charts.RencontreParLieuChart)
         ])
 
     def get_queryset(self):

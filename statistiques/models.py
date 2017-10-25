@@ -90,3 +90,17 @@ class FicheStatistique(models.Model):
 
     class Meta:
         verbose_name = "Fiche statistique"
+
+
+
+class GroupeLieux(models.Model):
+    label = models.CharField(max_length=128, primary_key=True)
+    lieux = models.ManyToManyField("maraudes.Lieu")
+
+    def __str__(self):
+        return "<Groupe: %s (n=%i)>" % (self.label, self.lieux.count())
+
+    class Meta:
+        verbose_name = "Groupe de lieux"
+        verbose_name_plural = "Groupes de lieux"
+

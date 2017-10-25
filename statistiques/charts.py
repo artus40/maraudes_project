@@ -9,6 +9,7 @@ from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import gchart
 
 from notes.models import Sujet
+from .models import GroupeLieux
 
 NOM_MOIS = {
     1: "Janvier",
@@ -274,3 +275,24 @@ class RencontreParHeureChart(gchart.AreaChart):
                     data[intervalle] += 1
 
         return data
+
+
+class RencontreParLieuChart(PieWrapper):
+
+    @property
+    def labels(self):
+        for groupe_lieux in GroupeLieux.objects.all():
+            yield (groupe_lieux.label,
+                   tuple(groupe_lieux.lieux.values_list('pk', flat=True))
+                   )
+
+    def get_count_for_group(self, lieu_pks):
+        return self.queryset.filter(rencontre__lieu__pk__in=lieu_pks).count()
+
+    def __init__(self, queryset):
+        self.queryset = queryset
+        data = [('Lieu de rencontre', 'Nombre de rencontres')]
+        if self.queryset:
+            data += [(label, self.get_count_for_group(lieu_pks)) for label, lieu_pks in self.labels]
+        super().__init__(data=data,
+                         title="Fréquentation par lieu")
