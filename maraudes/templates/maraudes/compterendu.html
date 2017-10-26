@@ -91,7 +91,7 @@
               <a class="btn btn-link btn-xs show-stats-btn" href="#" value="{{observation.sujet.pk}}">
               {% bootstrap_icon "stats" %} Mise à jour</a>
             </td></tr>
-            <tr><td>{{observation.text}}</td></tr>{% endfor %}{% endfor %}
+            <tr><td>{{observation.text | linebreaks }}</td></tr>{% endfor %}{% endfor %}
       </table>
     </div>
     <div id="update-stats">
