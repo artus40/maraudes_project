@@ -5,16 +5,14 @@ from django.db.models.query import QuerySet
 class NoteQuerySet(QuerySet):
 
     def _ordered_by_field(self, field, reverse=False):
-        return self.order_by(   '%s%s' % (  "-" if reverse else "",
-                                            field
-                                        )
-                            )
+        return self.order_by('%s%s' % ("-" if reverse else "", field))
 
     def by_date(self, reverse=False):
         return self._ordered_by_field('created_date', reverse=reverse)
 
     def by_time(self, reverse=False):
         return self._ordered_by_field('created_time', reverse=reverse)
+
 
 class NoteManager(Manager):
 
@@ -28,5 +26,3 @@ class NoteManager(Manager):
 
     def by_time(self, **kwargs):
         return self.get_queryset().by_time(**kwargs)
-
-

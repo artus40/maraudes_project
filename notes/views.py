@@ -1,13 +1,12 @@
 import logging
 import datetime
-
 from django.shortcuts import redirect, reverse
 from django.views import generic
 from django.utils import timezone
 from django.contrib import messages
-from django.http.response import HttpResponseNotAllowed
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from watson import search as watson
+from website.mixins import AjaxTemplateMixin
 from utilisateurs.mixins import MaraudeurMixin
 from maraudes.models import Maraude, CompteRendu
 from maraudes.notes import Observation, Signalement
@@ -20,12 +19,12 @@ logger = logging.getLogger(__name__)
 # Create your views here.
 
 
-
 class IndexView(MaraudeurMixin, generic.TemplateView):
     template_name = "notes/index.html"
 
     def get(self, *args, **kwargs):
         return redirect("notes:liste-sujet")
+
 
 class Filter:
     def __init__(self, title, name, filter_func):
@@ -38,7 +37,6 @@ class Filter:
         return self._filter_func(qs)
 
 
-
 class ListView(MaraudeurMixin, generic.ListView):
     """ Base ListView for Maraude and Sujet lists """
     paginate_by = 30
@@ -47,8 +45,8 @@ class ListView(MaraudeurMixin, generic.ListView):
     filters = []
     active_filter = None
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
         self._filters = {}
 
         if self.filters:
@@ -95,37 +93,36 @@ class MaraudeListView(ListView):
 
 
 class SujetListView(ListView):
-    #ListView
+    # ListView
     model = Sujet
     template_name = "notes/liste_sujets.html"
     cell_template = "notes/table_cell_sujets.html"
     table_header = "Liste des sujets"
 
-
+    @staticmethod
     def info_completed_filter(qs):
-        COMPLETED_RATIO = 70 # % of total fields completed
+        completed_ratio = 70  # % of total fields completed
 
         excluded_set = set()
         for sujet in qs:
-            if sujet.statistiques.info_completed >= COMPLETED_RATIO:
+            if sujet.statistiques.info_completed >= completed_ratio:
                 excluded_set.add(sujet.pk)
 
         return qs.exclude(pk__in=excluded_set)
 
+    @staticmethod
     def rencontre_dans_le_mois(qs):
         """ Renvoie les sujets du queryset pour lesquelles une observation a été enregistrée
         au cours des 30 derniers jours """
-        DAYS_NUMBER = 30
-        LIMIT_DATE = timezone.now().date() - datetime.timedelta(DAYS_NUMBER)
-
+        days_number = 30
+        limit_date = timezone.now().date() - datetime.timedelta(days_number)
         included_set = set()
         for sujet in qs:
             # Try to find an observation in the range
             most_recent_obs = Observation.objects.filter(sujet=sujet).order_by("-created_date").first()
-            if most_recent_obs and most_recent_obs.created_date >= LIMIT_DATE:
+            if most_recent_obs and most_recent_obs.created_date >= limit_date:
                 included_set.add(sujet.pk)
         return qs.filter(pk__in=included_set)
-
 
     filters = [
         ("Connu(e)s cette année",
@@ -138,10 +135,9 @@ class SujetListView(ListView):
     ]
 
     def post(self, request, **kwargs):
-        from watson import search as watson
         search_text = request.POST.get('q')
         results = watson.filter(Sujet, search_text)
-        #logger.warning("SEARCH for %s : %s" % (search_text, results))
+        # logger.warning("SEARCH for %s : %s" % (search_text, results))
         if results.count() == 1:
             return redirect(results[0].get_absolute_url())
         self.queryset = results
@@ -156,6 +152,7 @@ class SujetListView(ListView):
 class DetailView(MaraudeurMixin, generic.DetailView):
     template_name = "notes/details.html"
 
+
 class CompteRenduDetailsView(DetailView):
     """ Vue détaillé d'un compte-rendu de maraude """
 
@@ -165,32 +162,38 @@ class CompteRenduDetailsView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['notes'] = sorted(Note.objects.get_queryset().filter(created_date=self.object.date), key=lambda n: n.created_time)
+        context['notes'] = sorted(Note.objects
+                                      .get_queryset()
+                                      .filter(created_date=self.object.date),
+                                  key=lambda n: n.created_time)
         context['next_maraude'] = Maraude.objects.get_future(
-                                        date=self.object.date + datetime.timedelta(1)
-                                    ).filter(
-                                        heure_fin__isnull=False
-                                    ).first()
+                                                    date=self.object.date + datetime.timedelta(1)
+                                                ).filter(
+                                                    heure_fin__isnull=False
+                                                ).first()
         context['prev_maraude'] = Maraude.objects.get_past(
-                                        date=self.object.date
-                                    ).filter(
-                                        heure_fin__isnull=False
-                                    ).last()
+                                                    date=self.object.date
+                                                ).filter(
+                                                    heure_fin__isnull=False
+                                                ).last()
         return context
 
 
 class SuiviSujetView(NoteFormMixin, DetailView):
-    #NoteFormMixin
+    # NoteFormMixin
     forms = {
         'note': AutoNoteForm,
         }
+
     def get_success_url(self):
         return reverse('notes:details-sujet', kwargs={'pk': self.get_object().pk})
+
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['sujet'] = self.get_object()
         return kwargs
-    #DetailView
+
+    # DetailView
     model = Sujet
     template_name = "notes/details_sujet.html"
     context_object_name = "sujet"
@@ -205,8 +208,8 @@ class SuiviSujetView(NoteFormMixin, DetailView):
         self.page = self.request.GET.get('page', 1)
         return super().get(*args, **kwargs)
 
-    def get_context_data(self, *args,  **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         try:
             notes = self.paginator.page(self.page)
         except PageNotAnInteger:
@@ -217,10 +220,9 @@ class SuiviSujetView(NoteFormMixin, DetailView):
         return context
 
 
-### Sujet Management Views
-
+# Sujet Management Views
 class SujetAjaxDetailsView(generic.DetailView):
-    #DetailView
+    # DetailView
     template_name = "notes/details_sujet_inner.html"
     model = Sujet
 
@@ -232,8 +234,9 @@ class SujetAjaxDetailsView(generic.DetailView):
             return redirect("notes:details-sujet", pk=self.get_object().pk)
         return super().get(*args, **kwargs)
 
+
 class SujetAjaxUpdateView(generic.edit.UpdateView):
-    #UpdateView
+    """ View for 'sujet' updates, can be retrieved by ajax requests. """
     template_name = "notes/details_sujet_update.html"
     model = Sujet
     fields = '__all__'
@@ -241,24 +244,28 @@ class SujetAjaxUpdateView(generic.edit.UpdateView):
     def get_success_url(self):
         return reverse("notes:details-sujet", kwargs={'pk': self.object.pk})
 
-from website.mixins import AjaxTemplateMixin
 
 class SujetCreateView(AjaxTemplateMixin, generic.edit.CreateView):
-    #CreateView
+    """ View for 'sujet' creation, can be retrieved by ajax requests. """
     template_name = "notes/sujet_create.html"
     form_class = SujetCreateForm
+
     def post(self, request, *args, **kwargs):
         if 'next' in self.request.POST:
             self.success_url = self.request.POST["next"]
         return super().post(self, request, *args, **kwargs)
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        try:   context['next'] = self.request.GET['next']
-        except:context['next'] = None
+        try:
+            context['next'] = self.request.GET['next']
+        except:
+            context['next'] = None
         return context
 
+
 class MergeView(generic.DetailView, generic.FormView):
-    """ Implement actions.merge_two as a view """
+    """ Merge two 'sujet' objects by implementing actions.merge_two as a view """
 
     template_name = "notes/sujet_merge.html"
     model = Sujet

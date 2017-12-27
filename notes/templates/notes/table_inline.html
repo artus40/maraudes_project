@@ -1,16 +1,14 @@
 <tr>
-  <th class="bg-{{bg_color}}" >
+  <th class="bg-{{bg_color}}">
     {% if link %}
       <a href="{{link}}"><strong>{{header}}</strong></a>
     {% else %}
       <strong>{{header}}</strong>
     {% endif %} <small>{{small}}</small>
-    <span class="pull-right">
+    <br />
     {% for label in labels %}
-      <span class="label label-{{bg_label_color}}">{{label}}</span>
-    {% endfor %}</span>
+      <span class="label label-{{bg_label_color}}">{{label}}</span><br />
+    {% endfor %}
   </th>
-</tr>
-<tr>
   <td style="background-color:#fff"><p>{{text | linebreaks }}</p></td>
 </tr>

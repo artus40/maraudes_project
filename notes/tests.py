@@ -24,6 +24,7 @@ class SujetModelTestCase(TestCase):
         with self.assertRaises(ValidationError):
             Sujet.objects.create(age=25)
 
+
 class NoteManagerTestCase(TestCase):
     """ managers.NoteManager Test Case """
 
@@ -32,8 +33,11 @@ class NoteManagerTestCase(TestCase):
         self.note_manager = NoteManager
 
     def test_note_default_manager_is_NoteManager(self):
-        self.assertIsInstance(Note.objects, self.note_manager,
-            msg="%s is not Note default manager" % self.note_manager)
+        self.assertIsInstance(
+            Note.objects,
+            self.note_manager,
+            msg="%s is not Note default manager" % self.note_manager
+            )
 
     def test_by_date(self):
         prev_note = None
@@ -41,8 +45,11 @@ class NoteManagerTestCase(TestCase):
             if not prev_note:
                 prev_note = note
             else:
-                self.assertLessEqual(prev_note.created_date, note.created_date,
-                            msg="%s is not same date or prior to %s" % (prev_note, note))
+                self.assertLessEqual(
+                        prev_note.created_date,
+                        note.created_date,
+                        msg="%s is not same date or prior to %s" % (prev_note, note)
+                        )
                 prev_note = note
 
     def test_by_date_reversed(self):
@@ -51,8 +58,11 @@ class NoteManagerTestCase(TestCase):
             if not prev_note:
                 prev_note = note
             else:
-                self.assertGreaterEqual(prev_note.created_date, note.created_date,
-                            msg="%s is not same date or later to %s" % (prev_note, note))
+                self.assertGreaterEqual(
+                    prev_note.created_date,
+                    note.created_date,
+                    msg="%s is not same date or later to %s" % (prev_note, note)
+                    )
                 prev_note = note
 
     def test_by_time(self):
@@ -61,8 +71,11 @@ class NoteManagerTestCase(TestCase):
             if not prev_note:
                 prev_note = note
             else:
-                self.assertLessEqual(prev_note.created_time, note.created_time,
-                            msg="%s is not same time or prior to %s" % (prev_note, note))
+                self.assertLessEqual(
+                    prev_note.created_time,
+                    note.created_time,
+                    msg="%s is not same time or prior to %s" % (prev_note, note)
+                    )
                 prev_note = note
 
     def test_by_time_reversed(self):
@@ -71,9 +84,12 @@ class NoteManagerTestCase(TestCase):
             if not prev_note:
                 prev_note = note
             else:
-                self.assertLessEqual(prev_note.created_time, note.created_time,
-                            msg="%s is not same time or later to %s" % (prev_note, note))
+                self.assertLessEqual(
+                        prev_note.created_time,
+                        note.created_time,
+                        msg="%s is not same time or later to %s" % (prev_note, note))
                 prev_note = note
+
 
 class NoteQuerySetTestCase(TestCase):
 
@@ -86,7 +102,9 @@ class NoteQuerySetTestCase(TestCase):
             if not prev_note:
                 prev_note = note
             else:
-                self.assertLessEqual(prev_note.created_date, note.created_date,
+                self.assertLessEqual(
+                            prev_note.created_date,
+                            note.created_date,
                             msg="%s is not same date or prior to %s" % (prev_note, note))
                 prev_note = note
 
@@ -96,8 +114,11 @@ class NoteQuerySetTestCase(TestCase):
             if not prev_note:
                 prev_note = note
             else:
-                self.assertGreaterEqual(prev_note.created_date, note.created_date,
-                            msg="%s is not same date or later to %s" % (prev_note, note))
+                self.assertGreaterEqual(
+                            prev_note.created_date,
+                            note.created_date,
+                            msg="%s is not same date or later to %s" % (prev_note, note)
+                            )
                 prev_note = note
 
     def test_by_time(self):
@@ -106,8 +127,11 @@ class NoteQuerySetTestCase(TestCase):
             if not prev_note:
                 prev_note = note
             else:
-                self.assertLessEqual(prev_note.created_time, note.created_time,
-                            msg="%s is not same time or prior to %s" % (prev_note, note))
+                self.assertLessEqual(
+                            prev_note.created_time,
+                            note.created_time,
+                            msg="%s is not same time or prior to %s" % (prev_note, note)
+                            )
                 prev_note = note
 
     def test_by_time_reversed(self):
@@ -116,6 +140,9 @@ class NoteQuerySetTestCase(TestCase):
             if not prev_note:
                 prev_note = note
             else:
-                self.assertLessEqual(prev_note.created_time, note.created_time,
-                            msg="%s is not same time or later to %s" % (prev_note, note))
+                self.assertLessEqual(
+                            prev_note.created_time,
+                            note.created_time,
+                            msg="%s is not same time or later to %s" % (prev_note, note)
+                            )
                 prev_note = note

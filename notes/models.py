@@ -16,6 +16,7 @@ GENRE_CHOICES = (
         (FEMME, 'Femme'),
     )
 
+
 class Sujet(models.Model):
     """ Personne faisant l'objet d'un suivi par la maraude
     """
@@ -38,9 +39,12 @@ class Sujet(models.Model):
 
     def __str__(self):
         string = '%s ' % self.genre
-        if self.nom:    string += '%s ' % self.nom
-        if self.surnom: string += '"%s" ' % self.surnom
-        if self.prenom: string += '%s' % self.prenom
+        if self.nom:
+            string += '%s ' % self.nom
+        if self.surnom:
+            string += '"%s" ' % self.surnom
+        if self.prenom:
+            string += '%s' % self.prenom
         return string
 
     def clean(self):
@@ -63,6 +67,27 @@ class Sujet(models.Model):
 
     def get_absolute_url(self):
         return reverse("notes:details-sujet", kwargs={"pk": self.pk})
+
+
+# Attributes used by 'notes' template tags
+# bg_color : background color of header
+# labels : list of strings to put in labels
+def cached_attr(name):
+    """ Cached property set on return value of 'note_ATTR' method on
+        child instance.
+    """
+    private_name = '_%s' % name
+
+    def getter(self):
+        if not hasattr(self, private_name):
+            setattr(self,
+                    private_name,
+                    # Call *child instance* method
+                    getattr(self.cast(), 'note_%s' % name)()
+                    )
+        return getattr(self, private_name)
+
+    return getter
 
 
 class Note(models.Model):
@@ -121,7 +146,7 @@ class Note(models.Model):
         """ Returns (header background color, labels color).
             Values must be valid bootstrap color name
         """
-        return ("default", "info")
+        return "default", "info"
 
     def note_labels(self):
         """ Returns list of objects that are printed as bootstrap labels """
@@ -144,7 +169,6 @@ class Note(models.Model):
                     self._child_class = self._child_instance.__class__
                     return
 
-
     @property
     def type_name(self):
         return self.child_class.__qualname__
@@ -160,23 +184,7 @@ class Note(models.Model):
             self._get_child_class_and_instance()
         return self._child_instance
 
-    ## Attributes used by 'notes' template tags
-    # bg_color : background color of header
-    # labels : list of strings to put in labels
-    def cached_attr(name):
-        """ Cached property set on return value of 'note_ATTR' method on
-            child instance.
-        """
-        private_name = '_%s' % name
-        def getter(self):
-            if not hasattr(self, private_name):
-                setattr(self,
-                        private_name,
-                        # Call *child instance* method
-                        getattr(self.cast(), 'note_%s' % name)()
-                        )
-            return getattr(self, private_name)
-        return getter
+    # Define specials properties
     bg_colors = property(cached_attr('bg_colors'), doc="background color of header")
     labels = property(cached_attr('labels'), doc="list of string to display as labels")
 

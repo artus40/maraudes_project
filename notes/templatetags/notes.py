@@ -1,7 +1,7 @@
 from django import template
-from django.urls import reverse
 
 register = template.Library()
+
 
 @register.inclusion_tag("notes/table_inline.html")
 def inline_table(note, header=None):
@@ -10,7 +10,7 @@ def inline_table(note, header=None):
 
     if not header:
         header = "date"
-    if not header in ['sujet', 'date']:
+    if header not in ['sujet', 'date']:
         raise ValueError('header must be "sujet" or "date"')
 
     if header == "date":
@@ -24,10 +24,8 @@ def inline_table(note, header=None):
         header_field = "sujet"
         link = note.sujet.get_absolute_url()
 
-    header = getattr(note, header_field)
-
     return {
-        'header': header,
+        'header': getattr(note, header_field),
         'link': link,
         'small': note.child_class.__qualname__,
         'bg_color': bg_color or "default",

@@ -1,5 +1,4 @@
-from .models import Sujet
-from statistiques.models import FicheStatistique, NSP
+from statistiques.models import NSP
 
 
 def merge_stats(main, merged):
@@ -21,17 +20,18 @@ def merge_stats(main, merged):
     for field in ('prob_psychiatrie', 'prob_somatique',
                   'prob_administratif', 'prob_addiction',
                   'connu_siao', 'lien_familial'):
-        if not getattr(main.statistiques, field): # Ignore if already filled
+        if not getattr(main.statistiques, field):  # Ignore if already filled
             setattr(main.statistiques, field, getattr(merged.statistiques, field, None))
     # Choice fields, None is NSP
     for field in ('habitation', 'ressources', 'parcours_de_vie'):
-        if getattr(main.statistiques, field) == NSP: # Ignore if already filled
+        if getattr(main.statistiques, field) == NSP:  # Ignore if already filled
             setattr(main.statistiques, field, getattr(merged.statistiques, field, NSP))
+
 
 def merge_two(main, merged):
     """ Merge 'merged' sujet into 'main' one """
-    merge_stats(main, merged) # Merge statistics and informations
-    for note in merged.notes.all(): # Move all notes
+    merge_stats(main, merged)  # Merge statistics and informations
+    for note in merged.notes.all():  # Move all notes
         note.sujet = main
         note.save()
     main.save()
