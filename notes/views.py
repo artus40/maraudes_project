@@ -99,7 +99,6 @@ class SujetListView(ListView):
     cell_template = "notes/table_cell_sujets.html"
     table_header = "Liste des sujets"
 
-    @staticmethod
     def info_completed_filter(qs):
         completed_ratio = 70  # % of total fields completed
 
@@ -110,7 +109,6 @@ class SujetListView(ListView):
 
         return qs.exclude(pk__in=excluded_set)
 
-    @staticmethod
     def rencontre_dans_le_mois(qs):
         """ Renvoie les sujets du queryset pour lesquelles une observation a été enregistrée
         au cours des 30 derniers jours """
