@@ -6,9 +6,11 @@
       <strong>{{header}}</strong>
     {% endif %} <small>{{small}}</small>
     <br />
+    <div style="margin:5px 0px;">
     {% for label in labels %}
-      <span class="label label-{{bg_label_color}}">{{label}}</span><br />
+      <span class="label label-{{bg_label_color}}" style="padding:2px 5px;">{{label}}</span>
     {% endfor %}
+    </div>
   </th>
   <td style="background-color:#fff"><p>{{text | linebreaks }}</p></td>
 </tr>
