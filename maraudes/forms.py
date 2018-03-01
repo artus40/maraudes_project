@@ -1,20 +1,22 @@
 from django import forms
+from django.utils.translation import gettext
 from django.utils import timezone
-
 from django_select2.forms import Select2Widget
-
-# Models
-from .models import *
-from .notes import *
 from notes.forms import UserNoteForm, SimpleNoteForm
 from notes.models import Sujet, GENRE_CHOICES
+from .models import *
+from .notes import *
+
+
+MONTHS = [
+    (num, gettext(calendar.month_name[num])) for num in range(1, 13)
+]
 
 
 def current_year_range():
     """ Returns a range from year -1 to year + 2 """
     year = timezone.now().date().year
-    return (year - 1, year, year + 1, year + 2)
-
+    return year - 1, year, year + 1, year + 2
 
 
 class MaraudeHiddenDateForm(forms.ModelForm):
@@ -22,8 +24,6 @@ class MaraudeHiddenDateForm(forms.ModelForm):
         model = Maraude
         fields = ['date', 'heure_debut', 'referent', 'binome']
         widgets = {'date': forms.HiddenInput()}
-
-
 
 
 class RencontreForm(forms.ModelForm):
@@ -35,43 +35,38 @@ class RencontreForm(forms.ModelForm):
         }
 
 
-ObservationInlineFormSet = forms.inlineformset_factory(   Rencontre, Observation,
-                                                    form=SimpleNoteForm,
-                                                    extra = 1,
-                                                    )
+ObservationInlineFormSet = forms.inlineformset_factory(
+    Rencontre, Observation,
+    form=SimpleNoteForm,
+    extra=1,
+)
 
 RencontreInlineFormSet = forms.inlineformset_factory(
-                                Maraude, Rencontre,
-                                form = RencontreForm,
-                                extra = 0,
-                                )
+    Maraude, Rencontre,
+    form=RencontreForm,
+    extra=0,
+)
 
 ObservationInlineFormSetNoExtra = forms.inlineformset_factory(
-                                Rencontre, Observation,
-                                form = SimpleNoteForm,
-                                extra = 0
-                                )
-
+    Rencontre, Observation,
+    form=SimpleNoteForm,
+    extra=0
+)
 
 
 class MonthSelectForm(forms.Form):
 
     month = forms.ChoiceField(label="Mois",
-                    choices=[
-                        (1, 'Janvier'), (2, 'Février'), (3, 'Mars'), (4, 'Avril'),
-                        (5, 'Mai'), (6, 'Juin'), (7, 'Juillet'), (8, 'Août'),
-                        (9, 'Septembre'),(10, 'Octobre'),(11, 'Novembre'),(12, 'Décembre')
-                    ],
-                )
+                              choices=MONTHS,
+                              )
     year = forms.ChoiceField(label="Année",
-                    choices = [(y, y) for y in current_year_range()]
-                )
+                             choices=[(y, y) for y in current_year_range()],
+                             )
 
     def __init__(self, *args, month=None, year=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['month'].initial = month
         self.fields['year'].initial = year
-
 
 
 class AppelForm(UserNoteForm):
@@ -80,9 +75,7 @@ class AppelForm(UserNoteForm):
         fields = ['sujet', 'text', 'entrant', 'created_date', 'created_time']
 
 
-
 class SignalementForm(UserNoteForm):
-
     nom = forms.CharField(64, required=False)
     prenom = forms.CharField(64, required=False)
     age = forms.IntegerField(required=False)

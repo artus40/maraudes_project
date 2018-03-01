@@ -1,21 +1,20 @@
 import calendar
 import datetime
-from collections import OrderedDict
-
-from django.utils import timezone
 from django.db import models
 from django.db.models import Count
 from django.core.urlresolvers import reverse
+from django.utils.translation import gettext as _
 
 from utilisateurs.models import Maraudeur
 from . import managers
 
 
-## Fonctions utiles
+# Fonctions utiles
 
 def get_referent_maraude():
     """ Retourne l'administrateur et référent de la Maraude """
     return Maraudeur.objects.get_referent()
+
 
 def split_by_12h_blocks(iterable):
     """ Move object with given 'field' time under 12:00 to the end of stream.
@@ -31,22 +30,20 @@ def split_by_12h_blocks(iterable):
     for note in to_end:
         yield note
 
-## Constantes
 
+# Constantes
 # Jours de la semaine
 WEEKDAYS = [
-        (0, "Lundi"),
-        (1, "Mardi"),
-        (2, "Mercredi"),
-        (3, "Jeudi"),
-        (4, "Vendredi"),
-        (5, "Samedi"),
-        (6, "Dimanche")
+    (n, _(calendar.day_name[n])) for n in range(7)
     ]
+
+MONTHS = {
+    n: _(calendar.month_name[n]) for n in range(1, 13)
+}
 
 # Horaires
 HORAIRES_APRESMIDI = datetime.time(16, 0)
-HORAIRES_SOIREE = datetime.time(20, 0)
+HORAIRES_SOIREE = datetime.time(19, 0)
 HORAIRES_CHOICES = (
     (HORAIRES_APRESMIDI, 'Après-midi'),
     (HORAIRES_SOIREE, 'Soirée')
@@ -60,12 +57,13 @@ DUREE_CHOICES = (
     (20, '20 min'),
     (30, '30 min'),
     (45, '45 min'),
-    (60, '1 heure'),
+    (60, '1heure'),
+    (75, '1h15min'),
+    (90, '1h30min'),
 )
 
-## Modèles
 
-
+# Modèles
 class Lieu(models.Model):
     """ Lieu de rencontre """
     nom = models.CharField(max_length=128)
@@ -75,7 +73,6 @@ class Lieu(models.Model):
 
     class Meta:
         verbose_name = "Lieu de rencontre"
-
 
 
 class Maraude(models.Model):
@@ -135,12 +132,12 @@ class Maraude(models.Model):
             ('view_maraudes', "Accès à l'application 'maraudes'"),
         )
 
-    MOIS = ["Jan.", "Fév.", "Mars", "Avr.", "Mai", "Juin",
-            "Juil.", "Août", "Sept.", "Oct.", "Nov.", "Déc."]
     def __str__(self):
-        return '%s %i %s' % (WEEKDAYS[self.date.weekday()][1], # Retrieve text inside tuple
-                                        self.date.day,
-                                        self.MOIS[self.date.month - 1])
+        return '%(dayname)s %(day)i %(month)s' % {
+            'dayname': WEEKDAYS[self.date.weekday()][1],  # Retrieve text inside tuple
+            'day': self.date.day,
+            'month': MONTHS[self.date.month][:3] + ".",
+        }
 
     def est_terminee(self):
         """ Indique si la maraude est considérée comme terminée """
@@ -161,7 +158,6 @@ class Maraude(models.Model):
         return reverse('notes:details-maraude', kwargs={'pk': self.id})
 
 
-
 class Rencontre(models.Model):
     """ Une Rencontre dans le cadre d'une maraude
     """
@@ -170,7 +166,7 @@ class Rencontre(models.Model):
     maraude = models.ForeignKey(
                         Maraude,
                         models.CASCADE,
-                        related_name = 'rencontres',
+                        related_name='rencontres',
                         limit_choices_to={'heure_fin__isnull': False}
                     )
     lieu = models.ForeignKey(
@@ -188,18 +184,19 @@ class Rencontre(models.Model):
         ordering = ['maraude', 'heure_debut']
 
     def __str__(self):
-        return "%s à %s (%imin)" % (
-                            self.lieu,
-                            self.heure_debut.strftime("%Hh%M"),
-                            self.duree
-                        )
+        return "%(lieu)s à %(heure)s (%(duree)imin)" % {
+            'lieu': self.lieu,
+            'heure': self.heure_debut.strftime("%Hh%M"),
+            'duree': self.duree
+        }
 
     @property
     def date(self):
         return self.maraude.date
 
-    INDIVIDU = "Individu"
-    GROUPE = "Groupe"
+    INDIVIDU = _("Individu")
+    GROUPE = _("Groupe")
+
     def groupe_ou_individu(self):
         """ Retourne le type de rencontre : 'groupe'/'individu' """
         nb = self.observations.count()
@@ -254,7 +251,6 @@ class CompteRendu(Maraude):
         proxy = True
 
 
-
 class FoyerAccueil(Lieu):
     """ Foyer d'hébergement partenaire """
 
@@ -262,7 +258,6 @@ class FoyerAccueil(Lieu):
     jour_de_passage = models.IntegerField(
                         choices=WEEKDAYS,
                         )
-
 
 
 class Planning(models.Model):
@@ -293,7 +288,6 @@ class Planning(models.Model):
         """ Renvoie le jour et l'horaire prévu de maraude, comme un tuple,
             pour l'année et le mois donnés.
         """
-        planning = Planning.get_planning()
         for week in calendar.monthcalendar(year, month):
             for planned in cls.get_planning():
                 day_of_maraude = week[planned.week_day]

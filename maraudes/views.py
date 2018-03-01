@@ -1,22 +1,19 @@
 import datetime
 import calendar
 import logging
-
+from django.conf import settings
 from django.utils import timezone
 from django.shortcuts import redirect, reverse
 from django.views import generic
 from django.core.mail import send_mail
 from django.forms import modelformset_factory
 from django.contrib import messages
-
 from utilisateurs.mixins import MaraudeurMixin
-
 from .models import (Maraude, Maraudeur,
                      CompteRendu,
-                     Rencontre, Lieu,
+                     Lieu,
                      Planning,)
 from .notes import Signalement
-# Forms
 from .forms import (RencontreForm,
                     ObservationInlineFormSet,
                     MaraudeHiddenDateForm, MonthSelectForm,
@@ -25,6 +22,9 @@ from .forms import (RencontreForm,
 from notes.mixins import NoteFormMixin
 
 logger = logging.getLogger(__name__)
+
+# How many month shall we look back
+NUMBER_OF_MONTH_BACKWARDS = 1  # Must be lower than 12 !
 
 
 def derniers_sujets_rencontres():
@@ -38,11 +38,8 @@ def derniers_sujets_rencontres():
 
 def derniers_sujets_signales():
     def recent_filter(qs):
-        NUMBER_OF_MONTH_BACKWARDS = 1 # Must be lower than 12 !
-
         current_date = timezone.localtime(timezone.now()).date()
         recent_dates = [(current_date.month, current_date.year)]
-
         for i in range(1, NUMBER_OF_MONTH_BACKWARDS + 1):
             prev_month, prev_year = current_date.month - i, current_date.year
             if prev_month <= 0:
@@ -56,7 +53,6 @@ def derniers_sujets_signales():
         filtered = []
         for month, year in recent_dates:
             filtered += list(qs.filter(created_date__year=year, created_date__month=month))
-
         return filtered
 
     return recent_filter(Signalement.objects.all())
@@ -66,7 +62,7 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
 
     template_name = "maraudes/index.html"
 
-    #NoteFormMixin
+    # NoteFormMixin
     forms = {
         'appel': AppelForm,
         'signalement': SignalementForm,
@@ -89,18 +85,19 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
         if self.request.user.is_superuser:
             context['missing_cr'] = CompteRendu.objects.get_queryset().filter(
                     heure_fin__isnull=True,
-                    date__lt = timezone.localtime(timezone.now()).date()
+                    date__lt=timezone.localtime(timezone.now()).date()
                 )
         return context
 
 
-## COMPTE-RENDU DE MARAUDE
+# COMPTE-RENDU DE MARAUDE
 
 
 def redirect_to_current_compterendu(request):
     maraude_en_cours = Maraude.objects.get_in_progress()
 
     if not maraude_en_cours:
+        messages.warning(request, "Il n'y a actuellement aucune maraude en cours !")
         return redirect("maraudes:index")
 
     kwargs = {'pk': maraude_en_cours.pk}
@@ -128,7 +125,7 @@ class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
                                     instance=self.form.instance
                                 )
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request, **kwargs):
         self.get_forms(request.POST, request.FILES)
         if self.form.has_changed():
             if not self.form.is_valid() or not self.inline_formset.is_valid():
@@ -145,8 +142,10 @@ class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
         def calculate_end_time(debut, duree):
             end_minute = debut.minute + duree
             hour = debut.hour + end_minute // 60
-            if hour >= 24: hour -= 24
-            elif hour < 0: hour += 24
+            if hour >= 24:
+                hour -= 24
+            elif hour < 0:
+                hour += 24
             minute = end_minute % 60
             return datetime.time(
                                 hour,
@@ -179,10 +178,9 @@ class CompteRenduCreateView(MaraudeurMixin, generic.DetailView):
         return context
 
 
-
-class FinalizeView( MaraudeurMixin,
-                    generic.detail.SingleObjectMixin,
-                    generic.edit.FormView):
+class FinalizeView(MaraudeurMixin,
+                   generic.detail.SingleObjectMixin,
+                   generic.edit.FormView):
 
     template_name = "maraudes/finalize.html"
     model = Maraude
@@ -190,8 +188,7 @@ class FinalizeView( MaraudeurMixin,
     success_url = "/maraudes/"
 
     def get(self, *args, **kwargs):
-        print(self.request.GET)
-        if bool(self.request.GET.get("no_mail", False)) == True:
+        if bool(self.request.GET.get("no_mail", False)):
             messages.warning(self.request, "Aucun compte-rendu n'a été envoyé !")
             return self.finalize()
         return super().get(*args, **kwargs)
@@ -232,21 +229,23 @@ class FinalizeView( MaraudeurMixin,
         )
 
         if result == 1:
-            messages.success(self.request, "Le compte-rendu a été transmis à %s" % ", ".join(map(str, recipients)))
+            if settings.DEBUG:
+                messages.warning(self.request, "En mode DEBUG, le compte-rendu n'est pas réellement envoyé !")
+            else:
+                messages.success(self.request, "Le compte-rendu a été transmis à %s" % ", ".join(map(str, recipients)))
         else:
             messages.error(self.request, "Erreur lors de l'envoi du message !")
         return self.finalize()
 
     def get_context_data(self, **kwargs):
-        self.object = self.get_object()
+        obj = self.get_object()
         context = super().get_context_data(**kwargs)
-        if self.object.est_terminee is True:
-            context['form'] = None#Useless form
+        if obj.est_terminee is True:
+            context['form'] = None  # Useless form
             return context
         # Link there so that "Compte-rendu" menu item is not disabled
-        context['prochaine_maraude'] = self.object
+        context['prochaine_maraude'] = obj
         return context
-
 
 
 class PlanningView(MaraudeurMixin, generic.TemplateView):
@@ -256,10 +255,14 @@ class PlanningView(MaraudeurMixin, generic.TemplateView):
 
     def _parse_request(self):
         self.current_date = datetime.date.today()
-        try:    self.month = int(self.request.GET['month'])
-        except: self.month = self.current_date.month
-        try:    self.year = int(self.request.GET['year'])
-        except: self.year = self.current_date.year
+        try:
+            self.month = int(self.request.GET['month'])
+        except ValueError:
+            self.month = self.current_date.month
+        try:
+            self.year = int(self.request.GET['year'])
+        except ValueError:
+            self.year = self.current_date.year
 
     def _calculate_initials(self):
         self._parse_request()
@@ -267,7 +270,7 @@ class PlanningView(MaraudeurMixin, generic.TemplateView):
         for day, time in Planning.get_maraudes_days_for_month(self.year, self.month):
             date = datetime.date(self.year, self.month, day)
             try:
-                maraude = Maraude.objects.get(date=date)
+                Maraude.objects.get(date=date)
             except Maraude.DoesNotExist:
                 self.initials.append({
                         'date': date,
@@ -284,26 +287,26 @@ class PlanningView(MaraudeurMixin, generic.TemplateView):
         self._calculate_initials()
         return modelformset_factory(
                             Maraude,
-                            form = MaraudeHiddenDateForm,
-                            extra = len(self.initials),
+                            form=MaraudeHiddenDateForm,
+                            extra=len(self.initials),
                         )(
                             *args,
-                            queryset = self.get_queryset(),
-                            initial = self.initials
+                            queryset=self.get_queryset(),
+                            initial=self.initials
                         )
 
     def post(self, request):
-        self.formset = self.get_formset(request.POST, request.FILES)
-        for form in self.formset.forms:
+        formset = self.get_formset(request.POST, request.FILES)
+        for form in formset.forms:
             if form.is_valid():
                 form.save()
             else:
                 logger.info("Form was ignored ! (%s)" % (form.errors.as_data()))
         return redirect('maraudes:planning')
 
-    def get(self, request):
+    def get(self, request, *args, **kwargs):
         self.formset = self.get_formset()
-        return super().get(request)
+        return super().get(request, *args, **kwargs)
 
     def get_weeks(self):
         """ List of (day, form) tuples, split by weeks """
@@ -319,7 +322,7 @@ class PlanningView(MaraudeurMixin, generic.TemplateView):
                     day = yield None
                 day = yield form
 
-            while True: # Avoid StopIteration
+            while True:  # Avoid StopIteration
                 day = yield None
 
         form_or_none = form_generator(self.formset)
@@ -330,8 +333,8 @@ class PlanningView(MaraudeurMixin, generic.TemplateView):
                 for week in calendar.monthcalendar(self.year, self.month)
             ]
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['weekdays'] = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]
         context['weeks'] = self.get_weeks()
 
@@ -339,7 +342,6 @@ class PlanningView(MaraudeurMixin, generic.TemplateView):
         context['select_form'] = MonthSelectForm(month=self.month, year=self.year)
         context['month'], context['year'] = self.month, self.year
         return context
-
 
 
 class LieuCreateView(generic.edit.CreateView):
@@ -359,6 +361,6 @@ class LieuCreateView(generic.edit.CreateView):
         context = super().get_context_data(**kwargs)
         try:
             context['next'] = self.request.GET['next']
-        except:
+        except KeyError:
             context['next'] = None
         return context

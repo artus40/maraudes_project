@@ -1,7 +1,6 @@
 from django.db import models
-
 from notes.models import Note
-from . import managers
+
 
 # Extends 'notes' module
 
@@ -9,7 +8,6 @@ from . import managers
 class Observation(Note):
     """ Note dans le cadre d'une rencontre """
 
-    objects = managers.ObservationManager()
     rencontre = models.ForeignKey('maraudes.Rencontre',
                                   models.CASCADE,
                                   related_name="observations")
@@ -25,18 +23,24 @@ class Observation(Note):
 
     def note_bg_colors(self): return "info", "info"
 
+
 class Appel(Note):
 
-    entrant = models.BooleanField( "Appel entrant ?")
+    entrant = models.BooleanField("Appel entrant ?")
 
-    def note_labels(self):      return ["Reçu" if self.entrant else "Émis", self.created_by]
-    def note_bg_colors(self):   return "warning", "info"
+    def note_labels(self):
+        return ["Reçu" if self.entrant else "Émis", self.created_by]
+
+    def note_bg_colors(self):
+        return "warning", "info"
 
 
 class Signalement(Note):
 
     source = models.ForeignKey("utilisateurs.Organisme")
 
-    def note_labels(self): return [self.source, self.created_by]
-    def note_bg_colors(self): return 'danger', 'info'
+    def note_labels(self):
+        return [self.source, self.created_by]
 
+    def note_bg_colors(self):
+        return 'danger', 'info'

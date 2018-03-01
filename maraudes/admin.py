@@ -1,16 +1,12 @@
 from django.contrib import admin
 
-from django import forms
-
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
-
 from .models import *
 from .notes import Observation
 
 
 # Basic registration
 admin.site.register(Lieu)
+
 
 # Inlines
 class ObservationInline(admin.StackedInline):
@@ -30,7 +26,6 @@ class RencontreAdmin(admin.ModelAdmin):
 
     list_display = ('maraude', 'lieu', 'heure_debut', 'groupe_ou_individu')
     list_filter = ['lieu']
-
 
 
 @admin.register(Maraude)

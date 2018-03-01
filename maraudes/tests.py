@@ -1,18 +1,18 @@
 import datetime
-import random
 
 from calendar import monthrange
 from django.test import TestCase
 
 from .models import (
     Maraude, Maraudeur, Planning,
-    WEEKDAYS, HORAIRES_SOIREE,
+    HORAIRES_SOIREE,
     )
 
 
 MARAUDE_DAYS = [
     True, True, False, True, True, False, False
 ]
+
 
 def get_maraude_days(start, end):
     """ Iterator that returns date of maraude within start-end range """
@@ -32,6 +32,7 @@ def get_maraude_days(start, end):
 
     return maraude_days
 
+
 class PlanningTestCase(TestCase):
 
     def setUp(self):
@@ -49,11 +50,13 @@ class PlanningTestCase(TestCase):
 
     def test_get_maraudes_days_for_month(self):
         test_values = [
-                {'year': 2017, 'month': 2,
-'test': [(day, HORAIRES_SOIREE) for day in (2,3,6,7,9,10,13,14,16,17,20,21,23,24,27,28)] },
-                {'year': 2016, 'month': 3,
-'test': [(day, HORAIRES_SOIREE) for day in (1,3,4,7,8,10,11,14,15,17,18,21,22,24,25,28,29,31)] },
-            ]
+            {'year': 2017, 'month': 2,
+             'test': [(day, HORAIRES_SOIREE) for day in (2, 3, 6, 7, 9, 10, 13, 14, 16,
+                                                         17, 20, 21, 23, 24, 27, 28)]},
+            {'year': 2016, 'month': 3,
+             'test': [(day, HORAIRES_SOIREE) for day in (1, 3, 4, 7, 8, 10, 11, 14, 15,
+                                                         17, 18, 21, 22, 24, 25, 28, 29, 31)]},
+        ]
 
         for test in test_values:
             self.assertEqual(test['test'], list(Planning.get_maraudes_days_for_month(test['year'], test['month'])))
@@ -61,7 +64,9 @@ class PlanningTestCase(TestCase):
 
 class MaraudeManagerTestCase(TestCase):
 
-    maraudeurs = [{"first_name": "Astérix", "last_name": "Le Gaulois"}, {"first_name": "Obélix", "last_name": "et Idéfix"}]
+    maraudeurs = [
+        {"first_name": "Astérix", "last_name": "Le Gaulois"},
+        {"first_name": "Obélix", "last_name": "et Idéfix"}]
 
     def setUp(self):
         first = True
@@ -78,14 +83,15 @@ class MaraudeManagerTestCase(TestCase):
         self.past_dates = [self.today - datetime.timedelta(d) for d in (1, 3, 5)]
         self.future_dates = [self.today + datetime.timedelta(d) for d in (2, 4, 6)]
 
-        for date in [self.today,] + self.past_dates + self.future_dates:
+        for date in [self.today, ] + self.past_dates + self.future_dates:
             Maraude.objects.create(
-                date = date,
-                referent = self.referent,
-                binome = self.binome
+                date=date,
+                referent=self.referent,
+                binome=self.binome
             )
 
-    def retrieve_date(self, maraude):
+    @staticmethod
+    def retrieve_date(maraude):
         return maraude.date
 
     def test_all_of(self):
@@ -99,12 +105,12 @@ class MaraudeManagerTestCase(TestCase):
 
     def test_future_maraudes_no_args(self):
         """ La liste des futures maraudes """
-        test_set = set(self.future_dates + [self.today,])
+        test_set = set(self.future_dates + [self.today, ])
         check_set = set(map(self.retrieve_date, Maraude.objects.get_future()))
         self.assertEqual(test_set, check_set)
 
     def test_future_maraudes_are_sorted_by_date(self):
-        check_generator = iter(sorted(self.future_dates + [self.today,]))
+        check_generator = iter(sorted(self.future_dates + [self.today, ]))
         for maraude in Maraude.objects.get_future():
             self.assertEqual(maraude.date, next(check_generator))
 
@@ -126,7 +132,6 @@ class MaraudeManagerTestCase(TestCase):
 
     def test_get_next_of(self):
         self.assertEqual(self.retrieve_date(Maraude.objects.get_next_of(self.binome)), self.today)
-
 
 
 class MaraudeTestCase(TestCase):

@@ -1,11 +1,9 @@
-from django.db.models import Manager
-
 import datetime
-
 from django.utils import timezone
 from django.utils.functional import cached_property
+from django.db.models import Manager
 
-# TODO: What is really useful in there ??
+
 class MaraudeManager(Manager):
     """ Manager for Maraude objects """
 
@@ -33,7 +31,8 @@ class MaraudeManager(Manager):
 
     def get_future(self, date=None):
         """ Retourne la liste des prochaines maraudes """
-        if not date: date = self.today
+        if not date:
+            date = self.today
         return self.get_queryset().filter(
                             date__gte=date
                         ).order_by(
@@ -42,7 +41,8 @@ class MaraudeManager(Manager):
 
     def get_past(self, date=None):
         """ Retourne la liste des maraudes passées """
-        if not date: date = self.today
+        if not date:
+            date = self.today
         return self.get_queryset().filter(
                             date__lt=date
                         ).order_by(
@@ -81,15 +81,3 @@ class MaraudeManager(Manager):
                 return None
         except self.model.DoesNotExist:
             return None
-
-
-
-
-
-class ObservationManager(Manager):
-
-    def get_for_sujet(self, sujet):
-        return self.filter(sujet=sujet)
-
-    def get_first_for_sujet(self, sujet):
-        return self.filter(sujet=sujet).order_by('date').first()
