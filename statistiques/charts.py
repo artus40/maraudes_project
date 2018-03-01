@@ -8,6 +8,7 @@ from django.db.models import (Field, NullBooleanField,
 from graphos.sources.simple import SimpleDataSource
 from graphos.renderers import gchart
 
+from maraudes.models import Rencontre
 from notes.models import Sujet
 from .models import GroupeLieux
 
@@ -186,6 +187,27 @@ class AgePieChart(PieWrapper):
         super().__init__(data=data, title="Âge")
 
 
+
+class IndividuGroupeChart(PieWrapper):
+
+    def __init__(self, queryset):
+        data = [("individu/groupe", "count")]
+
+        # Cast parent Rencontre objects
+        queryset = Rencontre.objects.filter(
+            pk__in=queryset.values_list('rencontre')
+            )
+
+        counts = collections.defaultdict(lambda: 0)
+        for rencontre in queryset:
+            counts[rencontre.groupe_ou_individu()] += 1
+        print(counts)
+
+        for label, count in counts.items():
+            data += [(label, count)]
+        super().__init__(data=data, title="Individu ou Groupe")
+
+
 class RencontreParSujetChart(PieWrapper):
 
     labels = (('Rencontre unique', (1,)),
@@ -229,6 +251,17 @@ class RencontreParMoisChart(gchart.ColumnChart):
                          )
 
 
+
+def gen_heure_minute(_from, to):
+    start_hour = _from.hour
+    stop_hour, stop_min = to.hour, to.minute
+
+    for hour in range(start_hour, stop_hour + 1):
+        yield datetime.time(hour, 0)
+        if not (hour == stop_hour and 30 > stop_min):
+            yield datetime.time(hour, 30)
+
+
 class RencontreParHeureChart(gchart.AreaChart):
     def __init__(self, queryset):
         data = [("Heure", "Rencontres démarrées", "Au total (démarré + en cours)")]
@@ -238,9 +271,10 @@ class RencontreParHeureChart(gchart.AreaChart):
             data += [(heure, par_heure[heure], en_continu[heure]) for heure in sorted(par_heure.keys())]
         else:
             data += [("Heure", 0, 0)]
+
         super().__init__(SimpleDataSource(data),
                          options={
-                            "title": "Fréquentation de la maraude en fonction de l'heure (par quart d'heure)"
+                            "title": "Fréquentation de la maraude en fonction de l'heure (par quart d'heure)",
                             }
                          )
 

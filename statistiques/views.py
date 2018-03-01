@@ -1,3 +1,4 @@
+import datetime
 from collections import OrderedDict
 
 from django.core.exceptions import ImproperlyConfigured
@@ -141,12 +142,41 @@ class FrequentationChartsView(MultipleChartsView):
         ('Par mois', charts.RencontreParMoisChart),
         ('Par heure', charts.RencontreParHeureChart),
         ('Par sujet', charts.RencontreParSujetChart),
-        ('Par lieu', charts.RencontreParLieuChart)
+        ('Par lieu', charts.RencontreParLieuChart),
+        ('Individu ou Groupe', charts.IndividuGroupeChart),
         ])
 
     def get_queryset(self):
         return self.get_observations_queryset()
 
+
+class ComparatifHeures(MultipleChartsView):
+    title = "Comparaison décalage heures"
+    _charts = OrderedDict([
+        ('Par mois', charts.RencontreParMoisChart),
+        ('Par heure', charts.RencontreParHeureChart),
+        ('Par sujet', charts.RencontreParSujetChart),
+        ('Par lieu', charts.RencontreParLieuChart)
+        ])
+
+    def get_queryset(self):
+        #return self.get_observations_queryset()
+        debut_essai = datetime.datetime(2017, 11, 23)
+
+        # Horaires démarrés le 23novembre 2017, calcul de la période effective d'application
+        duree_periode_essai = datetime.datetime.now() - debut_essai
+
+        if self.year == 2017:
+            debut_periode = debut_essai.replace(year=2016)
+            fin_periode = debut_periode + duree_periode_essai
+        elif self.year == 2018:
+            debut_periode = debut_essai
+            fin_periode = debut_essai + duree_periode_essai
+        else:
+            debut_periode, fin_periode = (None, None)
+
+        print(debut_periode, fin_periode)
+        return Observation.objects.filter(created_date__range=(debut_periode, fin_periode))
 
 # AjaxMixin
 class AjaxOrRedirectMixin(object):

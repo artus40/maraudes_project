@@ -92,35 +92,45 @@ class MaraudeListView(ListView):
     ]
 
 
+
+def info_completed_filter(qs):
+    completed_ratio = 70  # % of total fields completed
+
+    excluded_set = set()
+    for sujet in qs:
+        if sujet.statistiques.info_completed >= completed_ratio:
+            excluded_set.add(sujet.pk)
+
+    return qs.exclude(pk__in=excluded_set)
+
+def rencontre_dans_le_mois(qs):
+    """ Renvoie les sujets du queryset pour lesquelles une observation a été enregistrée
+    au cours des 30 derniers jours """
+    days_number = 30
+    limit_date = timezone.now().date() - datetime.timedelta(days_number)
+    included_set = set()
+    for sujet in qs:
+        # Try to find an observation in the range
+        most_recent_obs = Observation.objects.filter(sujet=sujet).order_by("-created_date").first()
+        if most_recent_obs and most_recent_obs.created_date >= limit_date:
+            included_set.add(sujet.pk)
+    return qs.filter(pk__in=included_set)
+
+def a_revoir_avant_bilan(qs):
+    year_of_bilan = 2017
+    included_set = set()
+    for sujet in qs:
+        most_recent_obs = Observation.objects.filter(sujet=sujet).order_by("-created_date").first()
+        if most_recent_obs and most_recent_obs.created_date.year >= year_of_bilan:
+            included_set.add(sujet.pk)
+    return qs.filter(pk__in=included_set)
+
 class SujetListView(ListView):
     # ListView
     model = Sujet
     template_name = "notes/liste_sujets.html"
     cell_template = "notes/table_cell_sujets.html"
     table_header = "Liste des sujets"
-
-    def info_completed_filter(qs):
-        completed_ratio = 70  # % of total fields completed
-
-        excluded_set = set()
-        for sujet in qs:
-            if sujet.statistiques.info_completed >= completed_ratio:
-                excluded_set.add(sujet.pk)
-
-        return qs.exclude(pk__in=excluded_set)
-
-    def rencontre_dans_le_mois(qs):
-        """ Renvoie les sujets du queryset pour lesquelles une observation a été enregistrée
-        au cours des 30 derniers jours """
-        days_number = 30
-        limit_date = timezone.now().date() - datetime.timedelta(days_number)
-        included_set = set()
-        for sujet in qs:
-            # Try to find an observation in the range
-            most_recent_obs = Observation.objects.filter(sujet=sujet).order_by("-created_date").first()
-            if most_recent_obs and most_recent_obs.created_date >= limit_date:
-                included_set.add(sujet.pk)
-        return qs.filter(pk__in=included_set)
 
     filters = [
         ("Connu(e)s cette année",
@@ -129,6 +139,7 @@ class SujetListView(ListView):
          ),
         ("Rencontré(e)s dans le mois", rencontre_dans_le_mois),
         ("Statistiques incomplètes", info_completed_filter),
+        ("Revoir avant bilan", lambda qs: a_revoir_avant_bilan(info_completed_filter(qs))),
         ("Signalements", lambda qs: qs.filter(pk__in=Signalement.objects.all().values_list('sujet'))),
     ]
 
