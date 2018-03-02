@@ -27,10 +27,10 @@ class NoteAdmin(admin.ModelAdmin):
 
     fieldsets = [
         ('Contexte', {
-                        'fields': ['created_by', ('created_date', 'created_time')]
-                        }),
+            'fields': ['created_by', ('created_date', 'created_time')]
+        }),
         ('Note', {
-                        'fields': ['sujet', 'text']}),
+            'fields': ['sujet', 'text']}),
     ]
 
     list_display = ['created_date', 'sujet', 'type_name', 'text']

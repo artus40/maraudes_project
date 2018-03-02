@@ -1,11 +1,10 @@
 import logging
-
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 from django.shortcuts import reverse
-
 from django.db import models
 from . import managers
+from statistiques.models import FicheStatistique
 
 logger = logging.getLogger(__name__)
 
@@ -55,7 +54,6 @@ class Sujet(models.Model):
     def save(self, *args, **kwargs):
         self.clean()
         if not self.id:
-            from statistiques.models import FicheStatistique
             super().save(*args, **kwargs)
             FicheStatistique.objects.create(sujet=self)
         else:

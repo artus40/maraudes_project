@@ -16,8 +16,8 @@ class NoteForm(forms.ModelForm):
         widgets = {
             'sujet': Select2Widget(),
             'text': forms.Textarea(
-                            attrs={'rows': 4}
-                            ),
+                attrs={'rows': 4}
+            ),
         }
 
 
@@ -81,11 +81,12 @@ class SujetCreateForm(forms.ModelForm):
     class Meta:
         model = Sujet
         fields = ['nom', 'surnom', 'prenom', 'genre', 'premiere_rencontre']
-        widgets = {'premiere_rencontre': forms.SelectDateWidget(
-                                            empty_label=("Année", "Mois", "Jour"),
-                                            years=YEAR_CHOICE,
-                                            ),
-                   }
+        widgets = {
+            'premiere_rencontre': forms.SelectDateWidget(
+                empty_label=("Année", "Mois", "Jour"),
+                years=YEAR_CHOICE,
+            ),
+        }
 
 
 class SelectSujetForm(forms.Form):

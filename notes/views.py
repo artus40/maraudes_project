@@ -92,7 +92,6 @@ class MaraudeListView(ListView):
     ]
 
 
-
 def info_completed_filter(qs):
     completed_ratio = 70  # % of total fields completed
 
@@ -102,6 +101,7 @@ def info_completed_filter(qs):
             excluded_set.add(sujet.pk)
 
     return qs.exclude(pk__in=excluded_set)
+
 
 def rencontre_dans_le_mois(qs):
     """ Renvoie les sujets du queryset pour lesquelles une observation a été enregistrée
@@ -116,6 +116,7 @@ def rencontre_dans_le_mois(qs):
             included_set.add(sujet.pk)
     return qs.filter(pk__in=included_set)
 
+
 def a_revoir_avant_bilan(qs):
     year_of_bilan = 2017
     included_set = set()
@@ -124,6 +125,7 @@ def a_revoir_avant_bilan(qs):
         if most_recent_obs and most_recent_obs.created_date.year >= year_of_bilan:
             included_set.add(sujet.pk)
     return qs.filter(pk__in=included_set)
+
 
 class SujetListView(ListView):
     # ListView
@@ -268,7 +270,7 @@ class SujetCreateView(AjaxTemplateMixin, generic.edit.CreateView):
         context = super().get_context_data(**kwargs)
         try:
             context['next'] = self.request.GET['next']
-        except:
+        except KeyError:
             context['next'] = None
         return context
 
