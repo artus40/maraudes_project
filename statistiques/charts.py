@@ -128,12 +128,17 @@ class ColumnWrapper(gchart.ColumnChart):
     options = {
         'is3D': False,
         'legend': {'position': 'labeled', 'maxLines': 3, 'textStyle': {'fontSize': 16, }},
-        'title': 'test',
     }
 
     def __init__(self, *args, **kwargs):
-        kwargs.update(options=self.options.copy())
+        kwargs.update(self.options.copy())
         super().__init__(*args, **kwargs)
+
+    def get_js_template(self):
+        return "statistiques/gchart/column_chart.html"
+
+    def get_html_template(self):
+        return "statistiques/gchart/html.html"
 
 
 class DonneeGeneraleChart(gchart.BarChart):
@@ -229,7 +234,7 @@ class RencontreParSujetChart(PieWrapper):
                          )
 
 
-class RencontreParMoisChart(gchart.ColumnChart):
+class RencontreParMoisChart(ColumnWrapper):
 
     def __init__(self, queryset):
         data = [("Mois", "Rencontres")]
@@ -244,6 +249,7 @@ class RencontreParMoisChart(gchart.ColumnChart):
             data += [(NOM_MOIS[item['mois']], item['nbr']) for item in par_mois]
         else:
             data += [("Mois", 0)]
+
         super().__init__(SimpleDataSource(data),
                          options={
                             "title": "Nombre de rencontres par mois"

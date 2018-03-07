@@ -1,0 +1,20 @@
+ {% extends "graphos/gchart/base.html" %}
+
+{% block create_chart %}
+  var chart_data = data;
+  var chart_div = document.getElementById('{{ chart.get_html_id }}');
+  var chart = new google.visualization.ColumnChart(chart_div);
+
+  var data = new google.visualization.DataView(chart_data);
+      data.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       ]);
+
+  // Wait for the chart to finish drawing before calling the getImageURI() method.
+  google.visualization.events.addListener(chart, 'ready', function () {
+        $("#image-{{ chart.get_html_id }}").attr("href", chart.getImageURI());
+  });
+{% endblock %}
