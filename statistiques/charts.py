@@ -32,13 +32,6 @@ LABELS = {
     }
 
 
-# TODO: Retrieve charts data from cache to avoid recalculating on each request
-class CachedDataSource:
-    pass
-
-# TODO: Clean up...
-
-
 class FieldValuesCountDataSource(SimpleDataSource):
     """ Generates data from a limited set of choices.
 
@@ -192,7 +185,6 @@ class AgePieChart(PieWrapper):
         super().__init__(data=data, title="Âge")
 
 
-
 class IndividuGroupeChart(PieWrapper):
 
     def __init__(self, queryset):
@@ -255,7 +247,6 @@ class RencontreParMoisChart(ColumnWrapper):
                             "title": "Nombre de rencontres par mois"
                             }
                          )
-
 
 
 def gen_heure_minute(_from, to):

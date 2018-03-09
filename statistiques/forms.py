@@ -1,10 +1,9 @@
 from django import forms
 from django.db.utils import OperationalError
-
 from .models import FicheStatistique
 
-class StatistiquesForm(forms.ModelForm):
 
+class StatistiquesForm(forms.ModelForm):
     class Meta:
         model = FicheStatistique
         exclude = ["sujet"]
@@ -16,8 +15,10 @@ def get_year_range():
             ).order_by(
                 'sujet__premiere_rencontre'
             )
-    year = lambda f: f.sujet.premiere_rencontre.year
-    
+
+    def year(fiche):
+        return fiche.sujet.premiere_rencontre.year
+
     # Need to call exists() in a try block
     # to avoid raising exception on first migration
     try:
@@ -30,6 +31,6 @@ def get_year_range():
     else:
         return ()
 
-class SelectRangeForm(forms.Form):
 
+class SelectRangeForm(forms.Form):
     period = forms.ChoiceField(label="Année", choices=[(0, 'Tout')] + [(i, str(i)) for i in get_year_range()])

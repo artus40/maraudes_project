@@ -160,7 +160,7 @@ class ComparatifHeures(MultipleChartsView):
         ])
 
     def get_queryset(self):
-        #return self.get_observations_queryset()
+        # Return self.get_observations_queryset()
         debut_essai = datetime.datetime(2017, 11, 23)
 
         # Horaires démarrés le 23novembre 2017, calcul de la période effective d'application
@@ -178,8 +178,9 @@ class ComparatifHeures(MultipleChartsView):
         print(debut_periode, fin_periode)
         return Observation.objects.filter(created_date__range=(debut_periode, fin_periode))
 
+
 # AjaxMixin
-class AjaxOrRedirectMixin(object):
+class AjaxOrRedirectMixin:
     """ For view that should be retrieved by Ajax only. If not,
         redirects to the primary view where these are displayed """
 
