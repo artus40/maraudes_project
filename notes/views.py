@@ -118,7 +118,7 @@ def rencontre_dans_le_mois(qs):
 
 
 def a_revoir_avant_bilan(qs):
-    year_of_bilan = 2017
+    year_of_bilan = timezone.now().date().year - 1 # Should be redacting report for last year :)
     included_set = set()
     for sujet in qs:
         most_recent_obs = Observation.objects.filter(sujet=sujet).order_by("-created_date").first()
