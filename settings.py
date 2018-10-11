@@ -51,7 +51,7 @@ TEMPLATES[0]['DIRS'] += [
 # Applications
 INSTALLED_APPS += [
     # Design
-    'bootstrap3',
+    'bootstrap4',
     'django_select2',
     # Search Engine
     'watson',

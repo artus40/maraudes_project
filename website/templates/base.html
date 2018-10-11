@@ -1,84 +1,97 @@
 <!DOCTYPE html>
-{% load staticfiles %} {% load bootstrap3 %} {% load navbar %}
+{% load staticfiles %} {% load bootstrap4 %} {% load navbar %}
 <html lang="fr">
   <head>
     <title>{% block title %}La maraude{% endblock %}</title>
     {% bootstrap_css %}{% bootstrap_javascript %}
     <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css" />
     {% block extrastyle %}{% endblock %}
     {% if stylesheets %}{% for stylesheet in stylesheets %}<link rel="stylesheet" type="text/css" href="{% static stylesheet %}" />{% endfor %}{% endif %}
   {% block extrahead %}{% endblock %}
   {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
   </head>
   <body {% block extra_body_attrs %}{% endblock %}>
-    <div class="container-fluid">
-      <!-- START: Navigation Bar -->
-      <div class="row">
-      <nav class="navbar navbar-static-top navbar-default">
-        <div class="container-fluid">
-          <!-- Brand and toggle get grouped for better mobile display -->
-          <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar-collapse" aria-expanded="false">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="/">Maraude ALSA</a>
-          </div>
-          <!-- Collect the nav links, forms, and other content for toggling -->
-          <div class="collapse navbar-collapse" id="navbar-collapse">
-            <ul class="nav navbar-nav navbar-left">
-              {% if user.is_authenticated %}
-              <li class="dropdown {% active namespace="maraudes" append=True %}">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% bootstrap_icon "road" %}&nbsp; Maraudes</span></a>
-                {% include "maraudes/menu.html" %}
-              </li>
-              <li class="dropdown {% active namespace="notes" append=True %}">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{% bootstrap_icon "pencil" %}&nbsp; Notes</span></a>
-                {% include "notes/menu.html" %}
-              </li>
-              {% else %}
-              <li {% active namespace="statistiques" %}><a href="{% url "statistiques:index" %}">{% bootstrap_icon "stats" %}&nbsp; Statistiques</a></li>
+    <!-- START: Navigation Bar -->
+    <nav class="navbar fixed-top navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">Maraude ALSA</a>
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="navbar-collapse">
+                    <ol class="breadcrumb navbar-text">
+        {% block breadcrumbs %}
+          <li>{{ page_header }}</li>
+          {% if page_header_small %}<li>{{ page_header_small }}</li>{% endif %}
+        {% endblock %}
+        </ol>
+        {% if user.is_authenticated %}
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+            Menu <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </a>
+            <ul class="dropdown-menu">
+              <li><a href="{% url "statistiques:index" %}"><span class="glyphicon glyphicon-stats"></span> Statistiques</a></li>
+              {% if user.is_superuser %}
+              <li><a href="/admin/"><span class="glyphicon glyphicon-wrench"></span> Administration</a></li>
               {% endif %}
+              <li role="separator" class="divider"></li>
+              <li><a href="{% url "utilisateurs:index" %}"><span class="glyphicon glyphicon-user"></span> {{ user }}</a></li>
+              <li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a></li>
             </ul>
-            <ol class="breadcrumb navbar-text">
-            {% block breadcrumbs %}
-              <li>{{ page_header }}</li>
-              {% if page_header_small %}<li>{{ page_header_small }}</li>{% endif %}
-            {% endblock %}
-            </ol>
+          </li>
+        </ul>
+        {% endif %}
+        </div><!-- /.navbar-collapse -->
+    </nav>
+    <!-- END: Navigation Bar -->
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
             {% if user.is_authenticated %}
-            <ul class="nav navbar-nav navbar-right">
-              <li class="dropdown">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                Menu <span class="glyphicon glyphicon-menu-hamburger"></span>
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a href="{% url "statistiques:index" %}"><span class="glyphicon glyphicon-stats"></span> Statistiques</a></li>
-                  {% if user.is_superuser %}
-                  <li><a href="/admin/"><span class="glyphicon glyphicon-wrench"></span> Administration</a></li>
-                  {% endif %}
-                  <li role="separator" class="divider"></li>
-                  <li><a href="{% url "utilisateurs:index" %}"><span class="glyphicon glyphicon-user"></span> {{ user }}</a></li>
-                  <li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a></li>
-                </ul>
+            <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">
+              <span>Maraudes</span>
+            </h6>
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                  <a href="{% url 'maraudes:index' %}" class="nav-link {% active namespace="maraudes" append=True %}">Maraudes</a>
+              </li>
+            </ul>
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                  <a href="{% url 'maraudes:planning' %}" class="nav-link {% active namespace="maraudes" append=True %}">Planning</a>
+              </li>
+            </ul>
+            <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">
+              <span>Notes</span>
+            </h6>
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                  <a href="{% url 'notes:liste-maraude' %}" class="nav-link {% active namespace="notes" append=True %}">Par maraudes</a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'notes:liste-sujet' %}" class="nav-link {% active namespace="notes" append=True %}">Par sujets</a>
+              </li>
+            </ul>
+            {% else %}
+            <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">
+              <span>Menu</span>
+            </h6>
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                  <a class="nav-link {% active namespace="statistiques" append=True %}" href="{% url "statistiques:index" %}">Statistiques</a>
               </li>
             </ul>
             {% endif %}
-          </div><!-- /.navbar-collapse -->
-        </div><!-- /.container-fluid -->
-      </nav>
-      </div>
-      <!-- END: Navigation Bar -->
-      <div class="row">
-        <div class="col-lg-10 col-lg-push-2 col-md-9 col-md-push-3">
+            {% block sidebar %}{% endblock %}
+          </div>
+        </nav>
+        <main role="main" class="col-md-10 ml-sm-auto px-4">
+          <div class="d-flex justify-content-between">
           {% bootstrap_messages %}
           {% block page_content %}{% endblock %}
-        </div>
-        <div class="col-lg-2 col-lg-pull-10 col-md-3 col-md-pull-9">
-            {% block sidebar %}{% endblock %}
-        </div>
+          </div>
+        </main>
       </div>
     </div>
   </body>
