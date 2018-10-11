@@ -1,6 +1,6 @@
 from django import views
 from django.urls import reverse
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponsePermanentRedirect
 
@@ -25,6 +25,10 @@ def _get_entry_point(user):
     else:
         return reverse('index')
 
+
+def logout_view(request):
+    logout(request)
+    return HttpResponseRedirect('/')
 
 def login_view(request):
     if request.method == 'GET':
