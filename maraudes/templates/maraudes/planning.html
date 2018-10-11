@@ -1,5 +1,5 @@
 {% extends "maraudes/base.html" %}
-{% load bootstrap3 %}
+{% load bootstrap4 %}
 
 {% block title %} {{ block.super }} Planning {% endblock %}
 
@@ -12,10 +12,10 @@
   {{ block.super }}
   <div class="panel panel-primary text-center">
     <div class="panel-body">
-    <label for="submit-form" class="btn btn-primary">{% bootstrap_icon "floppy-save" %} Enregistrer</label>
+    <label for="submit-form" class="btn btn-primary">Enregistrer</label>
     <hr />
     <form action="" method="get" class="form-horizontal">
-      <strong>{% bootstrap_icon "calendar" %} Choisir une autre période : </strong>
+      <strong>Choisir une autre période : </strong>
       {% bootstrap_form select_form layout='horizontal' %}
       {% bootstrap_button "Choisir" button_type="submit" button_class="btn btn-primary btn-sm" %}
     </form>

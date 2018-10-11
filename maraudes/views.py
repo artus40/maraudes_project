@@ -255,14 +255,14 @@ class PlanningView(MaraudeurMixin, generic.TemplateView):
 
     def _parse_request(self):
         self.current_date = datetime.date.today()
-        try:
-            self.month = int(self.request.GET['month'])
-        except ValueError:
-            self.month = self.current_date.month
-        try:
-            self.year = int(self.request.GET['year'])
-        except ValueError:
-            self.year = self.current_date.year
+        self.month = int(
+            self.request.GET.get(
+                'month', 
+                default=self.current_date.month))
+        self.year = int(
+            self.request.GET.get(
+                'year',
+                default=self.current_date.year))
 
     def _calculate_initials(self):
         self._parse_request()
