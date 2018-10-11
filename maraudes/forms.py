@@ -76,8 +76,8 @@ class AppelForm(UserNoteForm):
 
 
 class SignalementForm(UserNoteForm):
-    nom = forms.CharField(64, required=False)
-    prenom = forms.CharField(64, required=False)
+    nom = forms.CharField(max_length=64, required=False)
+    prenom = forms.CharField(max_length=64, required=False)
     age = forms.IntegerField(required=False)
     genre = forms.ChoiceField(choices=GENRE_CHOICES)
 

@@ -37,7 +37,7 @@ class Appel(Note):
 
 class Signalement(Note):
 
-    source = models.ForeignKey("utilisateurs.Organisme")
+    source = models.ForeignKey("utilisateurs.Organisme", on_delete=models.CASCADE)
 
     def note_labels(self):
         return [self.source, self.created_by]

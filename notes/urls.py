@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = "notes"
+
 urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name="index"),
     url(r'sujets/$', views.SujetListView.as_view(), name="liste-sujet"),

@@ -2,6 +2,8 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = "statistiques"
+
 urlpatterns = [
     url('^$', views.DashboardView.as_view(), name="index"),
     url('^charts/$', views.TypologieChartsView.as_view(), name="typologie"),

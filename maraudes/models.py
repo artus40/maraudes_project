@@ -2,7 +2,7 @@ import calendar
 import datetime
 from django.db import models
 from django.db.models import Count
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils.translation import gettext as _
 
 from utilisateurs.models import Maraudeur
@@ -108,14 +108,14 @@ class Maraude(models.Model):
     # Maraudeurs
     referent = models.ForeignKey(
                             "utilisateurs.Maraudeur",
-                            models.CASCADE,
+                            on_delete=models.CASCADE,
                             verbose_name="Référent",
                             related_name="references",
                             default=get_referent_maraude
                         )
     binome = models.ForeignKey(
                             "utilisateurs.Maraudeur",
-                            models.CASCADE,
+                            on_delete=models.CASCADE,
                             verbose_name="Binôme",
                             related_name="maraudes",
                             limit_choices_to={

@@ -104,13 +104,14 @@ class Note(models.Model):
 
     sujet = models.ForeignKey(
                         Sujet,
+                        on_delete=models.CASCADE,
                         related_name="notes",
-                        on_delete=models.CASCADE
                         )
     text = models.TextField("Texte")
 
     created_by = models.ForeignKey(
                         'utilisateurs.Professionnel',
+                        on_delete=models.SET_NULL,
                         blank=True,
                         null=True
                         )
