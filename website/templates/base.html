@@ -13,35 +13,8 @@
   </head>
   <body {% block extra_body_attrs %}{% endblock %}>
     <!-- START: Navigation Bar -->
-    <nav class="navbar fixed-top navbar-dark bg-dark">
+    <nav class="navbar fixed-top navbar-dark bg-dark shadow p-0 flex-no-wrap">
         <a class="navbar-brand" href="/">Maraude ALSA</a>
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar-collapse">
-                    <ol class="breadcrumb navbar-text">
-        {% block breadcrumbs %}
-          <li>{{ page_header }}</li>
-          {% if page_header_small %}<li>{{ page_header_small }}</li>{% endif %}
-        {% endblock %}
-        </ol>
-        {% if user.is_authenticated %}
-        <ul class="nav navbar-nav navbar-right">
-          <li class="dropdown">
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-            Menu <span class="glyphicon glyphicon-menu-hamburger"></span>
-            </a>
-            <ul class="dropdown-menu">
-              <li><a href="{% url "statistiques:index" %}"><span class="glyphicon glyphicon-stats"></span> Statistiques</a></li>
-              {% if user.is_superuser %}
-              <li><a href="/admin/"><span class="glyphicon glyphicon-wrench"></span> Administration</a></li>
-              {% endif %}
-              <li role="separator" class="divider"></li>
-              <li><a href="{% url "utilisateurs:index" %}"><span class="glyphicon glyphicon-user"></span> {{ user }}</a></li>
-              <li><a href="/logout/"><span class="glyphicon glyphicon-log-out"></span> Déconnexion</a></li>
-            </ul>
-          </li>
-        </ul>
-        {% endif %}
-        </div><!-- /.navbar-collapse -->
     </nav>
     <!-- END: Navigation Bar -->
     <div class="container-fluid">
@@ -49,7 +22,7 @@
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
           <div class="sidebar-sticky">
             {% if user.is_authenticated %}
-            <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">
+            <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted border-bottom">
               <span>Maraudes</span>
             </h6>
             <ul class="nav flex-column">
@@ -87,9 +60,11 @@
           </div>
         </nav>
         <main role="main" class="col-md-10 ml-sm-auto px-4">
-          <div class="d-flex justify-content-between">
+          <div class="container">
+              <div class="row pt-4">
           {% bootstrap_messages %}
           {% block page_content %}{% endblock %}
+                </div>
           </div>
         </main>
       </div>
