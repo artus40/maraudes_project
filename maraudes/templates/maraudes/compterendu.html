@@ -30,77 +30,78 @@
     $.fn.onAddForm = function(row) {
       // Load django_select2 fields
       row.find('.django-select2').djangoSelect2();
-      var button = row.find('a.btn-delete')
-      var text = button.text()
-      button.html('<span class="glyphicon glyphicon-minus"></span> ' + text);
     };
 
     $.fn.onDeleteForm = function(row) {
       /*
       * Custom code when deleting dynamic form
       */
+      console.log(row);
     };
   });
-    $(function() {
-        $('.dynamic-formset').formset({
-                    prefix: '{{ inline_formset.prefix }}',
-                    addText: 'Ajouter une personne',
-                    deleteText: 'Supprimer',
-                    addCssClass: 'card-link btn-sm btn-add',
-                    deleteCssClass: 'card-link btn-sm btn-delete',
-                    added: $.fn.onAddForm,
-                    removed: $.fn.onDeleteForm
-        });
-
-        var text = $('a.btn-add').text()
-        $('a.btn-add').html('(+) ' + text)
-        text = $('a.btn-delete:first').text()
-        $('a.btn-delete').html('(-) ' + text);
+  
+  $(function() {
+    $('.dynamic-formset').formset({
+        prefix: '{{ inline_formset.prefix }}',
+        addText: 'Ajouter une personne',
+        deleteText: 'Supprimer',
+        addCssClass: 'card-link btn-add',
+        deleteCssClass: 'btn-link btn-sm btn-delete pb-3',
+        added: $.fn.onAddForm,
+        removed: $.fn.onDeleteForm
     });
+
+    var text = $('a.btn-add').text();
+    $('a.btn-add').html('(+) ' + text);
+    var text = $('a.btn-delete:first').text();
+    $('a.btn-delete').html('(-) ' + text);
+  });
 </script>
 
-  <div class="col-lg-8 col-md-12">
-    <form method="post" action="{% url 'maraudes:create' maraude.pk %}">
-    {% csrf_token %}
-      <div class="card border-dark shadow">
-        <div class="card-header bg-dark text-white">
+      <div class="card mx-auto border-dark shadow">
+        <div class="card-header py-2 bg-dark text-white">
           Nouvelle rencontre
         </div>
         <div class="card-body">
+        <form method="post" action="{% url 'maraudes:create' maraude.pk %}">
+        {% csrf_token %}
           {% include "maraudes/compterendu_form.html" %}
-        </div>
-        <div class="card-footer text-right">
-        {% bootstrap_button "Enregistrer" button_type="submit" button_class="btn btn-success btn-sm" %}
+          {% bootstrap_button "Enregistrer" button_type="submit" button_class="btn btn-success btn-sm btn-block mt-3 mb-0" %}
+        </form>
+        {{ form.media.js }}{{ form.media.css }}
         </div>
       </div>
-    </form>
-    {{ form.media.js }}{{ form.media.css }}
-  </div>
-  <div class="col-lg-4 col-md-12">
-    <div id="saved-rencontres">
-      <h4 class="page-header">Enregistrées</h4>
-      <table class="table table-bordered">
-        {% for rencontre in rencontres %}<tr><th colspan="2" class="active">{{ rencontre }}</th></tr>
-        {% for observation in rencontre.observations.all %}<tr>
-            <td>
-              <a href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
-              <a class="btn btn-link btn-xs show-stats-btn" href="#" value="{{observation.sujet.pk}}">
-              Mise à jour</a>
-            </td></tr>
-            <tr><td>{{observation.text | linebreaks }}</td></tr>{% endfor %}{% endfor %}
-      </table>
     </div>
-    <div id="update-stats">
-      <h4 class="page-header"><span id="sujet-name"></span> <small>Fiche statistiques</small>
+</div>
+<div class="row">
+  <div class="container-fluid">
+    <div class="card-columns m-4">
+      {% for rencontre in rencontres %}
+        <div class="card">
+        <div class="card-header py-2 bg-dark text-white">{{ rencontre }}</div>
+        <div class="card-body">
+        {% for observation in rencontre.observations.all %}<tr>
+              <a class="card-link" href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
+              <a class="card-link show-stats-btn" href="#" value="{{observation.sujet.pk}}">
+              Mise à jour</a>
+            <hr />
+            <p>{{observation.text | linebreaks }}</p>
+         {% endfor %}
+         </div>
+         </div>
+       {% endfor %}
+  </div>
+
+  <div class="card" id="update-stats">
+    <h6 class="card-header"><span id="sujet-name"></span> <small>Fiche statistiques</small>
         <div class="pull-right" id="update-buttons">
         <label for="submit-form" class="btn btn-primary" id="update-stats-btn" pk="">Enregistrer</label>
         <span class="btn btn-primary btn-sm" id="cancel">Annuler</span>
-      </div></h4>
+      </div></h6>
       <div id="fiche-stats" class="well well-sm">
       </div>
     </div>
-
-  </div>
+  </div> <!-- Container -->
 <!-- Modal and button linking -->
 <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
    <div class="modal-dialog">
