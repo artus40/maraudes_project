@@ -1,23 +1,24 @@
-{% load bootstrap3 %}{% load staticfiles %}
-<div class="form-inline well well-sm text-center">
+{% load bootstrap4 %}{% load staticfiles %}
+<div class="form-row mb-3">
   {% if form.id %}{% bootstrap_field form.id %}{% endif %}
-    {% bootstrap_field form.lieu layout="inline" size="small" %}
-    <div class="input-group">{% bootstrap_field form.heure_debut layout="inline" size="small" %}
-      <span class="input-group-btn">
-        <button id="minus-5" class="btn btn-default btn-sm" type="button"><strong>-5</strong></button>
-        <button id="plus-5" class="btn btn-default btn-sm" type="button"><strong>+5</strong></button>
-      </span>
-    </div>
-    {% bootstrap_field form.duree layout="inline" size="small" %}
+  {% with lyt="inline" grp="col" sz="small" %}
+  {% bootstrap_field form.lieu layout=lyt form_group_class=grp size=sz %}
+  {% bootstrap_field form.heure_debut form_group_class=grp layout=lyt size=sz %}
+  <span class="btn-group pr-1">
+    <button id="minus-5" class="btn btn-outline-secondary btn-sm" type="button"><strong>-5</strong></button>
+    <button id="plus-5" class="btn btn-outline-secondary btn-sm" type="button"><strong>+5</strong></button>
+  </span>
+  {% bootstrap_field form.duree layout=lyt size=sz form_group_class=grp %}
+  {% endwith %}
 </div>
-
-<div class="form-horizontal">
+<hr />
+<div class="form">
   {{ inline_formset.management_form }}
   {% for form in inline_formset %}
     <div class="dynamic-formset">
     {% if form.id %}{% bootstrap_field form.id %}{% endif %}
-    {% bootstrap_field form.sujet size="small" layout="horizontal" %}
-    {% bootstrap_field form.text size="small" layout="horizontal" %}
+    {% bootstrap_field form.sujet size="small" show_label=False %}
+    {% bootstrap_field form.text size="small" show_label=False %}
     {% if form.instance.pk %}
       {% bootstrap_field form.note_ptr %}
       {% bootstrap_field form.DELETE layout="horizontal" %}

@@ -1,5 +1,5 @@
 {% extends "maraudes/base.html" %}
-{% load bootstrap3 staticfiles %}
+{% load bootstrap4 staticfiles %}
 
 {% block title %} {{ block.super }} Compte-rendu du {{ object.date }} {% endblock %}
 
@@ -10,25 +10,15 @@
 
 {% block sidebar %}
     {{ block.super }}
-    <div class="panel panel-primary">
-      <div class="panel-body text-right">
-        <h4>{% bootstrap_icon "plus" %} Création</h4>
-        <div class="btn-group" role="group" aria-label="...">
-          <button id="new-sujet" class="btn btn-default">{% bootstrap_icon "user" %} Sujet</button>
-          <button id="new-lieu" class="btn btn-default">{% bootstrap_icon "globe" %} Lieu</button>
-        </div>
-        <hr />
-        <h4>Finaliser</h4>
-        <div class="pull-right"><a class="btn btn-primary" href="{% url 'maraudes:finalize' maraude.pk %}">
-        {% bootstrap_icon "ok-circle" %} Finaliser</a></div>
-      </div>
+    <hr />
+    <h4 class="sidebar-heading px-3 mt-4 mb-1">Création</h4>
+    <div class="btn-group px-3" role="group" aria-label="...">
+      <button id="new-sujet" class="btn btn-light">Sujet</button>
+      <button id="new-lieu" class="btn btn-light">Lieu</button>
     </div>
-    <div class="panel panel-danger">
-      <div class="panel-body text-right">
-        <h4>{% bootstrap_icon "warning-sign" %} Attention</h4>
-        <p>Si vous devez créer un nouveau sujet ou lieu, pensez à le faire avant de rentrer des données ! (ou pensez à copier les notes pour les reproduire ensuite)</p>
-        <p>En effet, la page sera rafraîchie après la création, effaçant toutes les données de formulaire qui n'ont pas été enregistrées</p>
-      </div>
+    <h4 class="sidebar-heading px-3 mt-4 mb-1">Finaliser</h4>
+    <div class="px-3">
+      <a class="btn btn-success btn-block" href="{% url 'maraudes:finalize' maraude.pk %}">Terminer</a>
     </div>
 {% endblock %}
 
@@ -56,38 +46,37 @@
                     prefix: '{{ inline_formset.prefix }}',
                     addText: 'Ajouter une personne',
                     deleteText: 'Supprimer',
-                    addCssClass: 'btn btn-link btn-add',
-                    deleteCssClass: 'btn btn-link btn-delete',
+                    addCssClass: 'card-link btn-sm btn-add',
+                    deleteCssClass: 'card-link btn-sm btn-delete',
                     added: $.fn.onAddForm,
                     removed: $.fn.onDeleteForm
         });
 
         var text = $('a.btn-add').text()
-        $('a.btn-add').html('<span class="glyphicon glyphicon-plus"></span> ' + text)
+        $('a.btn-add').html('(+) ' + text)
         text = $('a.btn-delete:first').text()
-        $('a.btn-delete').html('<span class="glyphicon glyphicon-minus"></span> ' + text);
+        $('a.btn-delete').html('(-) ' + text);
     });
 </script>
 
-<div class="row">
-  <div class="col-lg-7 col-md-12">
+  <div class="col-lg-8 col-md-12">
     <form method="post" action="{% url 'maraudes:create' maraude.pk %}">
     {% csrf_token %}
-      <div class="panel panel-primary panel-collapse">
-        <div class="panel-heading">
-          <h4 class="panel-title">Nouvelle rencontre</h4>
+      <div class="card border-dark shadow">
+        <div class="card-header bg-dark text-white">
+          Nouvelle rencontre
         </div>
-        <div class="panel-body">
+        <div class="card-body">
           {% include "maraudes/compterendu_form.html" %}
         </div>
-        <div class="panel-footer text-right">
-        {% bootstrap_button "Enregistrer" icon="save" button_type="submit" button_class="btn btn-success btn-sm" %}
+        <div class="card-footer text-right">
+        {% bootstrap_button "Enregistrer" button_type="submit" button_class="btn btn-success btn-sm" %}
         </div>
       </div>
     </form>
     {{ form.media.js }}{{ form.media.css }}
   </div>
-  <div class="col-lg-5 col-md-12">
+  <div class="col-lg-4 col-md-12">
     <div id="saved-rencontres">
       <h4 class="page-header">Enregistrées</h4>
       <table class="table table-bordered">
@@ -96,7 +85,7 @@
             <td>
               <a href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
               <a class="btn btn-link btn-xs show-stats-btn" href="#" value="{{observation.sujet.pk}}">
-              {% bootstrap_icon "stats" %} Mise à jour</a>
+              Mise à jour</a>
             </td></tr>
             <tr><td>{{observation.text | linebreaks }}</td></tr>{% endfor %}{% endfor %}
       </table>
@@ -104,15 +93,14 @@
     <div id="update-stats">
       <h4 class="page-header"><span id="sujet-name"></span> <small>Fiche statistiques</small>
         <div class="pull-right" id="update-buttons">
-        <label for="submit-form" class="btn btn-primary" id="update-stats-btn" pk="">{% bootstrap_icon "floppy-save" %} Enregistrer</label>
-        <span class="btn btn-primary btn-sm" id="cancel">{% bootstrap_icon "remove" %}Annuler</span>
+        <label for="submit-form" class="btn btn-primary" id="update-stats-btn" pk="">Enregistrer</label>
+        <span class="btn btn-primary btn-sm" id="cancel">Annuler</span>
       </div></h4>
       <div id="fiche-stats" class="well well-sm">
       </div>
     </div>
 
   </div>
-</div>
 <!-- Modal and button linking -->
 <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
    <div class="modal-dialog">

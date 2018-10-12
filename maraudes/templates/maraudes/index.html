@@ -28,13 +28,22 @@
         </p>
         <a href="{% url 'maraudes:planning' %}" class="card-link text-primary">Voir le planning</a>
       </div>
-        {% if derniers_sujets_rencontres %}
-		{% table derniers_sujets_rencontres cols=3 cell_template="maraudes/table_cell_derniers_sujets.html" header="Ces derniers temps..." %}
-        {% endif %}
-        {% if derniers_sujets_signales %}
-        {% table derniers_sujets_signales cols=3 cell_template="maraudes/table_cell_derniers_signalements.html" header="Signalements récents" %}
-        {% endif %}
     </div>
+    {% if derniers_sujets_rencontres %}
+    <div class="card card-body">
+	{% table derniers_sujets_rencontres cols=3 cell_template="maraudes/table_cell_derniers_sujets.html" header="Ces derniers temps..." %}
+    </div>
+    {% endif %}
+    {% if derniers_sujets_signales %}
+    <div class="card rounded-bottom my-3">
+      <div class="card-header rounded-0 py-1 text-white bg-dark">Signalements récents</div>
+      <div class="card-body">
+        {% for sjt in derniers_sujets_signales %}
+            {{ sjt }}
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
 
 {% if user.is_superuser and missing_cr %}
     <div class="card border-warning rounded-bottom my-3">
@@ -46,19 +55,19 @@
 {% endif %}
 </div>
 <div class="col-md-12 col-lg-6">
-  <div class="card rounded-bottom">
-    <div class="card-header rounded-0 bg-dark text-white">
+  <div class="card shadow">
+    <div class="card-header bg-dark text-white">
         <ul class="nav nav-tabs card-header-tabs" id="addNote" role="tablist">
-            <li class="nav-item"><strong class="nav-text pr-2">Ajouter </strong></li>
+            <li class="nav-item my-2"><strong class="nav-text pr-2">Ajouter </strong></li>
             <li class="nav-item">
               <a class="nav-link" role="tab" data-toggle="tab" href="#noteNote" aria-expanded="false" aria-controls="noteNote">Note</a></li>
-            <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#noteAppel" aria-expanded="false" aria-controls="noteAppel">Appel</a></li>
+            <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#noteAppel" aria-expanded="false" aria-controls="noteAppel">Appel</a></li>
             <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#noteSignalement" aria-expanded="false" aria-controls="noteSignalement">Signalement</a></li>
         </ul>
     </div>
     <div class="card-body tab-content">
         <div class="tab-pane fade" id="noteNote"><div class="card card-body">Note</div></div>
-        <div class="tab-pane fade show active" id="noteAppel" role="tabpanel">
+        <div class="tab-pane fade" id="noteAppel" role="tabpanel">
          {% include "notes/form_appel_inner.html" with form=appel_form %}
         </div>
         <div class="tab-pane fade" id="noteSignalement">
