@@ -3,8 +3,8 @@
 <html lang="fr">
   <head>
     <title>{% block title %}La maraude{% endblock %}</title>
-   {% bootstrap_javascript %}
    {% bootstrap_css %}
+   {% bootstrap_javascript jquery="full" %}
     <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css" />
     {% block extrastyle %}{% endblock %}
@@ -66,8 +66,10 @@
         </nav>
         <main role="main" class="col-md-10 ml-sm-auto px-4">
           <div class="container">
-              <div class="row pt-4">
-                {% bootstrap_messages %}
+              <div class="row pt-4 d-flex justify-content-center">
+              {% bootstrap_messages %}
+              </div>
+              <div class="row">
                 {% block page_content %}{% endblock %}
               </div>
           </div>

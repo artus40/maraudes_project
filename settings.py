@@ -74,18 +74,6 @@ NOSE_ARGS = [
     "--cover-package=website,maraudes,notes,utilisateurs",
 ]
 
-# bootstrap3
-BOOTSTRAP3 = {
-    # The URL to the jQuery JavaScript file
-    'base_url': os.path.join(STATIC_URL, 'css', 'bootstrap/'),
-    'jquery_url': os.path.join(STATIC_URL, 'scripts', 'jquery.min.js'),
-    'include_jquery': True,
-    # Label class to use in horizontal forms
-    'horizontal_label_class': 'col-md-2',
-    # Field class to use in horizontal forms
-    'horizontal_field_class': 'col-md-10',
-    }
-
 # django-select2
 SELECT2_JS = 'scripts/select2.min.js'
 SELECT2_CSS = 'css/select2.min.css'

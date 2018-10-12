@@ -1,17 +1,18 @@
 {% load bootstrap4 %}
 <form action="" method="POST">{% csrf_token %}
-  {% with "inline" as layout %}
-  <div class="form-{{layout}} well well-sm text-center">
-    {% bootstrap_field  form.created_date layout=layout %}
-    {% bootstrap_field  form.created_time layout=layout %}
-    {% bootstrap_field  form.entrant layout=layout %}
-  </div>  {% endwith %}
-  {% with "horizontal" as layout %}
-  <div class="form-{{layout}}">
-    {% bootstrap_field form.sujet layout=layout %}
-    {% bootstrap_field form.text layout=layout %}
-  </div>  {% endwith %}
-  <div class="pull-right">{% bootstrap_button "Enregistrer l'appel" button_type="submit" %}</div>
+  <div class="form-row py-1">
+  {% with layout="inline" grp_cls="col" sz="small" %}
+    {% bootstrap_field  form.created_date size=sz form_group_class=grp_cls layout=layout %}
+    {% bootstrap_field  form.created_time size=sz form_group_class=grp_cls layout=layout %}
+  {% endwith %}
+  </div>
+  {% bootstrap_field form.entrant size=sz%}
+  <hr />
+  {% bootstrap_field form.sujet show_label=False %}
+  {% bootstrap_field form.text show_label=False %}
+  <div class="ml-auto">
+      {% bootstrap_button "Enregistrer l'appel" button_type="submit" button_class="btn-primary btn-sm btn-block" %}
+  </div>
 </form>
 {{ form.media.js }}{{ form.media.css }}
 

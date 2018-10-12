@@ -1,27 +1,22 @@
 {% load bootstrap4 %}
 <form action="" method="POST">{% csrf_token %}
   {% bootstrap_form_errors form %}
-  {% with "inline" as layout %}
-  <div class="form-group form-{{layout}} well">
-    <label class="control-label col-md-2" for="id_source">
-    Source
-    </label>
-    {% bootstrap_field  form.source layout=layout %}
-    {% bootstrap_field  form.created_date layout=layout %}
-    {% bootstrap_field  form.created_time layout=layout %}
-  </div>  {% endwith %}
-  <div class="well">
-    {% with "horizontal" as layout %}
-    <div class="form-group form-{{layout}}">
-      {% bootstrap_field  form.nom layout=layout %}
-      {% bootstrap_field  form.prenom layout=layout %}
-      {% bootstrap_field  form.genre layout=layout %}
-      {% bootstrap_field  form.age layout=layout %}
-    </div>  {% endwith %}
+  {% with layout="inline" grp_cls="col" sz="small" %}
+  <div class="form-row p-0 py-1">
+    {% bootstrap_field form.created_date size=sz form_group_class=grp_cls layout=layout %}
+    {% bootstrap_field form.created_time size=sz form_group_class=grp_cls layout=layout %}
+  </div>  
+  {% bootstrap_field form.source size=sz layout="horizontal" %}
+  <hr />
+  <div class="form-row p-0 py-1">
+      {% bootstrap_field form.nom size=sz form_group_class=grp_cls layout=layout %}
+      {% bootstrap_field form.prenom size=sz form_group_class=grp_cls layout=layout %}
   </div>
-  {% with "horizontal" as layout %}
-  <div class="form-group form-{{layout}}">
-    {% bootstrap_field  form.text layout=layout %}
-  </div>  {% endwith %}
-  <div class="pull-right">{% bootstrap_button "Enregistrer le signalement" button_type="submit" %}</div>
+  <div class="form-row p-0 pb-3">
+      {% bootstrap_field form.genre size=sz form_group_class=grp_cls layout=layout %}
+      {% bootstrap_field form.age size=sz form_group_class=grp_cls layout=layout %}
+  </div>
+  {% endwith %}
+  {% bootstrap_field form.text show_label=False placeholder="Informations du signalement..." %}
+  {% bootstrap_button "Enregistrer le signalement" button_type="submit" button_class="btn-primary btn-sm btn-block" %}
 </form>

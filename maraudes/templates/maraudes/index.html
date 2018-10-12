@@ -10,8 +10,8 @@
 {% block page_content %}
 {% load tables %}
 <div class="col-lg-6 col-md-12">
-    <div class="card border-dark">
-      <div class="card-header">Planning</div>
+    <div class="card rounded-bottom">
+      <div class="card-header rounded-0 py-2 bg-dark text-white">Planning</div>
       <div class="card-body">
         <h6 class="card-title">Prochaine maraude</h6>
 	<p class="card-text">
@@ -26,7 +26,7 @@
           Aucune maraude prévue.
         {% endif %}
         </p>
-        <a href="{% url 'maraudes:planning' %}" class="card-link">Voir le planning</a>
+        <a href="{% url 'maraudes:planning' %}" class="card-link text-primary">Voir le planning</a>
       </div>
         {% if derniers_sujets_rencontres %}
 		{% table derniers_sujets_rencontres cols=3 cell_template="maraudes/table_cell_derniers_sujets.html" header="Ces derniers temps..." %}
@@ -37,8 +37,8 @@
     </div>
 
 {% if user.is_superuser and missing_cr %}
-    <div class="card border-warning my-3">
-      <div class="card-header">
+    <div class="card border-warning rounded-bottom my-3">
+      <div class="card-header py-2 bg-dark text-warning rounded-0">
         Compte-rendus en retard
       </div>
       {% table missing_cr cols=2 cell_template="maraudes/table_cell_missing_cr.html" %}
@@ -46,21 +46,22 @@
 {% endif %}
 </div>
 <div class="col-md-12 col-lg-6">
-  <div class="card">
-    <div class="card-header">
-        <ul class="nav nav-tabs card-header-tabs">
+  <div class="card rounded-bottom">
+    <div class="card-header rounded-0 bg-dark text-white">
+        <ul class="nav nav-tabs card-header-tabs" id="addNote" role="tablist">
             <li class="nav-item"><strong class="nav-text pr-2">Ajouter </strong></li>
-            <li class="nav-item"><a class="nav-link active " role="button" data-toggle="collapse" href="#noteNote" aria-expanded="false" aria-controls="noteNote">Note</a></li>
-            <li class="nav-item"><a class="nav-link" role="button" data-toggle="collapse" href="#noteAppel" aria-expanded="false" aria-controls="noteAppel">Appel</a></li>
-            <li class="nav-item"><a class="nav-link" data-toggle="collapse" href="#noteSignalement" aria-expanded="false" aria-controls="noteSignalement">Signalement</a></li>
+            <li class="nav-item">
+              <a class="nav-link" role="tab" data-toggle="tab" href="#noteNote" aria-expanded="false" aria-controls="noteNote">Note</a></li>
+            <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#noteAppel" aria-expanded="false" aria-controls="noteAppel">Appel</a></li>
+            <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#noteSignalement" aria-expanded="false" aria-controls="noteSignalement">Signalement</a></li>
         </ul>
     </div>
-    <div class="card-body">
-        <div class="collapse show" id="noteNote"><div class="card card-body">Note</div></div>
-        <div class="collapse" id="noteAppel">
+    <div class="card-body tab-content">
+        <div class="tab-pane fade" id="noteNote"><div class="card card-body">Note</div></div>
+        <div class="tab-pane fade show active" id="noteAppel" role="tabpanel">
          {% include "notes/form_appel_inner.html" with form=appel_form %}
         </div>
-        <div class="collapse" id="noteSignalement">
+        <div class="tab-pane fade" id="noteSignalement">
          {% include "notes/form_signalement_inner.html" with form=signalement_form %}
         </div>
     </div>
