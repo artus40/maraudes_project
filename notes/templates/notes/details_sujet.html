@@ -90,14 +90,10 @@
 {% block sidebar %}
 {{ block.super }}
 {% if user.is_superuser %}
-    <hr />
-    <div class="panel panel-primary text-right"><div class="panel-heading"><h4 class="panel-title"><strong>Administration :</strong></h4></div>
-    <div class="panel-body text-center">
-    <div class="btn-group-vertical" role="group" aria-label="...">
-      <a href="{% url 'admin:notes_note_changelist' %}?sujet__exact={{sujet.pk}}" class="btn btn-primary">Éditer les notes</a>
-      <a href="{% url 'notes:sujets-merge' pk=object.pk %}" class="btn btn-danger">Fusionner</a>
-    </div>
-    </div>
+    <h6 class="sidebar-heading mt-4 px-3">Administration</h6>
+    <div class="px-3 btn-group-vertical d-flex justify-content-center" role="group" aria-label="...">
+      <a href="{% url 'admin:notes_note_changelist' %}?sujet__exact={{sujet.pk}}" class="btn btn-primary btn-sm">Éditer les notes</a>
+      <a href="{% url 'notes:sujets-merge' pk=object.pk %}" class="btn btn-danger btn-sm">Fusionner</a>
     </div>
 {% endif %}
 {% endblock %}

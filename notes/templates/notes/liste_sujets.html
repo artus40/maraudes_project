@@ -10,7 +10,7 @@
 
 {% block sidebar_insert %}
   <h4 class="sidebar-heading mt-4 px-3">Rechercher</h4>
-  <form action="{% url "notes:liste-sujet" %}" method="POST" class="form form-group">
+  <form class="px-3" action="{% url "notes:liste-sujet" %}" method="POST" class="form form-group">
     {% csrf_token %}
     <div class="input-group">
       <input type="text" name="q" class="form-control" placeholder="Chercher un sujet" aria-describedby="basic-addon1">
@@ -20,7 +20,7 @@
     </div>
   </form>
   <h4 class="sidebar-heading mt-4 px-3">Outils</h4>
-  <a class="btn btn-primary btn-block" href="{% url "notes:create-sujet" %}">Ajouter un sujet</a> 
+  <div class="px-3"><a class="btn btn-primary btn-block" href="{% url "notes:create-sujet" %}">Ajouter un sujet</a></div>
 {% endblock %}
 
 {% block search %}
