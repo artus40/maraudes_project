@@ -1,8 +1,8 @@
-{% load bootstrap3 %}
+{% load bootstrap4 %}
 
-<h4>Période</h4>
-  <form action="" method="get">
-    {% bootstrap_form form layout="inline" %}
-    <input type="hidden" name="graph" value="{{active}}" />
-    {% bootstrap_button "Ok" button_type="submit" %}
-  </form>
+<h4 class="sidebar-heading mt-2 px-3">Période</h4>
+<form class="form px-3" action="" method="get">
+  {% bootstrap_form form layout="inline" %}
+  <input type="hidden" name="graph" value="{{active}}" />
+  {% bootstrap_button "Ok" button_type="submit" button_class="btn btn-dark btn-block" %}
+</form>

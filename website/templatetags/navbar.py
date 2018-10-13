@@ -15,7 +15,7 @@ def active(context, namespace=None, viewname=None, append=False):
     except:
         (cur_namespace, cur_viewname) = (None, context.request.resolver_match.view_name)
 
-    string = "class=\"active\"" if not append else "active"
+    string = "class=\"active shadow\"" if not append else "active shadow"
 
     if namespace == cur_namespace:
         if not viewname or viewname == cur_viewname:

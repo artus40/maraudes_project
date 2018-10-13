@@ -35,26 +35,20 @@
       <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
           <div class="sidebar-sticky">
-            {% if user.is_authenticated %}
             <h6 class="sidebar-heading px-3 mt-4 text-muted">Menu</h6>
             <ul class="nav flex-column">
+            {% if user.is_authenticated %}
               <li class="nav-item">
                   <a href="{% url 'maraudes:index' %}" class="nav-link {% active namespace="maraudes" append=True %}">Maraudes</a>
               </li>
               <li class="nav-item">
                 <a href="{% url 'notes:liste-sujet' %}" class="nav-link {% active namespace="notes" append=True %}">Suivi</a>
               </li>
-            </ul>
-            {% else %}
-            <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">
-              <span>Menu</span>
-            </h6>
-            <ul class="nav flex-column">
+            {% endif %}
               <li class="nav-item">
                   <a class="nav-link {% active namespace="statistiques" append=True %}" href="{% url "statistiques:index" %}">Statistiques</a>
               </li>
             </ul>
-            {% endif %}
             {% block sidebar %}{% endblock %}
           </div>
         </nav>

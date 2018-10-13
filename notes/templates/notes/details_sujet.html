@@ -1,5 +1,5 @@
 {% extends "notes/details.html" %}
-{% load bootstrap3 %}
+{% load bootstrap4 %}
 
 {% block title %}
   {{ block.super }} {{ sujet }}
@@ -29,7 +29,7 @@
     <div class="panel-heading" role="tab" id="notesAjoutHeading">
       <h4 class="panel-title">
         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNotesAjout" aria-expanded="false" aria-controls="collapseTwo">
-          {% bootstrap_icon "plus" %} Ajouter une note
+          Ajouter une note
         </a>
       </h4>
     </div>
@@ -60,11 +60,11 @@
     </div>
     <div class="panel-footer text-right">
       <span class="text-right" id="normal-buttons">
-        <p>{% bootstrap_icon "tasks" %} {{ sujet.statistiques.info_completed }}%&nbsp;
+        <p>{{ sujet.statistiques.info_completed }}%&nbsp;
         <span class="btn btn-primary btn-sm" id="update-stats">Mettre à jour</span></p>
       </span>
       <span class="text-right" id="update-buttons">
-        <label for="submit-form" class="btn btn-primary">{% bootstrap_icon "floppy-save" %} Enregistrer</label>
+        <label for="submit-form" class="btn btn-primary">Enregistrer</label>
         <span class="btn btn-primary btn-sm" id="cancel">Annuler</span>
       </span>
 
@@ -94,8 +94,8 @@
     <div class="panel panel-primary text-right"><div class="panel-heading"><h4 class="panel-title"><strong>Administration :</strong></h4></div>
     <div class="panel-body text-center">
     <div class="btn-group-vertical" role="group" aria-label="...">
-      <a href="{% url 'admin:notes_note_changelist' %}?sujet__exact={{sujet.pk}}" class="btn btn-primary">{% bootstrap_icon "pencil" %} Éditer les notes</a>
-      <a href="{% url 'notes:sujets-merge' pk=object.pk %}" class="btn btn-danger">{% bootstrap_icon "paste" %} Fusionner</a>
+      <a href="{% url 'admin:notes_note_changelist' %}?sujet__exact={{sujet.pk}}" class="btn btn-primary">Éditer les notes</a>
+      <a href="{% url 'notes:sujets-merge' pk=object.pk %}" class="btn btn-danger">Fusionner</a>
     </div>
     </div>
     </div>

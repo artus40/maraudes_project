@@ -7,11 +7,7 @@
 {% block sidebar %}
   {{ block.super }}
   <hr />
-  <div class="panel panel-primary">
-    <div class="panel-body text-right">
-      {% include "statistiques/filter_form.html" %}
-    </div>
-  </div>
+  {% include "statistiques/filter_form.html" %}
 {% endblock %}
 
 {% block breadcrumbs %}

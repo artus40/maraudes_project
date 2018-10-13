@@ -238,13 +238,13 @@ class FinalizeView(MaraudeurMixin,
         return self.finalize()
 
     def get_context_data(self, **kwargs):
-        obj = self.get_object()
+        self.object = self.get_object()
         context = super().get_context_data(**kwargs)
-        if obj.est_terminee is True:
+        if self.object.est_terminee is True:
             context['form'] = None  # Useless form
             return context
         # Link there so that "Compte-rendu" menu item is not disabled
-        context['prochaine_maraude'] = obj
+        context['prochaine_maraude'] = self.object
         return context
 
 

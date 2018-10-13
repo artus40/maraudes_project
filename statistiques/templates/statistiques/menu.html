@@ -1,18 +1,11 @@
 {% load navbar %}
-  <ul class="nav nav-pills nav-stacked text-right">
-    <li role="presentation" {% active namespace="statistiques" viewname="index" %}>
-      <a href="{% url "statistiques:index" %}?period={{year|default:0}}">Maraudes&nbsp;
-        <span class="glyphicon glyphicon-road"></span>
-      </a>
+  <hr/>
+  <h6 class="sidebar-heading mt-4 px-3">Sous-Catégories</h6>
+  <ul class="nav flex-column">
+    <li class="nav-item">
+      <a class="nav-link {% active namespace="statistiques" viewname="typologie" append=True %}" href="{% url "statistiques:typologie" %}?period={{year|default:0}}">Typologie</a>
     </li>
-    <li role="presentation" {% active namespace="statistiques" viewname="typologie" %}>
-      <a href="{% url "statistiques:typologie" %}?period={{year|default:0}}">Typologie&nbsp;
-        <span class="glyphicon glyphicon-user"></span>
-      </a>
-    </li>
-    <li role="presentation" {% active namespace="statistiques" viewname="frequentation" %}>
-      <a href="{% url "statistiques:frequentation" %}?period={{year|default:0}}">Fréquentation&nbsp;
-        <span class="glyphicon glyphicon-stats"></span>
-      </a>
+    <li role="nav-item"> 
+      <a class="nav-link {% active namespace="statistiques" viewname="frequentation"  append=True %}" href="{% url "statistiques:frequentation" %}?period={{year|default:0}}">Fréquentation</a>
     </li>
   </ul>

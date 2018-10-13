@@ -9,21 +9,18 @@
 {% endblock %}
 
 {% block sidebar_insert %}
-  <div class="panel panel-primary text-right">
-    <div class="panel-body">
-    <h4><strong>Rechercher</strong></h4>
-      <form action="{% url "notes:liste-sujet" %}" method="POST" class="form form-group">{% csrf_token %}
-      <div class="input-group">
+  <h4 class="sidebar-heading mt-4 px-3">Rechercher</h4>
+  <form action="{% url "notes:liste-sujet" %}" method="POST" class="form form-group">
+    {% csrf_token %}
+    <div class="input-group">
       <input type="text" name="q" class="form-control" placeholder="Chercher un sujet" aria-describedby="basic-addon1">
       <span class="input-group-btn">
-        <button type="submit" class="btn btn-primary"><span class=" glyphicon glyphicon-search"></span> </button>
+        <button type="submit" class="btn btn-primary">C</button>
       </span>
-      </div>
-      </form>
-        <hr/>
-    <h4><strong>Outils</strong></h4>
-   <a class="btn btn-primary" href="{% url "notes:create-sujet" %}">
-    <span class="glyphicon glyphicon-plus"></span> Ajouter un sujet</a> </div></div>
+    </div>
+  </form>
+  <h4 class="sidebar-heading mt-4 px-3">Outils</h4>
+  <a class="btn btn-primary btn-block" href="{% url "notes:create-sujet" %}">Ajouter un sujet</a> 
 {% endblock %}
 
 {% block search %}

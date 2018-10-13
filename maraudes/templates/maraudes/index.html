@@ -9,9 +9,9 @@
 
 {% block page_content %}
 {% load tables %}
-<div class="col-lg-6 col-md-12">
+<div class="col-lg-7 col-md-12">
     <div class="card rounded-bottom">
-      <div class="card-header rounded-0 py-2 bg-dark text-white">Planning</div>
+      <h6 class="card-header rounded-0 py-2 bg-dark text-white">Planning</h6>
       <div class="card-body">
         <h6 class="card-title">Prochaine maraude</h6>
 	<p class="card-text">
@@ -30,22 +30,34 @@
         <a href="{% url 'notes:liste-maraude' %}" class="card-link text-primary">Toutes les maraudes</a>
       </div>
     </div>
+    <div class="row">
     {% if derniers_sujets_rencontres %}
-    <div class="card card-body">
-	{% table derniers_sujets_rencontres cols=3 cell_template="maraudes/table_cell_derniers_sujets.html" header="Ces derniers temps..." %}
+    <div class="col">
+    <div class="card rounded-bottom my-3">
+        <div class="card-header rounded-0 py-1 text-white bg-dark">En ce moment nous croisons...</div>
+        <div class="card-body">
+          {% for sujet in derniers_sujets_rencontres %}
+             {{ sujet }},
+          {% endfor %}
+        </div>
+    </div>
     </div>
     {% endif %}
     {% if derniers_sujets_signales %}
+    <div class="col">
     <div class="card rounded-bottom my-3">
-      <div class="card-header rounded-0 py-1 text-white bg-dark">Signalements récents</div>
+      <div class="card-header rounded-0 py-1 text-white bg-dark">
+          Signalements récents
+      </div>
       <div class="card-body">
         {% for sjt in derniers_sujets_signales %}
             {{ sjt }}
         {% endfor %}
       </div>
     </div>
+    </div>
     {% endif %}
-
+    </div>
 {% if user.is_superuser and missing_cr %}
     <div class="card border-warning rounded-bottom my-3">
       <div class="card-header py-2 bg-dark text-warning rounded-0">
@@ -55,7 +67,7 @@
     </div>
 {% endif %}
 </div>
-<div class="col-md-12 col-lg-6">
+<div class="col-md-12 col-lg-5">
   <div class="card shadow">
     <div class="card-header bg-dark text-white">
         <ul class="nav nav-tabs card-header-tabs" id="addNote" role="tablist">

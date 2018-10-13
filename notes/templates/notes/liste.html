@@ -5,12 +5,13 @@
 {{ block.super }}
 {% block sidebar_insert %}{% endblock %}
 {% if filters %}
-<div class="well">
-  <h4 class="text-right"><span class="glyphicon glyphicon-filter"></span> <strong>Filtres</strong></h4>
-  <ul class="nav nav-pills nav-stacked text-right">
+  <h4 class="sidebar-heading mt-4 px-3">Filtrer</h4>
+  <ul class="nav flex-column">
   {% for filter in filters %}
-    <li role="presentation" {% if filter.active %} class="active" {% endif %}>
-        <a href="?filter={{filter.parameter_name}}">{{ filter.title }}</a>
+  <li role="presentation" class="nav-item">
+        <a href="?filter={{filter.parameter_name}}" class="nav-link {% if filter.active %}active{% endif %}">
+          {{ filter.title }}
+        </a>
     </li>
   {% endfor %}
   </ul>

@@ -10,27 +10,24 @@
 
 {% block sidebar %}
   {{ block.super }}
-  {% if chart %}
   <hr />
-  <div class="panel panel-primary">
-    <div class="panel-body text-right">
-      {% include "statistiques/filter_form.html" with active=active %}
-      <hr />
-      <p>Échantillon : {{ queryset_count }} objets</p>
-    </div>
-  </div>
+  {% if chart %}
+  {% include "statistiques/filter_form.html" with active=active %}
+  <hr />
+  <p class="text-muted px-3">Échantillon : {{ queryset_count }} objets</p>
   {% endif %}
 {% endblock %}
 
 {% block page_content %}
- <ul class="nav nav-pills nav-justified">
+<div class="card card-body py-1">
+ <ul class="nav nav-pills justify-content-center">
   {% for name in chart_list %}
-     <li role="presentation" {%if name == active%} class="active" {%endif%}>
-         <a href="?graph={{name}}&period={{year}}">{{ name }}</a>
+     <li class="nav-item">
+         <a class="nav-link {%if name == active%}active{%endif%}" href="?graph={{name}}&period={{year}}">{{ name }}</a>
      </li>
   {% endfor %}
  </ul>
-
+</div>
   {% if chart %}
     {{ chart.as_html }}
   {% endif %}
