@@ -25,12 +25,9 @@
 
     };
 
-    $('#minus-5').click(function() {
-      $.fn.editHeureValue(-5)
-      //console.log('minus 5')
-    });
-    $('#plus-5').click(function() {
-      $.fn.editHeureValue(5)
-      //console.log('plus 5')
-    });
+    $('#minus-10').click(function() { $.fn.editHeureValue(-10) });
+    $('#minus-5').click(function() { $.fn.editHeureValue(-5) });
+    $('#plus-5').click(function() { $.fn.editHeureValue(5) });
+    $('#plus-10').click(function() { $.fn.editHeureValue(10) });
+
   });

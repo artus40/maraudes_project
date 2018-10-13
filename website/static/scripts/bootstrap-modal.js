@@ -6,7 +6,7 @@
   var formAjaxSubmit = function(form, modal)
   {
        $(form).submit(function (e) {
-            e.preventDefault();
+           e.preventDefault();
            $.ajax({
                  type: $(this).attr('method'),
                  url: $(this).attr('action'),
@@ -16,8 +16,8 @@
                            $(modal).find('.modal-body').html(xhr);
                            formAjaxSubmit(form, modal);
                      } else {
-                           $(modal).modal('toggle');
-                          // Reload page ?
+                           $(modal).modal('hide');
+                           // Reload page ?
                            location.reload()
                      }
                  },

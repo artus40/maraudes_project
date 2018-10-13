@@ -12,9 +12,9 @@
     {{ block.super }}
     <hr />
     <h4 class="sidebar-heading px-3 mt-4 mb-1">Création</h4>
-    <div class="btn-group px-3" role="group" aria-label="...">
-      <button id="new-sujet" class="btn btn-light">Sujet</button>
-      <button id="new-lieu" class="btn btn-light">Lieu</button>
+    <div class="btn-group px-3" role="group" aria-label="Creation">
+      <button id="new-sujet" class="btn btn-dark">Sujet</button>
+      <button id="new-lieu" class="btn btn-dark">Lieu</button>
     </div>
     <h4 class="sidebar-heading px-3 mt-4 mb-1">Finaliser</h4>
     <div class="px-3">
@@ -23,6 +23,23 @@
 {% endblock %}
 
 {% block page_content %}
+<!-- Modal and button linking -->
+<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+     <div class="modal-content">
+       <div class="modal-header">
+         <h4 class="modal-title">Modal title</h4>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+           <span aria-hidden="true">&times;</span>
+         </button>
+       </div>
+       <div id="form-modal-body" class="modal-body">
+         <div class="alert alert-warning">Content should be there...</div>
+       </div>
+     </div>
+   </div>
+</div>
+<script type="text/javascript" src="{% static 'scripts/bootstrap-modal.js' %}"></script>
 <script type="text/javascript" src="{% static "scripts/jquery.formset.js" %}"></script>
 <script type="text/javascript">
   /* Dynamic Formsets */
@@ -58,7 +75,7 @@
   });
 </script>
 
-      <div class="card mx-auto border-dark shadow">
+      <div class="d-flex flex-fill card mx-auto border-dark shadow">
         <div class="card-header py-2 bg-dark text-white">
           Nouvelle rencontre
         </div>
@@ -72,27 +89,23 @@
         </div>
       </div>
     </div>
-</div>
+  </div>
 <div class="row">
   <div class="container-fluid">
     <div class="card-columns m-4">
-      {% for rencontre in rencontres %}
-        <div class="card">
+      {% for rencontre in rencontres %}<div class="card">
         <div class="card-header py-2 bg-dark text-white">{{ rencontre }}</div>
-        <div class="card-body">
-        {% for observation in rencontre.observations.all %}<tr>
-              <a class="card-link" href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
-              <a class="card-link show-stats-btn" href="#" value="{{observation.sujet.pk}}">
-              Mise à jour</a>
-            <hr />
-            <p>{{observation.text | linebreaks }}</p>
-         {% endfor %}
-         </div>
-         </div>
-       {% endfor %}
-  </div>
+        <div class="card-body">{% for observation in rencontre.observations.all %}
+           <a class="card-link btn-sm my-0" href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
+           <a class="card-link my-0 show-stats-btn" href="#" value="{{observation.sujet.pk}}">
+           Mise à jour</a>
+           <hr />
+           <span class="text-justify">{{observation.text | linebreaks }}</span>
+         {% endfor %}</div>
+      </div>{% endfor %}
+    </div>
 
-  <div class="card" id="update-stats">
+    <div class="card" id="update-stats">
     <h6 class="card-header"><span id="sujet-name"></span> <small>Fiche statistiques</small>
         <div class="pull-right" id="update-buttons">
         <label for="submit-form" class="btn btn-primary" id="update-stats-btn" pk="">Enregistrer</label>
@@ -102,21 +115,6 @@
       </div>
     </div>
   </div> <!-- Container -->
-<!-- Modal and button linking -->
-<div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-   <div class="modal-dialog">
-     <div class="modal-content">
-       <div class="modal-header">
-         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-         <h4 class="modal-title">Modal title</h4>
-       </div>
-       <div id="form-modal-body" class="modal-body">
-         <div class="alert alert-warning">Content should be there...</div>
-       </div>
-     </div>
-   </div>
-</div>
-<script type="text/javascript" src="{% static 'scripts/bootstrap-modal.js' %}"></script>
 <script type="text/javascript">
   $(function(){
 

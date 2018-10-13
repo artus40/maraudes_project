@@ -27,6 +27,7 @@
         {% endif %}
         </p>
         <a href="{% url 'maraudes:planning' %}" class="card-link text-primary">Voir le planning</a>
+        <a href="{% url 'notes:liste-maraude' %}" class="card-link text-primary">Toutes les maraudes</a>
       </div>
     </div>
     {% if derniers_sujets_rencontres %}
@@ -61,13 +62,13 @@
             <li class="nav-item my-2"><strong class="nav-text pr-2">Ajouter </strong></li>
             <li class="nav-item">
               <a class="nav-link" role="tab" data-toggle="tab" href="#noteNote" aria-expanded="false" aria-controls="noteNote">Note</a></li>
-            <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#noteAppel" aria-expanded="false" aria-controls="noteAppel">Appel</a></li>
+            <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#noteAppel" aria-expanded="false" aria-controls="noteAppel">Appel</a></li>
             <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#noteSignalement" aria-expanded="false" aria-controls="noteSignalement">Signalement</a></li>
         </ul>
     </div>
     <div class="card-body tab-content">
         <div class="tab-pane fade" id="noteNote"><div class="card card-body">Note</div></div>
-        <div class="tab-pane fade" id="noteAppel" role="tabpanel">
+        <div class="tab-pane fade show active" id="noteAppel" role="tabpanel">
          {% include "notes/form_appel_inner.html" with form=appel_form %}
         </div>
         <div class="tab-pane fade" id="noteSignalement">

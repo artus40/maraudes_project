@@ -1,8 +1,7 @@
-{% load bootstrap3 %}
-<form class="form form-horizontal" action="{% url "maraudes:lieu-create" %}" method="post">{% csrf_token %}
+{% load bootstrap4 %}
+<form class="form form-horizontal" action="{% url "maraudes:lieu-create" %}" method="post">
+  {% csrf_token %}
   {% bootstrap_form form layout="horizontal"%}
-  <div class="pull-right">
-  {% bootstrap_button "Ajouter un lieu" button_type="submit" button_class="btn btn-primary" icon="plus" %}
-  </div>
+  {% bootstrap_button "Ajouter un lieu" button_type="submit" button_class="btn btn-block btn-success" %}
   <input type="text" hidden=True name="next" value="{{ next }}" />
 </form>

@@ -1,23 +1,11 @@
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title">Connexion</h3>
-  </div>
-  <div class="panel-body text-center">
+<h6 class="sidebar-heading px-3 mt-4 mb-2 text-muted">Connexion</h6>
 {% if user.is_authenticated %}
-  <p>{{ user.first_name|default:user.username }}, vous êtes connecté !</p>
+  <p class="px-3">{{ user.first_name|default:user.username }}, vous êtes connecté !</p>
   {% if next %}
   <div class="alert alert-warning">
     <p>Votre compte ne donne pas accès à cette page. Veuillez vous connecter avec un autre compte.</p>
   </div>
   <a href="{% url 'logout' %}" class="btn btn-danger">Déconnexion</a>
-  {% else %}
-  <div class="btn-group-vertical">
-    <a href="{% url 'maraudes:index' %}" class="btn btn-sm btn-primary">Entrer</a>
-    {% if user.is_superuser %}
-    <a href="admin/" class="btn btn-sm btn-default">Administration</a>
-    {% endif %}
-    <a href="{% url 'logout' %}" class="btn btn-sm btn-default">Déconnexion</a>
-  </div>
   {% endif %}
 {% else %}
   <form class="form" method="post" action="{% url "login" %}">
@@ -28,24 +16,16 @@
   </div>
   <input name="next" value="{{next}}" hidden />
   {% endif %}
-  <div class="form-group form-horizontal">
+  <div class="form-group form-horizontal px-3">
     <div class="form-group">
       <label class="col-md-2 sr-only control-label" for="id_username">Username</label>
-      <div class="input-group col-md-9">
-        <span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
-        <input autofocus="" class="form-control" id="id_username" maxlength="254" name="username" placeholder="Username" title="" type="text" required />
-      </div>
+      <input autofocus="" class="form-control" id="id_username" maxlength="254" name="username" placeholder="Username" title="" type="text" required />
     </div>
     <div class="form-group">
       <label class="col-md-2 sr-only control-label" for="id_password">Password</label>
-      <div class="input-group col-md-9">
-        <span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
-        <input class="form-control" id="id_password" name="password" placeholder="Password" title="" type="password" required />
-      </div>
+      <input class="form-control" id="id_password" name="password" placeholder="Password" title="" type="password" required />
     </div>
-  </div>
-  <div class="text-center">
-    <button class="btn btn-primary navbar-button" type="submit">Connexion</button>
+    <button class="btn btn-primary btn-block" type="submit">Connexion</button>
   </div>
   </form>
 {% endif %}

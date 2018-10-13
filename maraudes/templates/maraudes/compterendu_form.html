@@ -3,19 +3,23 @@
   {% if form.id %}{% bootstrap_field form.id %}{% endif %}
   {% with lyt="inline" grp="col" sz="small" %}
   {% bootstrap_field form.lieu layout=lyt form_group_class=grp size=sz %}
-  {% bootstrap_field form.heure_debut form_group_class=grp layout=lyt size=sz %}
-  <span class="btn-group pr-1">
-    <button id="minus-5" class="btn btn-outline-secondary btn-sm" type="button"><strong>-5</strong></button>
-    <button id="plus-5" class="btn btn-outline-secondary btn-sm" type="button"><strong>+5</strong></button>
-  </span>
+  <div class="col">
+    {% bootstrap_field form.heure_debut form_group_class="my-0" layout=lyt size=sz %}
+      <span class="btn-group d-flex justify-content-center my-0">
+        <button id="minus-10" class="btn btn-link btn-sm px-1" type="button"><strong>-10</strong></button>
+        <button id="minus-5" class="btn btn-link btn-sm px-1" type="button"><strong>-5</strong></button>
+        <button id="plus-5" class="btn btn-link btn-sm px-1" type="button"><strong>+5</strong></button>
+        <button id="plus-10" class="btn btn-link btn-sm px-1" type="button"><strong>+10</strong></button>
+      </span>
+  </div>
   {% bootstrap_field form.duree layout=lyt size=sz form_group_class=grp %}
   {% endwith %}
 </div>
-<hr />
 <div class="form">
   {{ inline_formset.management_form }}
   {% for form in inline_formset %}
     <div class="dynamic-formset">
+    <hr />
     {% if form.id %}{% bootstrap_field form.id %}{% endif %}
     {% bootstrap_field form.sujet size="small" show_label=False %}
     {% bootstrap_field form.text size="small" show_label=False %}

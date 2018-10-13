@@ -15,7 +15,7 @@
   <body {% block extra_body_attrs %}{% endblock %}>
     <!-- START: Navigation Bar -->
     <nav class="navbar fixed-top navbar-dark bg-dark navbar-expand-md shadow p-0">
-        <a class="navbar-brand" href="/">Maraude ALSA</a>
+        <a class="navbar-brand ml-3" href="/">Maraude ALSA</a>
         {% if user.is_authenticated %}
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
@@ -31,24 +31,18 @@
     </nav>
     <!-- END: Navigation Bar -->
     <div class="container-fluid">
+    <!-- BEGIN: Sidebar -->
       <div class="row">
         <nav class="col-md-2 d-none d-md-block bg-light sidebar">
           <div class="sidebar-sticky">
             {% if user.is_authenticated %}
+            <h6 class="sidebar-heading px-3 mt-4 text-muted">Menu</h6>
             <ul class="nav flex-column">
-              <li class="nav-item pt-3">
+              <li class="nav-item">
                   <a href="{% url 'maraudes:index' %}" class="nav-link {% active namespace="maraudes" append=True %}">Maraudes</a>
               </li>
-            </ul>
-            <h6 class="sidebar-heading px-3 mt-4 mb-1 text-muted">
-              <span>Notes</span>
-            </h6>
-            <ul class="nav flex-column">
               <li class="nav-item">
-                  <a href="{% url 'notes:liste-maraude' %}" class="nav-link {% active namespace="notes" append=True %}">Par maraudes</a>
-              </li>
-              <li class="nav-item">
-                <a href="{% url 'notes:liste-sujet' %}" class="nav-link {% active namespace="notes" append=True %}">Par sujets</a>
+                <a href="{% url 'notes:liste-sujet' %}" class="nav-link {% active namespace="notes" append=True %}">Suivi</a>
               </li>
             </ul>
             {% else %}
@@ -64,6 +58,7 @@
             {% block sidebar %}{% endblock %}
           </div>
         </nav>
+        <!-- END: Sidebar -->
         <main role="main" class="col-md-10 ml-sm-auto px-4">
           <div class="container-fluid">
               <div class="row pt-4 d-flex justify-content-center">
