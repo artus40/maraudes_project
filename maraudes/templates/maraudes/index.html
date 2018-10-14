@@ -26,8 +26,12 @@
           Aucune maraude prévue.
         {% endif %}
         </p>
-        <a href="{% url 'maraudes:planning' %}" class="card-link text-primary">Voir le planning</a>
-        <a href="{% url 'notes:liste-maraude' %}" class="card-link text-primary">Toutes les maraudes</a>
+        <a href="{% url 'maraudes:planning' %}" class="card-link text-primary">
+            <span class="oi oi-calendar" title="Calendar" aria-hidden="true"></span> 
+            Voir le planning</a>
+        <a href="{% url 'notes:liste-maraude' %}" class="card-link text-primary">
+            <span class="oi oi-list" title="Liste" aria-hidden="true"></span> 
+            Toutes les maraudes</a>
       </div>
     </div>
     <div class="row">
@@ -71,11 +75,21 @@
   <div class="card shadow">
     <div class="card-header bg-dark text-white">
         <ul class="nav nav-tabs card-header-tabs" id="addNote" role="tablist">
-            <li class="nav-item my-2"><strong class="nav-text pr-2">Ajouter </strong></li>
+            <li class="nav-item my-2">
+                <strong class="nav-text pr-2">
+                <span class="oi oi-plus" title="+" aria-hidden="true"></span>
+                Ajouter</strong></li>
             <li class="nav-item">
-              <a class="nav-link" role="tab" data-toggle="tab" href="#noteNote" aria-expanded="false" aria-controls="noteNote">Note</a></li>
-            <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#noteAppel" aria-expanded="false" aria-controls="noteAppel">Appel</a></li>
-            <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#noteSignalement" aria-expanded="false" aria-controls="noteSignalement">Signalement</a></li>
+              <a class="nav-link" role="tab" data-toggle="tab" href="#noteNote" aria-expanded="false" aria-controls="noteNote">
+                  <span class="oi oi-file" title="Phone" aria-hidden="true"></span>
+                  Note</a>
+            </li>
+            <li class="nav-item"><a class="nav-link active" role="tab" data-toggle="tab" href="#noteAppel" aria-expanded="false" aria-controls="noteAppel">
+                  <span class="oi oi-phone" title="Phone" aria-hidden="true"></span>
+                  Appel</a></li>
+            <li class="nav-item"><a class="nav-link" role="tab" data-toggle="tab" href="#noteSignalement" aria-expanded="false" aria-controls="noteSignalement">
+                  <span class="oi oi-warning" title="Phone" aria-hidden="true"></span>
+                  Signalement</a></li>
         </ul>
     </div>
     <div class="card-body tab-content">

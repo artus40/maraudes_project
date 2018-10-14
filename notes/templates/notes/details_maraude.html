@@ -5,24 +5,23 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-  {{ block.super }}
-  <li><a href="{% url "notes:liste-maraude" %}">Maraudes</a></li>
-  <li>{{ maraude }}</li>
+  <h6 class="navbar-text text-white my-2">Compte-rendu</h6>
+  <p class="navbar-text my-2 ml-2">{{ maraude }}</p>
 {% endblock %}
 
 {% block sidebar %}
     <h6 class="sidebar-heading mt-4 px-3">Navigation</h6>
-    <nav class="d-flex px-3 justify-content-center" aria-label="Maraudes navigation">
+    <nav class="d-flex px-3 justify-content-left" aria-label="Maraudes navigation">
     <ul class="pagination">
     <li class="page-item {% if not prev_maraude %}disabled{% endif %}">
-      <a class="page-link" href="{% if prev_maraude %}{% url "notes:details-maraude" prev_maraude.pk %}{% else %}#{% endif %}" aria-label="Previous">
-        <span aria-hidden="true">&laquo;</span>
+      <a class="page-link px-4" href="{% if prev_maraude %}{% url "notes:details-maraude" prev_maraude.pk %}{% else %}#{% endif %}" aria-label="Previous">
+        <span class="oi oi-chevron-left" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
       </a>
     </li>
     <li class="page-item {% if not next_maraude %}disabled{% endif %}">
-      <a class="page-link" href="{% if next_maraude %}{% url "notes:details-maraude" next_maraude.pk %}{%else%}#{% endif %}" aria-label="Next">
-        <span aria-hidden="true">&raquo;</span>
+      <a class="page-link px-4" href="{% if next_maraude %}{% url "notes:details-maraude" next_maraude.pk %}{%else%}#{% endif %}" aria-label="Next">
+        <span class="oi oi-chevron-right" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
     </li>
@@ -31,7 +30,7 @@
 {% endblock %}
 
 {% block right_column %}
-<div class="card sticky-top mt-4">
+<div class="card position-fixed">
   <h6 class="card-header">Informations</h6>
   <div class="card-body">
     <p><strong>Maraudeurs :</strong>&nbsp; {{ maraude.binome }} & {{ maraude.referent }}</p>

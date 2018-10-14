@@ -21,15 +21,19 @@
 
 {% block page_content %}
   {% block search %}{% endblock %}
-  <!-- Table -->
-  {% table object_list cols=3 cell_template=table_cell_template header=table_header %}
   {% if is_paginated %}
-    <div class="text-center">
+    <div class="d-flex flex-fill justify-content-center">
       <ul class="pagination">{% with request.GET.filter as filter %}
       {% for num in page_obj.paginator.page_range %}
-        <li {% if page_obj.number == num %} class="active" {%endif%}><a href="?{% if filter %}filter={{ filter }}&{%endif%}page={{num}}">{{num}}</a></li>
+        <li class="page-item {% if page_obj.number == num %}active{%endif%}">
+            <a class="page-link" href="?{% if filter %}filter={{ filter }}&{%endif%}page={{num}}">{{num}}</a>
+        </li>
       {%endfor%}{% endwith %}
       </ul>
     </div>
   {% endif %}
+  <!-- Table -->
+  <div class="card card-body">
+  {% table object_list cols=3 cell_template=table_cell_template header=table_header %}
+  </div>
 {% endblock %}

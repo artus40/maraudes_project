@@ -3,9 +3,7 @@
 {% block title %}{{block.super}} Liste des sujets {% endblock %}
 
 {% block breadcrumbs %}
-  {{ block.super }}
-  <li><a href="{% url "notes:liste-sujet" %}">Sujets</a></li>
-  {% if query_text %}<li>'{{query_text}}'</li>{% endif %}
+    <h6 class="navbar-text text-white my-2">Liste des sujets</h6>
 {% endblock %}
 
 {% block sidebar_insert %}
