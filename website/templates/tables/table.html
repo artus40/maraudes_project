@@ -1,9 +1,9 @@
-<table class="table table-responsize table-sm table-striped table-borderless shadow">
+<table class="table table-striped table-borderless shadow">
   {% if header %}<tr>
     <th colspan="{{ cols_number }}" class="thead-dark text-center">{{ header }}</th>
   </tr>{% endif %}
-  {% for row in rows %}<tr class="d-flex justify-content-between">
-      {% for object in row %}<td class="flex-shrink-1">
+  {% for row in rows %}<tr class="d-table-row">
+      {% for object in row %}<td width="50%" class="d-table-cell">
         {% if object %}{% include cell_template with object=object %}{%endif%}
       </td>
       {% endfor %}

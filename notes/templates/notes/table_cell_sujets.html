@@ -1,4 +1,7 @@
-<a href="{% url 'notes:details-sujet' object.pk %}" class="btn btn-link">{{object}}</a>
+<a href="{% url 'notes:details-sujet' object.pk %}" class="btn btn-link text-left">
+  <span class="text-muted">{{object.genre}}</span> {{object.nom}} {{object.prenom}}<br />
+  {% if object.surnom %}<span class="text-muted">"{{object.surnom}}"</span>{% endif %}
+  </a>
 <div class="float-right">
  <span class="badge badge-info">{{ object.notes.count }} notes</span>
  {% with object.statistiques.info_completed as completed %}

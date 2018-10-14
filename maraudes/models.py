@@ -136,7 +136,7 @@ class Maraude(models.Model):
         return '%(dayname)s %(day)i %(month)s' % {
             'dayname': WEEKDAYS[self.date.weekday()][1],  # Retrieve text inside tuple
             'day': self.date.day,
-            'month': MONTHS[self.date.month][:3] + ".",
+            'month': MONTHS[self.date.month],
         }
 
     def est_terminee(self):
