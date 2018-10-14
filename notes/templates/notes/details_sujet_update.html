@@ -1,16 +1,16 @@
-{% load bootstrap3 %}
+{% load bootstrap4 %}
 <form action="{% url "notes:update-sujet" form.instance.pk %}" method="post">{% csrf_token %}
-<table class="table table-striped">
-  {% with "-" as none %}
+<table class="table table-sm table-striped">
+  {% with none="-" sz="small" %}
   <tr><th>Nom</th><th>Surnom</th><th>Prénom</th></tr>
-  <tr><td>{% bootstrap_field form.nom show_label=False %}</td><td>{% bootstrap_field form.surnom show_label=False %}</td><td>{% bootstrap_field form.prenom show_label=False %}</td></tr>
+  <tr><td>{% bootstrap_field form.nom size=sz show_label=False %}</td><td>{% bootstrap_field form.surnom size=sz show_label=False %}</td><td>{% bootstrap_field form.prenom size=sz show_label=False %}</td></tr>
   <tr><th>Âge</th><th>Genre</th><th>Première rencontre</th></tr>
-  <tr><td>{% bootstrap_field form.age show_label=False %}</td><td>{% bootstrap_field form.genre show_label=False %}</td><td>{% bootstrap_field form.premiere_rencontre show_label=False %}</td></tr>
+  <tr><td>{% bootstrap_field form.age size=sz show_label=False %}</td><td>{% bootstrap_field form.genre size=sz show_label=False %}</td><td>{% bootstrap_field form.premiere_rencontre size=sz show_label=False %}</td></tr>
   {% endwith %}
 </table>
-<div class="panel-footer text-right">
-  <span class="text-right">{% bootstrap_button "Enregistrer" button_type="submit" %}
-  <span class="btn btn-primary btn-sm" id="cancel">Annuler</span></span>
+<div class="btn-group d-flex flex-fill">
+  {% bootstrap_button "Enregistrer" button_type="submit" button_class="btn btn-success btn-sm" %}
+  <button class="btn btn-primary btn-sm" id="cancel">Annuler</button>
 </div>
 </form>
 

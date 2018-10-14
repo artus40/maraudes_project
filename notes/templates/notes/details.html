@@ -3,16 +3,7 @@
 
 {% block page_content %}
 <div class="col-lg-7 col-md-12">
-  <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-    <div class="panel panel-primary">
-      <div class="panel-heading" role="tab" id="notesHeading">
-        <h3 class="panel-title">
-          <a role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNotes" aria-expanded="true" aria-controls="collapseOne">
-          Notes</a>
-        </h3>
-      </div>
-{% block pre_content %}{% endblock %}
-    <table class="table table-striped table-bordered">
+    <table class="table table-bordered">
         {% for note in notes %}
           {% if maraude %}
             {% inline_table note header="sujet" %}
@@ -21,9 +12,7 @@
           {% endif %}
         {% endfor %}
     </table>
-{% block post_content %}{% endblock %}
-    </div>
-  </div>
+{% block pagination %}{% endblock %}
 </div>
 
 <div class="col-lg-5 col-md-12">

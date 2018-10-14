@@ -1,4 +1,4 @@
-<tr >
+<tr class="d-table-row shadow">
   <th class="border-{{bg_color}}" width="20%">
     {% if link %}
       <a href="{{link}}"><strong>{{header}}</strong></a>
@@ -6,7 +6,7 @@
       <strong>{{header}}</strong>
     {% endif %} <small>{{small}}</small>
     <br />
-    <div style="margin:5px 0px;">
+    <div style="mt-2">
     {% for label in labels %}
       <span class="badge badge-{{bg_label_color}}" style="padding:2px 5px;">{{label}}</span>
     {% endfor %}

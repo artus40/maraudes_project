@@ -88,7 +88,8 @@ class MaraudeListView(ListView):
     queryset = Maraude.objects.get_past().order_by("-date")
 
     filters = [
-        ("Ce mois-ci", lambda qs: qs.filter(date__month=timezone.now().date().month)),
+        ("Ce mois-ci", lambda qs: qs.filter(date__month=timezone.now().date().month,
+                                            date__year=timezone.now().date().year)),
     ]
 
 

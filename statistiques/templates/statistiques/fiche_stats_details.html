@@ -1,7 +1,8 @@
 {% load boolean_icons bootstrap4 %}
-  <table class="table">
+{% with th_css="bg-dark text-white" %}
+  <table class="table table-sm">
     <tr>
-      <th colspan="4" class="active">Problématiques</th>
+        <th colspan="4" class="{{th_css}}">Problématiques</th>
     </tr>
     <tr>
       <th>Psychiatrique</th>
@@ -16,7 +17,7 @@
       <td>{{ object.prob_somatique|as_icon }}</td>
     </tr>
     <tr>
-      <th colspan="4" class="active">Habitation</th>
+        <th colspan="4" class="{{th_css}}">Habitation</th>
     </tr>
     <tr>
       <th>Type</th>
@@ -25,13 +26,13 @@
       <td>{{ object.connu_siao|as_icon }}</td>
     </tr>
     <tr>
-      <th colspan="4" class="active">Ressources</th>
+      <th colspan="4" class="{{th_css}}">Ressources</th>
     </tr>
     <tr>
       <td colspan="4">{{ object.ressources }}</td>
     </tr>
     <tr>
-      <th colspan="4" class="active">Parcours de vie</th>
+        <th colspan="4" class="{{th_css}}">Parcours de vie</th>
     </tr>
     <tr>
       <td colspan="2">{{ object.parcours_de_vie }}</td>
@@ -39,4 +40,4 @@
       <td>{{ object.lien_familial|as_icon }}</td>
     </tr>
   </table>
-
+{% endwith %}

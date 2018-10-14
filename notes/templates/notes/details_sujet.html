@@ -6,55 +6,27 @@
 {% endblock %}
 
 {% block breadcrumbs %}
-  {{ block.super }}
-  <li><a href="{% url "notes:liste-sujet" %}">Sujets</a></li>
-  <li>{{ sujet }}</li>
+  <h6 class="navbar-text text-white my-2">{{ sujet }}</h6>
 {% endblock %}
 
-{% block pre_content %}
-    <div id="collapseNotes" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="notesHeading">
-{% endblock %}
-
-{% block post_content %}
-    {% if notes.has_other_pages %}<div class="panel-footer text-center">
-      <ul class="pagination">
+{% block pagination %}
+  <div class="d-flex justify-content-center">
+    {% if notes.has_other_pages %}<ul class="pagination">
       {% for num in notes.paginator.page_range %}
-        <li {% if notes.number == num %} class="active" {%endif%}><a href="?page={{num}}">{{num}}</a></li>
+        <li class="page-item {% if notes.number == num %}active{%endif%}"><a class="page-link" href="?page={{num}}">{{num}}</a></li>
       {%endfor%}
-      </ul>
-    </div>{% endif %}
-    </div>
+    </ul>{% endif %}
   </div>
-  <div class="panel panel-default">
-    <div class="panel-heading" role="tab" id="notesAjoutHeading">
-      <h4 class="panel-title">
-        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseNotesAjout" aria-expanded="false" aria-controls="collapseTwo">
-          Ajouter une note
-        </a>
-      </h4>
-    </div>
-    <div id="collapseNotesAjout" class="panel-collapse collapse" role="tabpanel" aria-labelledby="notesAjoutHeading">
-      <div class="panel-body">
-        <form method="POST" action="">{% csrf_token %}
-        {% bootstrap_form note_form show_label=False %}
-      </div>
-      <div class="panel-footer text-right">
-        {% bootstrap_button "Enregistrer" button_type="submit" %}
-        </form>
-      </div>
-      </div>
 {% endblock %}
 
 {% block right_column %}
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h4 class="panel-title">Informations</h4>
-    </div>
+  <div class="card">
+    <h6 class="card-header">Informations</h6>
     {% include "notes/details_sujet_inner.html" %}
   </div>
 
-  <div class="panel panel-default">
-    <div class="panel-heading"><h4 class="panel-title">Statistiques</h4></div>
+  <div class="card mt-2">
+    <h6 class="card-header">Statistiques</h6>
     <div id="stats-content">
       {% include "statistiques/fiche_stats_details.html" with object=sujet.statistiques %}
     </div>
@@ -89,6 +61,7 @@
 
 {% block sidebar %}
 {{ block.super }}
+    <h6 class="sidebar-heading mt-4 px-3 text-danger">TODO: Ajouter une note</h6>
 {% if user.is_superuser %}
     <h6 class="sidebar-heading mt-4 px-3">Administration</h6>
     <div class="px-3 btn-group-vertical d-flex justify-content-center" role="group" aria-label="...">
