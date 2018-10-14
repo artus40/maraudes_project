@@ -1,5 +1,5 @@
-<tr>
-  <th class="bg-{{bg_color}}" width="20%">
+<tr >
+  <th class="border-{{bg_color}}" width="20%">
     {% if link %}
       <a href="{{link}}"><strong>{{header}}</strong></a>
     {% else %}
@@ -8,9 +8,9 @@
     <br />
     <div style="margin:5px 0px;">
     {% for label in labels %}
-      <span class="label label-{{bg_label_color}}" style="padding:2px 5px;">{{label}}</span>
+      <span class="badge badge-{{bg_label_color}}" style="padding:2px 5px;">{{label}}</span>
     {% endfor %}
     </div>
   </th>
-  <td style="background-color:#fff" width="80%"><p>{{text | linebreaks }}</p></td>
+  <td class="border-{{bg_color}}"  width="80%"><p>{{text | linebreaks }}</p></td>
 </tr>

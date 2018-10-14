@@ -32,8 +32,5 @@
       </ul>
     </div>
   {% endif %}
-  <!-- Table -->
-  <div class="card card-body">
-  {% table object_list cols=3 cell_template=table_cell_template header=table_header %}
-  </div>
+  {% table object_list cols=3 cell_template=table_cell_template %}
 {% endblock %}

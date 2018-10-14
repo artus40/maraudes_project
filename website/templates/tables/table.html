@@ -1,7 +1,9 @@
-<table class="table table-condensed table-striped">
-  {% if header %}<tr><th colspan="{{ cols_number }}" class="text-center">{{ header }}</th></tr>{% endif %}
-  {% for row in rows %}<tr>
-      {% for object in row %}<td>
+<table class="table table-responsize table-sm table-striped table-borderless shadow">
+  {% if header %}<tr>
+    <th colspan="{{ cols_number }}" class="thead-dark text-center">{{ header }}</th>
+  </tr>{% endif %}
+  {% for row in rows %}<tr class="d-flex justify-content-between">
+      {% for object in row %}<td class="flex-shrink-1">
         {% if object %}{% include cell_template with object=object %}{%endif%}
       </td>
       {% endfor %}
