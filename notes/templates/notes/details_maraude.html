@@ -31,12 +31,9 @@
 {% endblock %}
 
 {% block right_column %}
-<div class="panel panel-default">
-  <div class="panel-heading" role="tab" id="notesSujetHeading">
-    <h3 class="panel-title">
-      Informations</h3>
-  </div>
-  <div class="panel-body">
+<div class="card sticky-top mt-4">
+  <h6 class="card-header">Informations</h6>
+  <div class="card-body">
     <p><strong>Maraudeurs :</strong>&nbsp; {{ maraude.binome }} & {{ maraude.referent }}</p>
     <p><strong>Nombre de rencontres</strong>&nbsp; {{ maraude.rencontres.count }}</p>
     <p><strong>Nombre de personnes rencontrées</strong>&nbsp; {{ maraude.observations_count }}</p>
