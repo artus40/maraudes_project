@@ -4,23 +4,17 @@
 {% block title %} {{ block.super }} Planning {% endblock %}
 
 {% block breadcrumbs %}
-  {{ block.super }}
-  <li>Planning</li>
+<h6 class="navbar-text text-white my-2">Planning</h6>
 {% endblock %}
 
 {% block sidebar %}
   {{ block.super }}
-  <div class="panel panel-primary text-center">
-    <div class="panel-body">
-    <label for="submit-form" class="btn btn-primary">Enregistrer</label>
-    <hr />
-    <form action="" method="get" class="form-horizontal">
-      <strong>Choisir une autre période : </strong>
+    <form action="" method="get" class="form-horizontal px-3">
+      <label for="submit-form" class="mt-3 btn btn-success btn-block">Enregistrer</label>
+      <h4 class="sidebar-heading mt-4">Choisir une autre période</h4>
       {% bootstrap_form select_form layout='horizontal' %}
-      {% bootstrap_button "Choisir" button_type="submit" button_class="btn btn-primary btn-sm" %}
+      {% bootstrap_button "Choisir" button_type="submit" button_class="btn btn-dark btn-sm btn-block" %}
     </form>
-  </div>
-</div>
 {% endblock %}
 
 {% block page_content %}

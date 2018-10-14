@@ -3,8 +3,8 @@
 {% block title %} {{ block.super }} Tableau de bord {% endblock %}
 
 {% block breadcrumbs %}
-  {{ block.super }}
-  <li>Tableau de bord</li>
+  <h6 class="navbar-text text-white my-2">Tableau de bord</h6>
+  <p class="navbar-text my-2 pl-2">{{ date }}</p>
 {% endblock %}
 
 {% block page_content %}

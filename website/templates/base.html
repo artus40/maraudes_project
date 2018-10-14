@@ -7,6 +7,7 @@
    {% bootstrap_javascript jquery="full" %}
     <link rel="stylesheet" type="text/css" href="/static/css/base.css" />
     <link rel="stylesheet" type="text/css" href="/static/css/dashboard.css" />
+    <link rel="stylesheet" type="text/css" href="/static/open-iconic/font/css/open-iconic-bootstrap.css" />
     {% block extrastyle %}{% endblock %}
     {% if stylesheets %}{% for stylesheet in stylesheets %}<link rel="stylesheet" type="text/css" href="{% static stylesheet %}" />{% endfor %}{% endif %}
   {% block extrahead %}{% endblock %}
@@ -16,14 +17,30 @@
     <!-- START: Navigation Bar -->
     <nav class="navbar fixed-top navbar-dark bg-dark navbar-expand-md shadow p-0">
         <a class="navbar-brand ml-3" href="/">Maraude ALSA</a>
+        <span class="nav-item d-flex flex-grow-1 justify-content-center">
+            {% block breadcrumbs %}{% endblock %}
+        </span>
         {% if user.is_authenticated %}
+        <form class="form-inline ml-auto pr-3">
+          <input class="form-control py-2 mr-sm-2" type="search" placeholder="Chercher" aria-label="Search">
+          <button class="btn btn-outline-success my-2" type="submit">
+              <span class="sr-only">Search</span>
+              <span class="oi oi-magnifying-glass" title="Search" aria-hidden="true"></span>
+          </button>
+        </form>
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-              <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+              <a href="{% url 'logout' %}" class="btn btn-outline-warning mx-2">
+              <span class="sr-only">Logout</span>
+              <span class="oi oi-account-logout" title="Logout" aria-hidden="true">
+              </span></a>
           </li>
           {% if user.is_superuser %}
           <li class="nav-item">
-              <a href="{% url 'admin:index' %}" class="nav-link">Admin</a>
+              <a href="{% url 'admin:index' %}" class="btn btn-outline-danger mr-2 ">
+                 <span class="sr-only">Admin</span>
+                 <span class="oi oi-cog" title="Admin" aria-hidden="true">
+              </span></a>
           </li>
           {% endif %}
         </ul>
