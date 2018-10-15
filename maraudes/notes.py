@@ -1,16 +1,15 @@
 from django.db import models
 from notes.models import Note
 
-
 # Extends 'notes' module
-
 
 class Observation(Note):
     """ Note dans le cadre d'une rencontre """
 
-    rencontre = models.ForeignKey('maraudes.Rencontre',
-                                  models.CASCADE,
-                                  related_name="observations")
+    rencontre = models.ForeignKey(
+                    'maraudes.Rencontre',
+                    models.CASCADE,
+                    related_name="observations")
 
     # Note attributes proxies
     def note_author(self): return self.rencontre.maraude.referent
@@ -21,7 +20,7 @@ class Observation(Note):
 
     def note_labels(self): return [self.rencontre.lieu, self.rencontre.heure_debut]
 
-    def note_bg_colors(self): return "info", "info"
+    def note_bg_colors(self): return "info", "dark"
 
 
 class Appel(Note):
@@ -37,7 +36,9 @@ class Appel(Note):
 
 class Signalement(Note):
 
-    source = models.ForeignKey("utilisateurs.Organisme", on_delete=models.CASCADE)
+    source = models.ForeignKey(
+                "utilisateurs.Organisme", 
+                on_delete=models.CASCADE)
 
     def note_labels(self):
         return [self.source, self.created_by]

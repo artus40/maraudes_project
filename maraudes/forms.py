@@ -1,11 +1,12 @@
+import calendar
 from django import forms
 from django.utils.translation import gettext
 from django.utils import timezone
 from django_select2.forms import Select2Widget
 from notes.forms import UserNoteForm, SimpleNoteForm
-from notes.models import Sujet, GENRE_CHOICES
-from .models import *
-from .notes import *
+from notes.models import Note, Sujet, GENRE_CHOICES
+from .models import Maraude, Rencontre 
+from .notes import Observation, Appel, Signalement
 
 
 MONTHS = [
@@ -67,6 +68,12 @@ class MonthSelectForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields['month'].initial = month
         self.fields['year'].initial = year
+
+
+class NoteForm(UserNoteForm):
+    class Meta(UserNoteForm.Meta):
+        model = Note
+        fields = ['sujet', 'text']
 
 
 class AppelForm(UserNoteForm):

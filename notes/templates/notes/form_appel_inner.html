@@ -6,7 +6,10 @@
     {% bootstrap_field  form.created_time size=sz form_group_class=grp_cls layout=layout %}
   {% endwith %}
   </div>
-  {% bootstrap_field form.entrant size=sz%}
+  <div class="custom-control custom-checkbox">
+       <input type="checkbox" name="entrant" class="custom-control-input" id="id_entrant">
+       <label class="custom-control-label" for="id_entrant">Appel entrant ?</label>
+  </div>
   <hr />
   {% bootstrap_field form.sujet show_label=False %}
   {% bootstrap_field form.text show_label=False %}

@@ -17,7 +17,7 @@ from .notes import Signalement
 from .forms import (RencontreForm,
                     ObservationInlineFormSet,
                     MaraudeHiddenDateForm, MonthSelectForm,
-                    AppelForm, SignalementForm,
+                    NoteForm, AppelForm, SignalementForm,
                     SendMailForm)
 from notes.mixins import NoteFormMixin
 
@@ -64,6 +64,7 @@ class IndexView(NoteFormMixin, MaraudeurMixin, generic.TemplateView):
 
     # NoteFormMixin
     forms = {
+        'note': NoteForm,
         'appel': AppelForm,
         'signalement': SignalementForm,
     }

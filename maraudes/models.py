@@ -128,9 +128,6 @@ class Maraude(models.Model):
     class Meta:
         verbose_name = "Maraude"
         ordering = ['date']
-        permissions = (
-            ('view_maraudes', "Accès à l'application 'maraudes'"),
-        )
 
     def __str__(self):
         return '%(dayname)s %(day)i %(month)s' % {
@@ -141,9 +138,7 @@ class Maraude(models.Model):
 
     def est_terminee(self):
         """ Indique si la maraude est considérée comme terminée """
-        if self.heure_fin is not None:
-            return True
-        return False
+        return self.heure_fin is not None
     est_terminee.admin_order_field = 'date'
     est_terminee.boolean = True
     est_terminee.short_description = 'Terminée ?'

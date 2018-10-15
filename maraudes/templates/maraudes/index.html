@@ -93,7 +93,9 @@
         </ul>
     </div>
     <div class="card-body tab-content">
-        <div class="tab-pane fade" id="noteNote"><div class="card card-body">Note</div></div>
+        <div class="tab-pane fade" id="noteNote" role="tabpanel">
+         {% include "notes/form_note_inner.html" with form=note_form %}
+        </div>
         <div class="tab-pane fade show active" id="noteAppel" role="tabpanel">
          {% include "notes/form_appel_inner.html" with form=appel_form %}
         </div>

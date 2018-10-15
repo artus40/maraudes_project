@@ -15,7 +15,8 @@ else:
     try:
         assert(isinstance(settings.MARAUDEURS.get('organisme'), dict))
     except:
-        raise ImproperlyConfigured("'organisme' key of MARAUDEURS settings is not a dict !")
+        raise ImproperlyConfigured(
+                "'organisme' key of MARAUDEURS settings is not a dict !")
 
 
 def get_email_suffix(organisme):
@@ -23,7 +24,6 @@ def get_email_suffix(organisme):
         return "unconfigured.org"
     else:
         return organisme.email.split("@")[1]
-
 
 
 class Organisme(models.Model):
@@ -43,10 +43,10 @@ class Organisme(models.Model):
 
 class Professionnel(User):
     """ Professionnel d'un organisme """
-    organisme = models.ForeignKey(Organisme,
-                                models.CASCADE,
-                                related_name="professionnels",
-                            )
+    organisme = models.ForeignKey(
+            Organisme,
+            on_delete=models.CASCADE,
+            related_name="professionnels")
 
     def make_username(self):
         """ Build the username for this Professionel instance. Must be overriden."""

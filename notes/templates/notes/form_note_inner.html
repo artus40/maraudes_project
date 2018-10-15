@@ -1,0 +1,10 @@
+{% load bootstrap4 %}
+<form action="" method="POST">{% csrf_token %}
+  {% bootstrap_field form.sujet show_label=False %}
+  {% bootstrap_field form.text show_label=False %}
+  <div class="ml-auto">
+      {% bootstrap_button "Ajouter la note" button_type="submit" button_class="btn-primary btn-sm btn-block" %}
+  </div>
+</form>
+{{ form.media.js }}{{ form.media.css }}
+
