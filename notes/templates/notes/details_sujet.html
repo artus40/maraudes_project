@@ -9,6 +9,12 @@
   <h6 class="navbar-text text-white my-2">{{ sujet }}</h6>
 {% endblock %}
 
+{% block top_block %}
+  <div class="card card-body p-1 mb-2">
+    {% include "notes/details_sujet_inner.html" %}
+  </div>
+{% endblock %}
+
 {% block pagination %}
   <div class="d-flex justify-content-center">
     {% if notes.has_other_pages %}<ul class="pagination">
@@ -20,11 +26,6 @@
 {% endblock %}
 
 {% block right_column %}
-  <div class="card">
-    <h6 class="card-header">Informations</h6>
-    {% include "notes/details_sujet_inner.html" %}
-  </div>
-
   <div class="card mt-2">
     <h6 class="card-header">Statistiques</h6>
     <div id="stats-content">

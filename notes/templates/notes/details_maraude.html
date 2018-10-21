@@ -29,13 +29,12 @@
   </nav>
 {% endblock %}
 
-{% block right_column %}
-<div class="card ml-auto position-fixed">
-  <h6 class="card-header">Informations</h6>
-  <div class="card-body">
-    <p><strong>Maraudeurs :</strong>&nbsp; {{ maraude.binome }} & {{ maraude.referent }}</p>
-    <p><strong>Nombre de rencontres</strong>&nbsp; {{ maraude.rencontres.count }}</p>
-    <p><strong>Nombre de personnes rencontrées</strong>&nbsp; {{ maraude.observations_count }}</p>
-  </div>
+{% block top_block %}
+<div class="card card-body p-1 mb-2 text-center">
+  <p class="card-text">
+    <strong>avec {{ maraude.binome }} & {{ maraude.referent }}</strong>
+    <span class="badge badge-primary ml-2">{{ maraude.rencontres.count }} rencontres</span>
+    <span class="badge badge-primary ml-2">{{ maraude.observations_count }} personnes rencontrées</span>
+  </p>
 </div>
 {% endblock %}

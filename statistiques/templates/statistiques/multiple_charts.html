@@ -4,8 +4,7 @@
 
 {% block breadcrumbs %}
     {{block.super}}
-    <li>{{page_title}}</li>
-    {% if active %}<li>{{active}}</li>{% endif %}
+    <p class="navbar-text my-2 ml-2">{{page_title}}</p>
 {% endblock %}
 
 {% block sidebar %}
