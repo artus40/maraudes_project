@@ -3,25 +3,22 @@
 {% block title %} {{ block.super }} Compte-rendu du {{ object.date }} {% endblock %}
 
 {% block breadcrumbs %}
-  <li><a href="{% url "maraudes:index" %}">{{ object.date }}</a></li>
-  <li>Transmission</li>
+  <h6 class="navbar-text my-2 text-white">Transmission</h6>
 {% endblock %}
 
 
 {% block page_content %}
 {% if object.est_terminee %}<div class="alert alert-warning"><p>Ce compte-rendu a déjà été finalisé !</p></div>
 {% else %}
-<div class="col-md-12 col-lg-7">
+<div class="col-lg-12">
 <form method="post" action="{% url 'maraudes:finalize' maraude.pk %}">
     {% csrf_token %}
-      <div class="panel panel-primary panel-collapse">
-        <div class="panel-heading">
-          <h4 class="panel-title">Envoyer un message</h4>
-        </div>
-        <div class="panel-body">
+      <div class="card shadow">
+        <h4 class="card-header">Envoyer un message</h4>
+        <div class="card-body">
           {% bootstrap_form form %}
         </div>
-        <div class="panel-footer text-right">
+        <div class="card-footer text-right">
           {% bootstrap_button "Pas de message" button_type="link" href="?no_mail=True" button_class="btn btn-danger btn-sm" %}
           <button class="btn btn-success btn-sm" id="send-button" data-loading-text="Envoi en cours..." type="submit">Envoyer</button>
         </div>
@@ -29,19 +26,6 @@
     </form>
     <script>$('#send-button').on('click', function () {$(this).button('loading')})</script>
 </div>
-  <div class="col-md-12 col-lg-5">
-      <h4 class="page-header">Rencontres</h4>
-      <table class="table table-bordered">
-        {% for rencontre in object.rencontres.all %}<tr><th colspan="2" class="active">{{ rencontre }}</th></tr>
-        {% for observation in rencontre.observations.all %}<tr>
-            <td>
-              <a href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
-              <a class="btn btn-link btn-xs" nohref onclick="UpdateStats({{observation.sujet.pk}});return false;">
-              Mise à jour</a>
-            </td></tr>
-            <tr><td>{{observation.text}}</td></tr>{% endfor %}{% endfor %}
-      </table>
-  </div>
 {% endif %}
 
 {% endblock %}
