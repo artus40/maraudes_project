@@ -97,66 +97,24 @@
         <div class="card-header py-2 bg-dark text-white">{{ rencontre }}</div>
         <div class="card-body">{% for observation in rencontre.observations.all %}
            <a class="card-link btn-sm my-0" href="{% url "notes:details-sujet" observation.sujet.pk %}" id="sujet-name-{{observation.sujet.pk}}">{{observation.sujet}}</a>
-           <a class="card-link my-0 show-stats-btn" href="#" value="{{observation.sujet.pk}}">
-           Mise à jour</a>
+           <button class="btn btn-sm btn-outline-dark py-0 float-right" onclick="$.fn.openModal('/statistiques/update/{{observation.sujet.pk}}', 'Statistiques')">
+             <span aria-hidden="true" class="oi oi-pie-chart"></span>
+             <span class="sr-only">Mise à jour</span></button>
            <hr />
            <span class="text-justify">{{observation.text | linebreaks }}</span>
          {% endfor %}</div>
       </div>{% endfor %}
     </div>
-
-    <div class="card" id="update-stats">
-    <h6 class="card-header"><span id="sujet-name"></span> <small>Fiche statistiques</small>
-        <div class="pull-right" id="update-buttons">
-        <label for="submit-form" class="btn btn-primary" id="update-stats-btn" pk="">Enregistrer</label>
-        <span class="btn btn-primary btn-sm" id="cancel">Annuler</span>
-      </div></h6>
-      <div id="fiche-stats" class="well well-sm">
-      </div>
-    </div>
   </div> <!-- Container -->
 <script type="text/javascript">
   $(function(){
+      $.fn.openModalEvent('new-sujet',
+      '{% url "notes:create-sujet" %}?next={% url "maraudes:create" pk=maraude.pk %}',
+      'Nouveau sujet');
 
-  function UpdateStats(pk) {
-      var name = $("#sujet-name-" + pk).text();
-      console.log("Update stats for ", pk, ":", name);
-      $("#fiche-stats").load("/statistiques/update/" + pk);
-      $("#sujet-name").text(name);
-      $("#saved-rencontres").hide();
-      $("#update-stats-btn").attr("pk", pk);
-      $("#update-stats").show();
-    };
-
-  $("#update-stats").hide();
-
-  $(".show-stats-btn").click(function(e) {
-    var value = $(this).attr("value");
-    UpdateStats(value);
-  });
-
-  $("#update-stats-btn").click(function(e) {
-    e.preventDefault();
-    var pk = $(this).attr("pk");
-    $.post("/statistiques/update/" + pk + "/", $("#update-stats-form").serialize());
-    $("#fiche-stats").html("");
-    $("#saved-rencontres").show();
-    $("#update-stats").hide();
-  });
-
-  $("#cancel").click(function() {
-        $("#fiche-stats").html("");
-        $("#saved-rencontres").show();
-        $("#update-stats").hide();
-  });
-
-  $.fn.openModalEvent('new-sujet',
-  '{% url "notes:create-sujet" %}?next={% url "maraudes:create" pk=maraude.pk %}',
-  'Nouveau sujet');
-
-  $.fn.openModalEvent('new-lieu',
-  '{% url "maraudes:lieu-create" %}?next={% url "maraudes:create" pk=maraude.pk %}',
-  'Nouveau lieu');
+      $.fn.openModalEvent('new-lieu',
+      '{% url "maraudes:lieu-create" %}?next={% url "maraudes:create" pk=maraude.pk %}',
+      'Nouveau lieu');
   });
 </script>
 

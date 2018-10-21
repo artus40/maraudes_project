@@ -32,13 +32,18 @@
   $.fn.openModalEvent = function(id, href, title)
   {
     $('#'+id).click(function() {
+        $.fn.openModal(href,title);
+    });
+  };
+
+  $.fn.openModal = function(href, title)
+  {
       $('#form-modal-body').load(href, function()
         {
         $('.modal-title').text(title);
         $('#form-modal').modal('toggle');
         formAjaxSubmit("#form-modal-body form", "#form-modal");
         });
-    });
   };
 })(jQuery);
 
